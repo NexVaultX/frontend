@@ -7,6 +7,9 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/FastVault/frontend/actions">
+    <img src="https://img.shields.io/github/actions/workflow/status/FastVault/frontend/ci.yml?branch=main&style=flat-square&label=CI" alt="CI">
+  </a>
   <a href="https://github.com/FastVault/frontend">
     <img src="https://img.shields.io/github/license/FastVault/frontend?style=flat-square" alt="License">
   </a>
@@ -28,9 +31,7 @@ It is designed to provide a fast, modern, and intuitive interface for discoverin
 
 The frontend is built with a modern React ecosystem and follows a component-driven architecture.
 
-> [!IMPORTANT]
-> The `main` branch is the development branch.
-> Everytime `main` gets merged into `prod`, our website will re-deploy
+> [!IMPORTANT] `main` is the development branch. Merging `main` into `prod` triggers an automatic redeploy of the production site.
 
 ## Tech Stack
 

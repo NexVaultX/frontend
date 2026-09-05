@@ -3,6 +3,10 @@
 # This file defines the shared service. Environment-specific overrides live in
 # compose.dev.yaml (development) and compose.prod.yaml (production).
 #
+# Note: host port mapping lives in the overrides, not here. This keeps the base
+# file free of host port bindings so Dokploy can deploy it directly and route
+# traffic via Traefik (Domains tab) without conflicting with other services.
+#
 # Usage:
 #   Development: docker compose -f compose.yaml -f compose.dev.yaml up
 #   Production:  docker compose -f compose.yaml -f compose.prod.yaml up -d --build
@@ -15,8 +19,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "${PORT:-3000}:3000"
     environment:
       NODE_ENV: ${NODE_ENV:-production}
       PORT: 3000
