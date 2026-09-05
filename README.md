@@ -67,8 +67,8 @@ As FastVault grows, the structure will be expanded around individual features an
 
 Make sure you have the following installed:
 
-* Node.js
-* pnpm
+- Node.js
+- pnpm
 
 ### Clone
 
