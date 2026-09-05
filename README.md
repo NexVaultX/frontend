@@ -33,6 +33,10 @@ NexVaultX is a modern, open-source marketplace for Minecraft plugins, mods, reso
 - 🌙 Dark mode first.
 - 🚀 Built on a modern TanStack-first stack.
 
+> [!IMPORTANT]
+> The `main` branch is the development branch.
+> Everytime `main` gets merged into `prod`, our website will re-deploy
+
 ## Tech Stack
 
 | Technology | Purpose |
