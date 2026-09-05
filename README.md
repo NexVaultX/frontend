@@ -1,7 +1,7 @@
-# FastVault Frontend
+#  **OpenVault** (FastVault) Frontend
 
 <p align="center">
-  <strong>The modern frontend for FastVault.</strong>
+  <strong>The modern frontend for OpenVault.</strong>
   <br>
   Fast, clean, and developer-focused.
 </p>
@@ -22,7 +22,7 @@
 
 ## About
 
-FastVault Frontend is the web application powering the FastVault platform.
+OpenVault Frontend is the web application powering the OpenVault platform.
 
 It is designed to provide a fast, modern, and intuitive interface for discovering and interacting with Minecraft projects while keeping the codebase maintainable and scalable.
 
@@ -59,7 +59,7 @@ src/
 └── styles.css          # Global styles
 ```
 
-As FastVault grows, the structure will be expanded around individual features and domains to keep the application modular and maintainable.
+As OpenVault grows, the structure will be expanded around individual features and domains to keep the application modular and maintainable.
 
 ## Getting Started
 
@@ -73,7 +73,7 @@ Make sure you have the following installed:
 ### Clone
 
 ```bash
-git clone https://github.com/FastVault/frontend.git
+git clone https://github.com/OpenVault/frontend.git
 cd frontend
 ```
 
@@ -122,7 +122,7 @@ pnpm build
 
 ## Architecture
 
-FastVault follows a component-driven approach built around reusable primitives and predictable application structure.
+OpenVault follows a component-driven approach built around reusable primitives and predictable application structure.
 
 The frontend is intended to evolve toward a feature-oriented architecture:
 
@@ -175,7 +175,7 @@ Keep components focused, dependencies intentional, and application logic easy to
 
 ### Scalable
 
-Establish patterns that can support FastVault as the platform and codebase grow.
+Establish patterns that can support OpenVault as the platform and codebase grow.
 
 ## Contributing
 
@@ -193,12 +193,12 @@ When submitting a pull request:
 
 ## License
 
-FastVault Frontend is licensed under the **Apache License 2.0**.
+OpenVault Frontend is licensed under the **Apache License 2.0**.
 
 See [`LICENSE`](./LICENSE) for the complete license text.
 
 ---
 
 <p align="center">
-  Built for FastVault.
+  Built for OpenVault.
 </p>
