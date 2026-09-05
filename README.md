@@ -1,4 +1,4 @@
-#  **OpenVault** (FastVault) Frontend
+# **OpenVault** (FastVault) Frontend
 
 <p align="center">
   <strong>The modern frontend for OpenVault.</strong>
@@ -30,18 +30,20 @@ The frontend is built with a modern React ecosystem and follows a component-driv
 
 ## Tech Stack
 
-| Technology      | Purpose                       |
-| --------------- | ----------------------------- |
-| React           | User interface                |
-| TypeScript      | Type-safe development         |
-| TanStack Start  | Full-stack React framework    |
-| TanStack Router | Type-safe routing             |
-| Tailwind CSS    | Styling                       |
-| shadcn/ui       | Reusable UI components        |
-| Vite            | Development and build tooling |
-| Vitest          | Testing                       |
-| ESLint          | Code quality                  |
-| Prettier        | Code formatting               |
+| Technology      | Purpose                                  |
+| --------------- | ---------------------------------------- |
+| React           | User interface                           |
+| TypeScript      | Type-safe development                    |
+| TanStack Start  | Full-stack React framework               |
+| TanStack Router | Type-safe routing                        |
+| Tailwind CSS    | Styling                                  |
+| shadcn/ui       | Reusable UI components                   |
+| Vite            | Development and build tooling            |
+| Nitro           | Production server (deployment)           |
+| Vitest          | Testing                                  |
+| ESLint          | Code quality                             |
+| Prettier        | Code formatting                          |
+| Docker          | Containerized development and deployment |
 
 ## Project Structure
 
@@ -95,20 +97,88 @@ The development server will be available at:
 http://localhost:3000
 ```
 
+## Docker
+
+The project ships with Docker configuration for both development and production.
+
+### Requirements
+
+- [Docker](https://docs.docker.com/get-docker/) with Docker Compose v2
+
+### Compose files
+
+| File                | Purpose                                             |
+| ------------------- | --------------------------------------------------- |
+| `compose.yaml`      | Base configuration (shared service definition)      |
+| `compose.dev.yaml`  | Development override (hot reload, source mounted)   |
+| `compose.prod.yaml` | Production override (Nitro server, optimized image) |
+
+### Development
+
+Runs the Vite dev server with hot reload. The source tree is mounted into the container, so changes are picked up immediately.
+
+```bash
+docker compose -f compose.yaml -f compose.dev.yaml up
+```
+
+The development server will be available at:
+
+```text
+http://localhost:3000
+```
+
+### Production
+
+Builds an optimized multi-stage image and runs the Nitro production server.
+
+```bash
+docker compose -f compose.yaml -f compose.prod.yaml up -d --build
+```
+
+The production server will be available at:
+
+```text
+http://localhost:3000
+```
+
+### Configuration
+
+| Variable | Default  | Description                        |
+| -------- | -------- | ---------------------------------- |
+| `PORT`   | `3000`   | Host port mapped to the container  |
+| `TAG`    | `latest` | Image tag used for the built image |
+
+Example with custom port and tag:
+
+```bash
+PORT=8080 TAG=v1.0.0 docker compose -f compose.yaml -f compose.prod.yaml up -d --build
+```
+
+### Dockerfile stages
+
+The multi-stage `Dockerfile` builds a small, secure production image:
+
+| Stage     | Purpose                                          |
+| --------- | ------------------------------------------------ |
+| `deps`    | Install dependencies with pnpm (frozen lockfile) |
+| `build`   | Compile the production bundle (Nitro output)     |
+| `runtime` | Run the Nitro server as a non-root user          |
+
 ## Development
 
 ### Available commands
 
-| Command          | Description                  |
-| ---------------- | ---------------------------- |
-| `pnpm dev`       | Start the development server |
-| `pnpm build`     | Create a production build    |
-| `pnpm preview`   | Preview the production build |
-| `pnpm test`      | Run tests                    |
-| `pnpm lint`      | Check the code with ESLint   |
-| `pnpm format`    | Format the codebase          |
-| `pnpm check`     | Check formatting             |
-| `pnpm typecheck` | Run TypeScript checks        |
+| Command          | Description                     |
+| ---------------- | ------------------------------- |
+| `pnpm dev`       | Start the development server    |
+| `pnpm build`     | Create a production build       |
+| `pnpm preview`   | Preview the production build    |
+| `pnpm start`     | Run the Nitro production server |
+| `pnpm test`      | Run tests                       |
+| `pnpm lint`      | Check the code with ESLint      |
+| `pnpm format`    | Format the codebase             |
+| `pnpm check`     | Check formatting                |
+| `pnpm typecheck` | Run TypeScript checks           |
 
 Before opening a pull request, it is recommended to run:
 
