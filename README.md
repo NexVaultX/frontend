@@ -31,7 +31,8 @@ It is designed to provide a fast, modern, and intuitive interface for discoverin
 
 The frontend is built with a modern React ecosystem and follows a component-driven architecture.
 
-> [!IMPORTANT] `main` is the development branch. Merging `main` into `prod` triggers an automatic redeploy of the production site.
+> [!IMPORTANT]
+> `main` is the development branch. Merging `main` into `prod` triggers an automatic redeploy of the production site.
 
 ## Tech Stack
 
