@@ -8,9 +8,9 @@ import {
 } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 
+import logo from "@/logo.png";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
-import logo from "@/logo.png";
 
 const CONTENT_LINKS = [
   { href: "/mods", label: "Mods" },

@@ -1,7 +1,7 @@
 import { IconArrowRight } from "@tabler/icons-react";
 
-import { Button } from "@/components/ui/button";
 import logo from "@/logo.png";
+import { Button } from "@/components/ui/button";
 
 const Hero = () => (
   <section className="page-enter px-4 pt-14 pb-12 sm:px-6 lg:px-8">
