@@ -46,8 +46,9 @@ The frontend is built with a modern React ecosystem and follows a component-driv
 | Vite            | Development and build tooling            |
 | Nitro           | Production server (deployment)           |
 | Vitest          | Testing                                  |
-| ESLint          | Code quality                             |
-| Prettier        | Code formatting                          |
+| Ultracite       | Lint/format preset (Oxlint + Oxfmt)      |
+| Oxlint          | Code quality                             |
+| Oxfmt           | Code formatting                          |
 | Docker          | Containerized development and deployment |
 
 ## Project Structure
@@ -180,9 +181,10 @@ The multi-stage `Dockerfile` builds a small, secure production image:
 | `pnpm preview`   | Preview the production build    |
 | `pnpm start`     | Run the Nitro production server |
 | `pnpm test`      | Run tests                       |
-| `pnpm lint`      | Check the code with ESLint      |
-| `pnpm format`    | Format the codebase             |
-| `pnpm check`     | Check formatting                |
+| `pnpm lint`      | Check the code with Oxlint      |
+| `pnpm format`    | Format the codebase with Oxfmt  |
+| `pnpm check`     | Lint + format check (read-only) |
+| `pnpm fix`       | Lint + auto-fix issues          |
 | `pnpm typecheck` | Run TypeScript checks           |
 
 Before opening a pull request, it is recommended to run:
