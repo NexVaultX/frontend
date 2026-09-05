@@ -28,6 +28,10 @@ It is designed to provide a fast, modern, and intuitive interface for discoverin
 
 The frontend is built with a modern React ecosystem and follows a component-driven architecture.
 
+> [!IMPORTANT]
+> The `main` branch is the development branch.
+> Everytime `main` gets merged into `prod`, our website will re-deploy
+
 ## Tech Stack
 
 | Technology      | Purpose                                  |
