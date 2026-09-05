@@ -1,0 +1,14 @@
+# Production override for OpenVault Frontend.
+#
+# Builds the production image and runs the Nitro server.
+#
+# Usage: docker compose -f compose.yaml -f compose.prod.yaml up -d --build
+
+services:
+  web:
+    image: openvault-frontend:${TAG:-latest}
+    build:
+      target: runtime
+    environment:
+      NODE_ENV: production
+    restart: unless-stopped

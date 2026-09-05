@@ -1,0 +1,41 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+dist-ssr
+.output
+.vinxi
+.wrangler
+
+# Git
+.git
+.gitignore
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Editor / OS
+.vscode
+.zed
+.idea
+.DS_Store
+
+# Tooling caches
+.tanstack
+.tmp
+__unconfig*
+*.tsbuildinfo
+
+# Tests / coverage
+coverage
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Misc
+todos.json

@@ -1,0 +1,23 @@
+# Base Compose configuration for OpenVault Frontend.
+#
+# This file defines the shared service. Environment-specific overrides live in
+# compose.dev.yaml (development) and compose.prod.yaml (production).
+#
+# Usage:
+#   Development: docker compose -f compose.yaml -f compose.dev.yaml up
+#   Production:  docker compose -f compose.yaml -f compose.prod.yaml up -d --build
+
+name: openvault-frontend
+
+services:
+  web:
+    image: openvault-frontend:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 3000
+    restart: unless-stopped
