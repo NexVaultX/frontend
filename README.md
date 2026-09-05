@@ -73,7 +73,7 @@ Make sure you have the following installed:
 ### Clone
 
 ```bash
-git clone https://github.com/OpenVault/frontend.git
+git clone https://github.com/FastVault/frontend.git
 cd frontend
 ```
 
