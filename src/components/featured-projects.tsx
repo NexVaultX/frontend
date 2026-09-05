@@ -83,9 +83,7 @@ const shuffleProjects = (projects: Project[]) => {
 };
 
 const ProjectCard = ({ project }: { project: Project }) => (
-  <article
-    className="group border-border bg-card hover:border-foreground/20 relative h-full min-h-[205px] w-[calc(100vw-48px)] shrink-0 overflow-hidden rounded-xl border p-5 transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1 hover:shadow-lg sm:w-[360px]"
-  >
+  <article className="group border-border bg-card hover:border-foreground/20 relative h-full min-h-[205px] w-[calc(100vw-48px)] shrink-0 overflow-hidden rounded-xl border p-5 transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1 hover:shadow-lg sm:w-[360px]">
     <a
       href={`/project/${project.name.toLowerCase().replaceAll(" ", "-")}`}
       className="focus-visible:ring-ring absolute inset-0 z-10 rounded-xl focus-visible:ring-2 focus-visible:outline-none"
@@ -154,7 +152,7 @@ const FeaturedProjects = () => {
 
   const pauseForTouch = () => {
     document.documentElement.style.setProperty(
-      "--NextVault-carousel-play-state",
+      "--NexVaultX-carousel-play-state",
       "paused"
     );
 
@@ -164,7 +162,7 @@ const FeaturedProjects = () => {
 
     resumeTimerRef.current = window.setTimeout(() => {
       document.documentElement.style.setProperty(
-        "--NextVault-carousel-play-state",
+        "--NexVaultX-carousel-play-state",
         "running"
       );
     }, 2500);
@@ -177,7 +175,7 @@ const FeaturedProjects = () => {
       className="overflow-hidden px-4 py-12 sm:px-6 sm:py-14 lg:px-8"
     >
       <style>{`
-        @keyframes NextVault-projects-scroll {
+        @keyframes NexVaultX-projects-scroll {
           from {
             transform: translateX(0);
           }
@@ -187,24 +185,24 @@ const FeaturedProjects = () => {
           }
         }
 
-        .NextVault-projects-track {
-          animation: NextVault-projects-scroll 32s linear infinite;
-          animation-play-state: var(--NextVault-carousel-play-state, running);
+        .NexVaultX-projects-track {
+          animation: NexVaultX-projects-scroll 32s linear infinite;
+          animation-play-state: var(--NexVaultX-carousel-play-state, running);
           will-change: transform;
         }
 
-        .NextVault-projects:hover .NextVault-projects-track {
+        .NexVaultX-projects:hover .NexVaultX-projects-track {
           animation-play-state: paused;
         }
 
         @media (max-width: 640px) {
-          .NextVault-projects-track {
+          .NexVaultX-projects-track {
             animation-duration: 25s;
           }
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .NextVault-projects-track {
+          .NexVaultX-projects-track {
             animation: none;
             transform: none;
           }
@@ -243,12 +241,12 @@ const FeaturedProjects = () => {
         </Reveal>
 
         <div
-          className="NextVault-projects -mx-4 overflow-hidden px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          className="NexVaultX-projects -mx-4 overflow-hidden px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
           role="region"
           aria-label="Featured projects"
           onTouchStart={pauseForTouch}
         >
-          <div className="NextVault-projects-track flex w-max gap-4">
+          <div className="NexVaultX-projects-track flex w-max gap-4">
             {carouselProjects.map((project, index) => (
               <Reveal
                 key={`${project.name}-${index}`}
