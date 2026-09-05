@@ -1,4 +1,4 @@
-#  **OpenVault** (FastVault) Frontend
+# **OpenVault** (FastVault) Frontend
 
 <p align="center">
   <strong>The modern frontend for OpenVault.</strong>

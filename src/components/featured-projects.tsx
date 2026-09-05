@@ -1,4 +1,7 @@
-import { IconArrowUpRight, IconDownload, IconHeart } from "@tabler/icons-react";
+"use client";
+
+import { IconArrowRight, IconDownload, IconHeart } from "@tabler/icons-react";
+import { useEffect, useRef, useState } from "react";
 
 import { Reveal } from "@/components/reveal";
 
@@ -67,81 +70,209 @@ const PROJECTS: Project[] = [
   },
 ];
 
-const FeaturedProjects = () => (
-  <section
-    id="featured-projects"
-    aria-labelledby="featured-projects-heading"
-    className="px-4 py-16 sm:px-6 lg:px-8"
+const shuffleProjects = (projects: Project[]) => {
+  const shuffled = [...projects];
+
+  for (let i = shuffled.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  return shuffled;
+};
+
+const ProjectCard = ({ project }: { project: Project }) => (
+  <article
+    className="group border-border bg-card hover:border-foreground/20 relative h-full min-h-[205px] w-[calc(100vw-48px)] shrink-0 overflow-hidden rounded-xl border p-5 transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1 hover:shadow-lg sm:w-[360px]"
   >
-    <div className="mx-auto max-w-7xl">
-      <Reveal className="mb-8 flex items-end justify-between gap-4">
-        <div>
-          <h2
-            id="featured-projects-heading"
-            className="text-2xl font-bold tracking-tight sm:text-3xl"
-          >
-            Featured Projects
-          </h2>
-          <p className="text-muted-foreground mt-2">
-            Hand-picked projects loved by the community.
-          </p>
-        </div>
-        <a
-          href="/projects"
-          className="text-muted-foreground hover:text-foreground focus-visible:ring-ring ease-smooth inline-flex min-h-11 shrink-0 items-center gap-1 rounded-md text-sm font-medium transition-colors duration-200 focus-visible:ring-2 focus-visible:outline-none motion-reduce:transition-none"
-        >
-          View all
-          <IconArrowUpRight size={16} />
-        </a>
-      </Reveal>
+    <a
+      href={`/project/${project.name.toLowerCase().replaceAll(" ", "-")}`}
+      className="focus-visible:ring-ring absolute inset-0 z-10 rounded-xl focus-visible:ring-2 focus-visible:outline-none"
+      aria-label={`View ${project.name}`}
+    >
+      <span className="sr-only">View {project.name}</span>
+    </a>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {PROJECTS.map((project, index) => (
-          <Reveal key={project.name} delay={index * 60}>
-            <article className="group border-border bg-card ease-smooth hover:shadow-soft relative h-full rounded-xl border p-5 transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none">
-              <a
-                href={`/project/${project.name.toLowerCase().replaceAll(" ", "-")}`}
-                className="focus-visible:ring-ring absolute inset-0 rounded-xl focus-visible:ring-2 focus-visible:outline-none"
-                aria-label={`View ${project.name}`}
-              >
-                <span className="sr-only">View {project.name}</span>
-              </a>
+    <div className="flex items-start gap-4">
+      <div
+        className="border-border bg-muted text-foreground flex size-14 shrink-0 items-center justify-center rounded-xl border text-xl font-bold transition-transform duration-200 group-hover:scale-[1.03]"
+        aria-hidden="true"
+      >
+        {project.initial}
+      </div>
 
-              <div className="flex items-start gap-4">
-                <div
-                  className="border-border bg-muted text-foreground flex size-12 shrink-0 items-center justify-center rounded-xl border text-lg font-bold"
-                  aria-hidden="true"
-                >
-                  {project.initial}
-                </div>
-                <div className="min-w-0">
-                  <h3 className="truncate font-semibold">{project.name}</h3>
-                  <p className="text-muted-foreground mt-0.5 text-xs font-medium">
-                    {project.category}
-                  </p>
-                </div>
-              </div>
+      <div className="min-w-0 pt-0.5">
+        <h3 className="text-foreground truncate text-base font-semibold">
+          {project.name}
+        </h3>
 
-              <p className="text-muted-foreground mt-3 line-clamp-2 text-sm">
-                {project.description}
-              </p>
-
-              <div className="text-muted-foreground mt-4 flex items-center gap-4 text-xs">
-                <span className="inline-flex items-center gap-1">
-                  <IconDownload size={14} />
-                  {project.downloads}
-                </span>
-                <span className="inline-flex items-center gap-1">
-                  <IconHeart size={14} />
-                  {project.follows}
-                </span>
-              </div>
-            </article>
-          </Reveal>
-        ))}
+        <p className="text-muted-foreground mt-1 text-xs font-medium">
+          {project.category}
+        </p>
       </div>
     </div>
-  </section>
+
+    <p className="text-muted-foreground mt-5 line-clamp-2 text-sm leading-6">
+      {project.description}
+    </p>
+
+    <div className="text-muted-foreground mt-5 flex items-center gap-5 text-xs">
+      <span className="inline-flex items-center gap-1.5">
+        <IconDownload size={14} />
+        {project.downloads}
+      </span>
+
+      <span className="inline-flex items-center gap-1.5">
+        <IconHeart size={14} />
+        {project.follows}
+      </span>
+    </div>
+
+    <div
+      aria-hidden="true"
+      className="bg-foreground absolute right-5 bottom-0 left-5 h-px origin-left scale-x-0 opacity-0 transition-[transform,opacity] duration-200 group-hover:scale-x-100 group-hover:opacity-100"
+    />
+  </article>
 );
+
+const FeaturedProjects = () => {
+  const [projects, setProjects] = useState(PROJECTS);
+  const resumeTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    setProjects(shuffleProjects(PROJECTS));
+
+    return () => {
+      if (resumeTimerRef.current !== null) {
+        window.clearTimeout(resumeTimerRef.current);
+      }
+    };
+  }, []);
+
+  const carouselProjects = [...projects, ...projects];
+
+  const pauseForTouch = () => {
+    document.documentElement.style.setProperty(
+      "--NexVault-carousel-play-state",
+      "paused"
+    );
+
+    if (resumeTimerRef.current !== null) {
+      window.clearTimeout(resumeTimerRef.current);
+    }
+
+    resumeTimerRef.current = window.setTimeout(() => {
+      document.documentElement.style.setProperty(
+        "--NexVault-carousel-play-state",
+        "running"
+      );
+    }, 2500);
+  };
+
+  return (
+    <section
+      id="featured-projects"
+      aria-labelledby="featured-projects-heading"
+      className="overflow-hidden px-4 py-12 sm:px-6 sm:py-14 lg:px-8"
+    >
+      <style>{`
+        @keyframes NexVault-projects-scroll {
+          from {
+            transform: translateX(0);
+          }
+
+          to {
+            transform: translateX(calc(-50% - 8px));
+          }
+        }
+
+        .NexVault-projects-track {
+          animation: NexVault-projects-scroll 32s linear infinite;
+          animation-play-state: var(--NexVault-carousel-play-state, running);
+          will-change: transform;
+        }
+
+        .NexVault-projects:hover .NexVault-projects-track {
+          animation-play-state: paused;
+        }
+
+        @media (max-width: 640px) {
+          .NexVault-projects-track {
+            animation-duration: 25s;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .NexVault-projects-track {
+            animation: none;
+            transform: none;
+          }
+        }
+      `}</style>
+
+      <div className="mx-auto max-w-7xl">
+        <Reveal className="mb-7 flex items-end justify-between gap-4">
+          <div>
+            <p className="text-muted-foreground mb-2 text-sm font-medium">
+              Community favorites
+            </p>
+
+            <h2
+              id="featured-projects-heading"
+              className="text-foreground text-2xl font-bold tracking-tight sm:text-3xl"
+            >
+              Featured Projects
+            </h2>
+
+            <p className="text-muted-foreground mt-2 text-sm sm:text-base">
+              Popular projects worth checking out.
+            </p>
+          </div>
+
+          <a
+            href="/projects"
+            className="text-muted-foreground hover:text-foreground focus-visible:ring-ring group hidden min-h-11 shrink-0 items-center gap-1 rounded-md text-sm font-medium transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none sm:inline-flex"
+          >
+            View all
+            <IconArrowRight
+              size={16}
+              className="transition-transform duration-200 group-hover:translate-x-0.5"
+            />
+          </a>
+        </Reveal>
+
+        <div
+          className="NexVault-projects -mx-4 overflow-hidden px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          role="region"
+          aria-label="Featured projects"
+          onTouchStart={pauseForTouch}
+        >
+          <div className="NexVault-projects-track flex w-max gap-4">
+            {carouselProjects.map((project, index) => (
+              <Reveal
+                key={`${project.name}-${index}`}
+                delay={index < projects.length ? index * 40 : 0}
+                className="shrink-0"
+              >
+                <ProjectCard project={project} />
+              </Reveal>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-4 flex justify-center sm:hidden">
+          <a
+            href="/projects"
+            className="text-muted-foreground hover:text-foreground focus-visible:ring-ring inline-flex min-h-10 items-center gap-1 rounded-lg px-3 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
+          >
+            View all projects
+            <IconArrowRight size={15} />
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 export { FeaturedProjects };
