@@ -50,13 +50,13 @@ const Navbar = () => {
         {/* Logo */}
         <a
           href="/"
-          aria-label="NexVault home"
+          aria-label="NextVault home"
           className="focus-visible:ring-ring flex min-h-11 shrink-0 items-center gap-2 rounded-md focus-visible:ring-2 focus-visible:outline-none"
         >
-          <img src={logo} alt="NexVault" className="h-8 w-8 object-contain" />
+          <img src={logo} alt="NextVault" className="h-8 w-8 object-contain" />
 
           <span className="text-foreground text-lg font-semibold tracking-tight">
-            NexVault
+            NextVault
           </span>
         </a>
 

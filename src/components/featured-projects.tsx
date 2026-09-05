@@ -154,7 +154,7 @@ const FeaturedProjects = () => {
 
   const pauseForTouch = () => {
     document.documentElement.style.setProperty(
-      "--NexVault-carousel-play-state",
+      "--NextVault-carousel-play-state",
       "paused"
     );
 
@@ -164,7 +164,7 @@ const FeaturedProjects = () => {
 
     resumeTimerRef.current = window.setTimeout(() => {
       document.documentElement.style.setProperty(
-        "--NexVault-carousel-play-state",
+        "--NextVault-carousel-play-state",
         "running"
       );
     }, 2500);
@@ -177,7 +177,7 @@ const FeaturedProjects = () => {
       className="overflow-hidden px-4 py-12 sm:px-6 sm:py-14 lg:px-8"
     >
       <style>{`
-        @keyframes NexVault-projects-scroll {
+        @keyframes NextVault-projects-scroll {
           from {
             transform: translateX(0);
           }
@@ -187,24 +187,24 @@ const FeaturedProjects = () => {
           }
         }
 
-        .NexVault-projects-track {
-          animation: NexVault-projects-scroll 32s linear infinite;
-          animation-play-state: var(--NexVault-carousel-play-state, running);
+        .NextVault-projects-track {
+          animation: NextVault-projects-scroll 32s linear infinite;
+          animation-play-state: var(--NextVault-carousel-play-state, running);
           will-change: transform;
         }
 
-        .NexVault-projects:hover .NexVault-projects-track {
+        .NextVault-projects:hover .NextVault-projects-track {
           animation-play-state: paused;
         }
 
         @media (max-width: 640px) {
-          .NexVault-projects-track {
+          .NextVault-projects-track {
             animation-duration: 25s;
           }
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .NexVault-projects-track {
+          .NextVault-projects-track {
             animation: none;
             transform: none;
           }
@@ -243,12 +243,12 @@ const FeaturedProjects = () => {
         </Reveal>
 
         <div
-          className="NexVault-projects -mx-4 overflow-hidden px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          className="NextVault-projects -mx-4 overflow-hidden px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
           role="region"
           aria-label="Featured projects"
           onTouchStart={pauseForTouch}
         >
-          <div className="NexVault-projects-track flex w-max gap-4">
+          <div className="NextVault-projects-track flex w-max gap-4">
             {carouselProjects.map((project, index) => (
               <Reveal
                 key={`${project.name}-${index}`}
