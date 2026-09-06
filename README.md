@@ -10,12 +10,11 @@
   Built with TanStack Start, React, TypeScript, PNPM, and Ultracite.
 </p>
 
+
+
 <p align="center">
   <a href="https://github.com/NexVaultX/frontend">
-    <img
-      alt="GitHub Health"
-      src="https://shieldcn.dev/group/github/stars/NexVaultX/frontend+github/forks/NexVaultX/frontend+github/commits/NexVaultX/frontend.svg?variant=primary"
-    />
+    <img alt="GitHub Health" src="https://shieldcn.dev/group/github/stars/NexVaultX/frontend+github/forks/NexVaultX/frontend+github/commits/NexVaultX/frontend+discord/1545907423502536766.svg?variant=branded" />
   </a>
 </p>
 
@@ -88,5 +87,3 @@ http://localhost:3000
     src="https://shieldcn.dev/chart/github/stars/NexVaultX/frontend.svg"
   />
 </p>
-
-[![Discord](https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?logo=discord&logoColor=white)](https://discord.gg/6JKttcu9cc)
