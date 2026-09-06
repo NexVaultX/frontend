@@ -88,3 +88,5 @@ http://localhost:3000
     src="https://shieldcn.dev/chart/github/stars/NexVaultX/frontend.svg"
   />
 </p>
+
+[![Discord](https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?logo=discord&logoColor=white)](https://discord.gg/6JKttcu9cc)
