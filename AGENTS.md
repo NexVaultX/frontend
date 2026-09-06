@@ -223,3 +223,61 @@ Oxlint + Oxfmt's linter will catch most issues automatically. Focus your attenti
 ---
 
 Most formatting and common issues are automatically fixed by Oxlint + Oxfmt. Run `pnpm fix` before committing to ensure compliance.
+
+---
+
+## UI/UX Design Rules
+
+Concise rules for building consistent, polished interfaces. These complement the a11y section above.
+
+### Layout & Spacing
+
+- Use the project's spacing scale (Tailwind `gap-*`, `p-*`, `m-*`) — never arbitrary pixel values
+- Consistent section rhythm: `py-16`/`py-24` for major sections, `gap-8`/`gap-12` between blocks
+- Max content width `max-w-7xl` with `mx-auto` for page containers; `max-w-2xl` for prose/forms
+- Use `container` utility where available instead of hand-rolled max-widths
+
+### Typography
+
+- Use `font-heading` for display/headings, default font for body
+- Heading scale: `text-4xl`/`text-5xl` for hero, `text-2xl`/`text-3xl` for section titles, `text-lg`/`text-xl` for card titles
+- Keep line lengths readable: `max-w-prose` for long-form text
+- Use `text-muted-foreground` for secondary/helper text — never hardcode gray
+
+### Color & Theming
+
+- Always use OKLCH semantic tokens (`--primary`, `--muted`, `--destructive`, etc.) — never raw hex
+- Destructive actions use the `destructive` variant (red) — reserve it for irreversible/dangerous actions
+- Use `bg-muted`/`bg-card`/`bg-popover` for surface differentiation, not arbitrary grays
+- Respect both light and dark themes — test every new component in both
+
+### Components & Patterns
+
+- Prefer shadcn/Base UI primitives (`Button`, `Dialog`, `Drawer`, `FormField`) over hand-rolled equivalents
+- Cards: `rounded-xl border bg-card` with `p-6` padding; hover states use `hover:bg-muted/50` or border emphasis
+- Buttons: `default` for primary actions, `outline` for secondary, `ghost` for tertiary, `destructive` for danger
+- Forms: label above input, helper text below, inline validation errors with `aria-invalid` + `aria-describedby`
+- Empty states: icon + title + description + optional action button
+- Loading states: skeleton placeholders or `aria-busy` spinners — never blank flashes
+
+### Motion & Interaction
+
+- Keep animations under 400ms; use `transform`/`opacity` only (never `width`/`height`/`top`/`left`)
+- Respect `prefers-reduced-motion: reduce` — disable or minimize all animations
+- Hover states: subtle transitions (`transition-colors`, `hover:bg-muted/50`) — avoid dramatic scale/translate
+- Use `motion` (framer-motion `LazyMotion`) for scroll reveals and page transitions, not CSS keyframes
+- Focus states must be visible: `focus-visible:ring-3 focus-visible:ring-ring/50`
+
+### Responsive
+
+- Mobile-first: design for small screens, enhance with `sm:`/`md:`/`lg:` breakpoints
+- Touch targets ≥ 44×44px on mobile
+- Use `lg:hidden`/`hidden lg:flex` for responsive nav/menus — never JS-based breakpoint detection
+- Test at 320px, 375px, 768px, 1024px, and 1440px
+
+### Content & Copy
+
+- Clear, scannable headings; avoid jargon
+- Action labels are verbs: "Download", "Sign in", "Delete account"
+- Destructive confirmations require a Dialog with explicit warning text — never a single click
+- Use `sr-only` for icon-only buttons with a descriptive label

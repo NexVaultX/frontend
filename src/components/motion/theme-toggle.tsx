@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import type { ComponentPropsWithoutRef } from "react";
 
 import { IconSwap } from "@/components/motion/icon-swap";
+import { Button } from "@/components/ui/button";
 import { EASE_OUT_CSS } from "@/lib/ease";
 import { cn } from "@/lib/utils";
 
@@ -197,13 +198,15 @@ const ThemeToggle = ({
   const { isDark, mounted, toggle } = useThemeToggle({ start, variant });
 
   return (
-    <button
+    <Button
       type="button"
+      variant="ghost"
+      size="icon-lg"
       aria-label={
         mounted && isDark ? "Switch to light mode" : "Switch to dark mode"
       }
       onClick={toggle}
-      className={cn("flex items-center justify-center", className)}
+      className={cn("size-11", className)}
       {...rest}
     >
       {mounted ? (
@@ -217,7 +220,7 @@ const ThemeToggle = ({
       ) : (
         <span className={iconClassName} aria-hidden="true" />
       )}
-    </button>
+    </Button>
   );
 };
 

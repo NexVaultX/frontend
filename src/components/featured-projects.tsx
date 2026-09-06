@@ -6,12 +6,12 @@ import { useEffect, useRef, useState } from "react";
 import { Reveal } from "@/components/reveal";
 
 interface Project {
-  name: string;
-  description: string;
   category: string;
+  description: string;
   downloads: string;
   follows: string;
   initial: string;
+  name: string;
 }
 
 const PROJECTS: Project[] = [
@@ -84,7 +84,7 @@ const shuffleProjects = (projects: Project[]) => {
 };
 
 const ProjectCard = ({ project }: { project: Project }) => (
-  <article className="group border-border bg-card hover:border-foreground/20 relative h-full min-h-[205px] w-[calc(100vw-48px)] shrink-0 overflow-hidden rounded-xl border p-5 transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1 hover:shadow-lg sm:w-[360px]">
+  <article className="group border-border bg-card hover:border-foreground/20 relative flex h-full min-h-[220px] w-[calc(100vw-48px)] shrink-0 flex-col overflow-hidden rounded-xl border p-5 transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-lg sm:w-[360px]">
     <a
       href={`/project/${project.name.toLowerCase().replaceAll(" ", "-")}`}
       className="focus-visible:ring-ring absolute inset-0 z-10 rounded-xl focus-visible:ring-2 focus-visible:outline-none"
@@ -95,42 +95,52 @@ const ProjectCard = ({ project }: { project: Project }) => (
 
     <div className="flex items-start gap-4">
       <div
-        className="border-border bg-muted text-foreground flex size-14 shrink-0 items-center justify-center rounded-xl border text-xl font-bold transition-transform duration-200 group-hover:scale-[1.03]"
+        className="border-border bg-muted text-foreground group-hover:border-foreground/20 group-hover:bg-muted/70 flex size-14 shrink-0 items-center justify-center rounded-xl border text-xl font-bold transition-[transform,background-color,border-color] duration-300 group-hover:scale-105"
         aria-hidden="true"
       >
         {project.initial}
       </div>
 
       <div className="min-w-0 pt-0.5">
-        <h3 className="text-foreground truncate text-base font-semibold">
+        <span className="text-muted-foreground border-border bg-muted/50 inline-flex items-center rounded-full border px-2 py-0.5 text-[0.65rem] font-medium tracking-wide uppercase">
+          {project.category}
+        </span>
+
+        <h3 className="text-foreground mt-2 truncate text-base font-semibold">
           {project.name}
         </h3>
-
-        <p className="text-muted-foreground mt-1 text-xs font-medium">
-          {project.category}
-        </p>
       </div>
     </div>
 
-    <p className="text-muted-foreground mt-5 line-clamp-2 text-sm leading-6">
+    <p className="text-muted-foreground mt-4 line-clamp-2 text-sm leading-6">
       {project.description}
     </p>
 
-    <div className="text-muted-foreground mt-5 flex items-center gap-5 text-xs">
-      <span className="inline-flex items-center gap-1.5">
-        <IconDownload size={14} />
-        {project.downloads}
-      </span>
+    <div className="mt-auto flex items-end justify-between gap-4 pt-5">
+      <div className="text-muted-foreground flex items-center gap-5 text-xs">
+        <span className="inline-flex items-center gap-1.5">
+          <IconDownload size={14} />
+          {project.downloads}
+        </span>
 
-      <span className="inline-flex items-center gap-1.5">
-        <IconHeart size={14} />
-        {project.follows}
+        <span className="inline-flex items-center gap-1.5">
+          <IconHeart size={14} />
+          {project.follows}
+        </span>
+      </div>
+
+      <span
+        aria-hidden="true"
+        className="text-muted-foreground inline-flex translate-x-1 items-center gap-1 text-xs font-medium opacity-0 transition-[transform,opacity] duration-300 group-hover:translate-x-0 group-hover:opacity-100"
+      >
+        View
+        <IconArrowRight size={14} />
       </span>
     </div>
 
     <div
       aria-hidden="true"
-      className="bg-foreground absolute right-5 bottom-0 left-5 h-px origin-left scale-x-[0.01] opacity-0 transition-[transform,opacity] duration-200 group-hover:scale-x-100 group-hover:opacity-100"
+      className="bg-foreground absolute right-5 bottom-0 left-5 h-px origin-left scale-x-[0.01] opacity-0 transition-[transform,opacity] duration-300 group-hover:scale-x-100 group-hover:opacity-100"
     />
   </article>
 );

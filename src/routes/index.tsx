@@ -16,7 +16,7 @@ import { FeatureSection } from "@/components/feature-section";
 import { FeaturedProjects } from "@/components/featured-projects";
 import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
-import { Navbar } from "@/components/navbar";
+import { Navbar } from "@/components/navbar/navbar";
 import { NewsSection } from "@/components/news-section";
 
 const PLAYER_FEATURES = [

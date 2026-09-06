@@ -1,5 +1,6 @@
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { betterAuth } from "better-auth";
+import { username } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 
 import { db } from "@/db";
@@ -18,6 +19,7 @@ export const auth = betterAuth({
     requireEmailVerification: false,
   },
   plugins: [
+    username(),
     // MUST be the last plugin for TanStack Start cookie handling
     tanstackStartCookies(),
   ],
@@ -27,5 +29,10 @@ export const auth = betterAuth({
     expiresIn: 60 * 60 * 24 * 30,
     // refresh on every request → sliding expiration
     updateAge: 0,
+  },
+  user: {
+    deleteUser: {
+      enabled: true,
+    },
   },
 });
