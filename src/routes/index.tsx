@@ -1,8 +1,12 @@
 import {
   IconBell,
-  IconBolt,
+  IconBox,
   IconCompass,
   IconDeviceGamepad2,
+  IconDownload,
+  IconPackages,
+  IconSearch,
+  IconServer,
   IconUsers,
   IconWallet,
 } from "@tabler/icons-react";
@@ -12,75 +16,120 @@ import { FeatureSection } from "@/components/feature-section";
 import { FeaturedProjects } from "@/components/featured-projects";
 import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
-import { Navbar } from "@/components/navbar";
+import { Navbar } from "@/components/navbar/navbar";
 import { NewsSection } from "@/components/news-section";
 
 const PLAYER_FEATURES = [
   {
-    icon: IconBolt,
-    title: "Fast Search",
+    icon: IconSearch,
+    title: "Powerful Search",
     description:
-      "Find exactly what you need in milliseconds with powerful filters and instant results.",
+      "Find mods, modpacks, resource packs, shaders, plugins, and more with fast search and powerful filters.",
+  },
+  {
+    icon: IconDownload,
+    title: "Easy Installation",
+    description:
+      "Discover projects and install the content you need through supported Minecraft launchers.",
   },
   {
     icon: IconBell,
-    title: "Follow Projects",
+    title: "Stay Updated",
     description:
-      "Stay up to date with the projects you love. Get notified on every new release.",
-  },
-  {
-    icon: IconDeviceGamepad2,
-    title: "Launcher Integration",
-    description:
-      "Install and update mods directly from your launcher with one-click setup.",
+      "Follow your favorite projects and keep up with new releases and important updates.",
   },
 ];
 
 const CREATOR_FEATURES = [
   {
     icon: IconCompass,
-    title: "Discovery",
+    title: "Project Discovery",
     description:
-      "Get your projects in front of millions of players with smart recommendations.",
+      "Help players discover your projects through search, categories, tags, and recommendations.",
   },
   {
     icon: IconUsers,
-    title: "Team Management",
+    title: "Team Collaboration",
     description:
-      "Collaborate with your team, manage roles, and publish together seamlessly.",
+      "Work together with your team, manage members, and organize your projects from one place.",
   },
   {
     icon: IconWallet,
-    title: "Monetization",
+    title: "Creator Support",
     description:
-      "Earn from your work with transparent, creator-friendly monetization options.",
+      "Build an audience around your work with transparent and creator-friendly platform features.",
+  },
+];
+
+const BROWSE_FEATURES = [
+  {
+    icon: IconBox,
+    title: "Mods",
+    description: "Enhance Minecraft with new features, mechanics, and content.",
+  },
+  {
+    icon: IconPackages,
+    title: "Modpacks",
+    description: "Discover curated collections of mods for every playstyle.",
+  },
+  {
+    icon: IconServer,
+    title: "Plugins",
+    description: "Extend your Minecraft server with powerful plugins.",
+  },
+  {
+    icon: IconDeviceGamepad2,
+    title: "Resource Packs",
+    description: "Change the look and feel of your Minecraft experience.",
   },
 ];
 
 const HomePage = () => (
   <>
     <Navbar />
+
     <main>
+      {/* Hero */}
       <Hero />
+
+      {/* Featured */}
       <FeaturedProjects />
+
+      {/* Browse */}
+      <FeatureSection
+        id="browse"
+        headingId="browse-heading"
+        title="Explore Minecraft"
+        description="Discover projects made by the community for the way you play Minecraft."
+        features={BROWSE_FEATURES}
+      />
+
+      {/* Players */}
       <FeatureSection
         id="for-players"
         headingId="for-players-heading"
-        title="For Players"
-        description="Everything you need to discover, install, and enjoy the best Minecraft content."
+        title="Built for Players"
+        description="Everything you need to discover, manage, and enjoy Minecraft content."
         features={PLAYER_FEATURES}
       />
+
+      {/* Creators */}
       <FeatureSection
         id="for-creators"
         headingId="for-creators-heading"
-        title="For Creators"
-        description="Powerful tools to publish, grow, and monetize your Minecraft projects."
+        title="Built for Creators"
+        description="Simple and powerful tools for publishing and growing your Minecraft projects."
         features={CREATOR_FEATURES}
       />
+
+      {/* News */}
       <NewsSection />
     </main>
+
     <Footer />
   </>
 );
 
-export const Route = createFileRoute("/")({ component: HomePage });
+export const Route = createFileRoute("/")({
+  component: HomePage,
+});

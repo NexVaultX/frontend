@@ -17,7 +17,9 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
+    "@better-auth/drizzle-adapter": "^1.7.2",
     "@fontsource-variable/inter": "^5.3.0",
+    "@lonik/themer": "^0.5.4",
     "@tabler/icons-react": "^3.46.0",
     "@tailwindcss/vite": "^4",
     "@tanstack/react-devtools": "latest",
@@ -26,23 +28,37 @@
     "@tanstack/react-router-ssr-query": "latest",
     "@tanstack/react-start": "latest",
     "@tanstack/router-plugin": "latest",
+    "better-auth": "^1.7.2",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.2.4",
+<<<<<<< HEAD
     "nitro": "3.0.260903-beta",
+=======
+    "dotenv": "^17.4.2",
+    "drizzle-orm": "^0.45.2",
+    "envin": "^1.2.0",
+    "lucide-react": "^1.41.0",
+    "motion": "^13.2.0",
+    "nitro": "3.0.260903-beta",
+    "pg": "^8.23.0",
+>>>>>>> origin/main
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "shadcn": "^4.20.1",
     "tailwindcss": "^4",
-    "tw-animate-css": "^1.4.0"
+    "tw-animate-css": "^1.4.0",
+    "zod": "^4.5.4"
   },
   "devDependencies": {
     "@tanstack/devtools-vite": "latest",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",
     "@types/node": "^22",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6",
+    "drizzle-kit": "^0.31.10",
     "eslint-plugin-sonarjs": "^4.2.0",
     "husky": "^9.1.7",
     "jsdom": "^28",

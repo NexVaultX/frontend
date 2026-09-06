@@ -1,5 +1,5 @@
-import { readFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { readFile } from "fs/promises";
+import { resolve } from "path";
 
 /**
  * Configuration for environment variable loading
@@ -45,7 +45,7 @@ export async function loadEnvVariables(
   for (const envPath of searchPaths) {
     try {
       const fullPath = resolve(envPath);
-      const content = await readFile(fullPath, "utf-8");
+      const content = await readFile(fullPath, "utf8");
 
       if (verbose) {
         console.log(`Checking .env file: ${envPath}`);
@@ -60,7 +60,7 @@ export async function loadEnvVariables(
           const value = valueParts.join("=").trim();
 
           // Remove quotes if present
-          const cleanValue = value.replaceAll(/^["']|["']$/g, "");
+          const cleanValue = value.replace(/^["']|["']$/g, "");
 
           if (key && cleanValue && (override || !process.env[key])) {
             process.env[key] = cleanValue;

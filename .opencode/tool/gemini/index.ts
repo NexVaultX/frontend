@@ -1,5 +1,5 @@
-import { mkdir } from "node:fs/promises";
-import { join, dirname, basename, extname, resolve } from "node:path";
+import { mkdir } from "fs/promises";
+import { join, dirname, basename, extname, resolve } from "path";
 
 import { tool } from "@opencode-ai/plugin/tool";
 
@@ -31,7 +31,7 @@ async function parseImageInput(input: string) {
   if (input.startsWith("data:")) {
     const base64 = input.split(",")[1];
     const mime = input.substring(5, input.indexOf(";"));
-    return { base64, mime };
+    return { mime, base64 };
   }
   // Treat as file path
   const file = Bun.file(input);
@@ -39,13 +39,13 @@ async function parseImageInput(input: string) {
   const base64 = Buffer.from(arr).toString("base64");
   // Best-effort mime
   const mime = file.type || "image/png";
-  return { base64, mime };
+  return { mime, base64 };
 }
 
 async function ensureDirectoryExists(dirPath: string) {
   try {
     await mkdir(dirPath, { recursive: true });
-  } catch {
+  } catch (error) {
     // Directory might already exist, that's fine
   }
 }
@@ -80,7 +80,7 @@ async function getUniqueFilename(
     // Add timestamp if file exists
     const timestamp = new Date()
       .toISOString()
-      .replaceAll(/[:.]/g, "-")
+      .replace(/[:.]/g, "-")
       .slice(0, -5); // Remove milliseconds and Z
     return join(directory, `${baseName}_${timestamp}${extension}`);
   }
@@ -123,7 +123,7 @@ export async function generateImage(
       false
     );
 
-    return `[TEST MODE] Would generate image: ${outputPath} for prompt: "${prompt.slice(0, 50)}..."`;
+    return `[TEST MODE] Would generate image: ${outputPath} for prompt: "${prompt.substring(0, 50)}..."`;
   }
 
   const body = {
@@ -137,12 +137,12 @@ export async function generateImage(
   const res = await fetch(
     "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent",
     {
-      body: JSON.stringify(body),
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         "x-goog-api-key": apiKey,
       },
-      method: "POST",
+      body: JSON.stringify(body),
     }
   );
 
@@ -236,7 +236,7 @@ export async function editImage(
       true
     );
 
-    return `[TEST MODE] Would edit image: ${imagePath} -> ${outputPath} with prompt: "${prompt.slice(0, 50)}..."`;
+    return `[TEST MODE] Would edit image: ${imagePath} -> ${outputPath} with prompt: "${prompt.substring(0, 50)}..."`;
   }
 
   // Parse the input image
@@ -247,7 +247,7 @@ export async function editImage(
       {
         parts: [
           { text: prompt },
-          { inlineData: { data: base64, mimeType: mime } },
+          { inlineData: { mimeType: mime, data: base64 } },
         ],
       },
     ],
@@ -256,12 +256,12 @@ export async function editImage(
   const res = await fetch(
     "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent",
     {
-      body: JSON.stringify(body),
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         "x-goog-api-key": apiKey,
       },
-      method: "POST",
+      body: JSON.stringify(body),
     }
   );
 
@@ -338,7 +338,7 @@ export async function analyzeImage(
 
   // Test mode - return mock response without API call
   if (isTestMode()) {
-    return `[TEST MODE] Would analyze image: ${imagePath} with question: "${question.slice(0, 50)}..." - Mock analysis: This is a test image analysis response.`;
+    return `[TEST MODE] Would analyze image: ${imagePath} with question: "${question.substring(0, 50)}..." - Mock analysis: This is a test image analysis response.`;
   }
 
   const { mime, base64 } = await parseImageInput(imagePath);
@@ -346,6 +346,11 @@ export async function analyzeImage(
   const res = await fetch(
     "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
     {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": apiKey,
+      },
       body: JSON.stringify({
         contents: [
           {
@@ -356,11 +361,6 @@ export async function analyzeImage(
           },
         ],
       }),
-      headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": apiKey,
-      },
-      method: "POST",
     }
   );
 
@@ -380,22 +380,22 @@ export async function analyzeImage(
 
 // Tool for generating images from text
 export const generate = tool({
+  description: "Generate an image using Gemini Nano Banana from text prompt",
   args: {
-    filename: tool.schema
+    prompt: tool.schema
       .string()
-      .optional()
-      .describe("Custom filename (default: generated)"),
+      .describe("Text description of the image to generate"),
     outputDir: tool.schema
       .string()
       .optional()
       .describe(
         "Custom output directory (default: ./generated-images/YYYY-MM-DD/)"
       ),
-    prompt: tool.schema
+    filename: tool.schema
       .string()
-      .describe("Text description of the image to generate"),
+      .optional()
+      .describe("Custom filename (default: generated)"),
   },
-  description: "Generate an image using Gemini Nano Banana from text prompt",
   async execute(args, context) {
     try {
       const config: ImageConfig = {
@@ -411,23 +411,23 @@ export const generate = tool({
 
 // Tool for editing existing images
 export const edit = tool({
+  description: "Edit an existing image using Gemini Nano Banana",
   args: {
-    filename: tool.schema
-      .string()
-      .optional()
-      .describe("Custom filename (default: original name with _edit_XXX)"),
     image: tool.schema
       .string()
       .describe("File path or data URL of image to edit"),
+    prompt: tool.schema.string().describe("Edit instruction"),
     outputDir: tool.schema
       .string()
       .optional()
       .describe(
         "Custom output directory (default: ./generated-images/YYYY-MM-DD/)"
       ),
-    prompt: tool.schema.string().describe("Edit instruction"),
+    filename: tool.schema
+      .string()
+      .optional()
+      .describe("Custom filename (default: original name with _edit_XXX)"),
   },
-  description: "Edit an existing image using Gemini Nano Banana",
   async execute(args, context) {
     try {
       const config: ImageConfig = {
@@ -443,13 +443,13 @@ export const edit = tool({
 
 // Tool for analyzing images
 export const analyze = tool({
+  description: "Analyze an image using Gemini (text analysis only)",
   args: {
     image: tool.schema
       .string()
       .describe("File path or data URL of image to analyze"),
     question: tool.schema.string().describe("What to analyze about the image"),
   },
-  description: "Analyze an image using Gemini (text analysis only)",
   async execute(args, context) {
     try {
       return await analyzeImage(args.image, args.question);

@@ -5,9 +5,7 @@ const ENABLED = false;
 
 export const Notify: Plugin = async ({ $ }) => {
   // Plugin disabled - set ENABLED = true to activate
-  if (!ENABLED) {
-    return {};
-  }
+  if (!ENABLED) return {};
 
   return {
     async event(input) {

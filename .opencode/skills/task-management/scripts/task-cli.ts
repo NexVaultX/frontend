@@ -76,9 +76,7 @@ interface Subtask {
 
 // Helpers
 function getFeatureDirs(): string[] {
-  if (!fs.existsSync(TASKS_DIR)) {
-    return [];
-  }
+  if (!fs.existsSync(TASKS_DIR)) return [];
   return fs.readdirSync(TASKS_DIR).filter((f: string) => {
     const fullPath = path.join(TASKS_DIR, f);
     return fs.statSync(fullPath).isDirectory() && f !== "completed";
@@ -87,17 +85,13 @@ function getFeatureDirs(): string[] {
 
 function loadTask(feature: string): Task | null {
   const taskPath = path.join(TASKS_DIR, feature, "task.json");
-  if (!fs.existsSync(taskPath)) {
-    return null;
-  }
+  if (!fs.existsSync(taskPath)) return null;
   return JSON.parse(fs.readFileSync(taskPath, "utf-8"));
 }
 
 function loadSubtasks(feature: string): Subtask[] {
   const featureDir = path.join(TASKS_DIR, feature);
-  if (!fs.existsSync(featureDir)) {
-    return [];
-  }
+  if (!fs.existsSync(featureDir)) return [];
 
   const files = fs
     .readdirSync(featureDir)
@@ -142,10 +136,10 @@ function cmdStatus(feature?: string): void {
     }
 
     const counts = {
-      blocked: subtasks.filter((s) => s.status === "blocked").length,
-      completed: subtasks.filter((s) => s.status === "completed").length,
-      in_progress: subtasks.filter((s) => s.status === "in_progress").length,
       pending: subtasks.filter((s) => s.status === "pending").length,
+      in_progress: subtasks.filter((s) => s.status === "in_progress").length,
+      completed: subtasks.filter((s) => s.status === "completed").length,
+      blocked: subtasks.filter((s) => s.status === "blocked").length,
     };
 
     const progress =
@@ -175,9 +169,7 @@ function cmdNext(feature?: string): void {
     );
 
     const ready = subtasks.filter((s) => {
-      if (s.status !== "pending") {
-        return false;
-      }
+      if (s.status !== "pending") return false;
       return s.depends_on.every((dep) => completedSeqs.has(dep));
     });
 
@@ -204,12 +196,8 @@ function cmdParallel(feature?: string): void {
     );
 
     const parallel = subtasks.filter((s) => {
-      if (s.status !== "pending") {
-        return false;
-      }
-      if (!s.parallel) {
-        return false;
-      }
+      if (s.status !== "pending") return false;
+      if (!s.parallel) return false;
       return s.depends_on.every((dep) => completedSeqs.has(dep));
     });
 
@@ -282,12 +270,8 @@ function cmdBlocked(feature?: string): void {
     );
 
     const blocked = subtasks.filter((s) => {
-      if (s.status === "blocked") {
-        return true;
-      }
-      if (s.status !== "pending") {
-        return false;
-      }
+      if (s.status === "blocked") return true;
+      if (s.status !== "pending") return false;
       return !s.depends_on.every((dep) => completedSeqs.has(dep));
     });
 
@@ -393,7 +377,7 @@ function cmdValidate(feature?: string): void {
   ];
 
   const hasField = (obj: any, field: string): boolean =>
-    Object.hasOwn(obj, field);
+    Object.prototype.hasOwnProperty.call(obj, field);
   const isStringArray = (value: any): boolean =>
     Array.isArray(value) && value.every((v) => typeof v === "string");
 
@@ -534,17 +518,13 @@ function cmdValidate(feature?: string): void {
           );
           return true;
         }
-        if (visited.has(seq)) {
-          return false;
-        }
+        if (visited.has(seq)) return false;
         visited.add(seq);
 
         const task = subtasks.find((t) => t.seq === seq);
         if (task) {
           for (const dep of task.depends_on) {
-            if (checkCircular(dep, [...path, seq])) {
-              return true;
-            }
+            if (checkCircular(dep, [...path, seq])) return true;
           }
         }
         return false;
@@ -579,43 +559,36 @@ function cmdValidate(feature?: string): void {
 const [, , command, ...args] = process.argv;
 
 switch (command) {
-  case "status": {
+  case "status":
     cmdStatus(args[0]);
     break;
-  }
-  case "next": {
+  case "next":
     cmdNext(args[0]);
     break;
-  }
-  case "parallel": {
+  case "parallel":
     cmdParallel(args[0]);
     break;
-  }
-  case "deps": {
+  case "deps":
     if (args.length < 2) {
       console.log("Usage: deps <feature> <seq>");
       process.exit(1);
     }
     cmdDeps(args[0], args[1]);
     break;
-  }
-  case "blocked": {
+  case "blocked":
     cmdBlocked(args[0]);
     break;
-  }
-  case "complete": {
+  case "complete":
     if (args.length < 3) {
       console.log('Usage: complete <feature> <seq> "summary"');
       process.exit(1);
     }
     cmdComplete(args[0], args[1], args.slice(2).join(" "));
     break;
-  }
-  case "validate": {
+  case "validate":
     cmdValidate(args[0]);
     break;
-  }
-  default: {
+  default:
     console.log(`
 Task Management CLI
 
@@ -637,5 +610,4 @@ Examples:
   npx ts-node task-cli.ts next my-feature
   npx ts-node task-cli.ts complete my-feature 02 "Implemented auth module"
 `);
-  }
 }
