@@ -1,18 +1,11 @@
+import { ThemeProvider } from "@lonik/themer";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
-import appCss from "../styles.css?url";
+import { CookieBanner } from "@/components/cookie-banner";
 
-const THEME_INIT_SCRIPT = `(function () {
-  try {
-    var stored = localStorage.getItem("openvault-theme");
-    var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    if (stored === "dark" || (!stored && prefersDark)) {
-      document.documentElement.classList.add("dark");
-    }
-  } catch (e) {}
-})();`;
+import appCss from "../styles.css?url";
 
 const RootDocument = ({ children }: { children: React.ReactNode }) => (
   <html lang="en" suppressHydrationWarning>
@@ -20,7 +13,10 @@ const RootDocument = ({ children }: { children: React.ReactNode }) => (
       <HeadContent />
     </head>
     <body>
-      {children}
+      <ThemeProvider storageKey="openvault-theme" defaultTheme="system">
+        {children}
+      </ThemeProvider>
+      <CookieBanner />
       <TanStackDevtools
         config={{
           position: "bottom-right",
@@ -79,11 +75,6 @@ export const Route = createRootRoute({
       {
         rel: "manifest",
         href: "/manifest.json",
-      },
-    ],
-    scripts: [
-      {
-        children: THEME_INIT_SCRIPT,
       },
     ],
   }),

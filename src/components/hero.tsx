@@ -1,6 +1,6 @@
 import { IconArrowRight } from "@tabler/icons-react";
 
-import logo from "@/logo.png";
+import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 
 const Hero = () => (
@@ -8,7 +8,7 @@ const Hero = () => (
     <div className="mx-auto max-w-4xl text-center">
       {/* NexVaultX Logo */}
       <div className="mb-8 flex justify-center">
-        <img src={logo} alt="NexVaultX" className="h-20 w-20 object-contain" />
+        <Logo className="h-20 w-20 object-contain" />
       </div>
 
       <h1 className="text-foreground mb-5 text-4xl font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl">

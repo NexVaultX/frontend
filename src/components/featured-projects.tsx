@@ -74,6 +74,7 @@ const shuffleProjects = (projects: Project[]) => {
   const shuffled = [...projects];
 
   for (let i = shuffled.length - 1; i > 0; i -= 1) {
+    // oxlint-disable-next-line sonarjs/pseudo-random -- Fisher-Yates shuffle for mock carousel data
     const j = Math.floor(Math.random() * (i + 1));
 
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
@@ -129,7 +130,7 @@ const ProjectCard = ({ project }: { project: Project }) => (
 
     <div
       aria-hidden="true"
-      className="bg-foreground absolute right-5 bottom-0 left-5 h-px origin-left scale-x-0 opacity-0 transition-[transform,opacity] duration-200 group-hover:scale-x-100 group-hover:opacity-100"
+      className="bg-foreground absolute right-5 bottom-0 left-5 h-px origin-left scale-x-[0.01] opacity-0 transition-[transform,opacity] duration-200 group-hover:scale-x-100 group-hover:opacity-100"
     />
   </article>
 );
@@ -139,6 +140,7 @@ const FeaturedProjects = () => {
   const resumeTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
+    // oxlint-disable-next-line react/set-state-in-effect -- Shuffle must run post-hydration to avoid SSR/client mismatch from Math.random()
     setProjects(shuffleProjects(PROJECTS));
 
     return () => {
@@ -148,7 +150,11 @@ const FeaturedProjects = () => {
     };
   }, []);
 
-  const carouselProjects = [...projects, ...projects];
+  const carouselProjects = [...projects, ...projects].map((project, index) => ({
+    carouselKey: `${project.name}-${index}`,
+    delay: index < projects.length ? index * 40 : 0,
+    project,
+  }));
 
   const pauseForTouch = () => {
     document.documentElement.style.setProperty(
@@ -240,24 +246,19 @@ const FeaturedProjects = () => {
           </a>
         </Reveal>
 
-        <div
+        <section
           className="NexVaultX-projects -mx-4 overflow-hidden px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
-          role="region"
           aria-label="Featured projects"
           onTouchStart={pauseForTouch}
         >
           <div className="NexVaultX-projects-track flex w-max gap-4">
-            {carouselProjects.map((project, index) => (
-              <Reveal
-                key={`${project.name}-${index}`}
-                delay={index < projects.length ? index * 40 : 0}
-                className="shrink-0"
-              >
+            {carouselProjects.map(({ project, carouselKey, delay }) => (
+              <Reveal key={carouselKey} delay={delay} className="shrink-0">
                 <ProjectCard project={project} />
               </Reveal>
             ))}
           </div>
-        </div>
+        </section>
 
         <div className="mt-4 flex justify-center sm:hidden">
           <a

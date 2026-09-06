@@ -2,15 +2,20 @@
 
 import {
   IconChevronDown,
+  IconLogout,
   IconMenu2,
   IconSearch,
   IconX,
 } from "@tabler/icons-react";
+import { Link, useRouter } from "@tanstack/react-router";
+import { cn } from "cn";
 import { useEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
 
-import logo from "@/logo.png";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { Logo } from "@/components/logo";
+import { ThemeToggle } from "@/components/motion/theme-toggle";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
 
 const CONTENT_LINKS = [
   { href: "/mods", label: "Mods" },
@@ -21,9 +26,123 @@ const CONTENT_LINKS = [
   { href: "/servers", label: "Servers" },
 ] as const;
 
+interface UserMenuProps {
+  user: {
+    name: string;
+    email?: string | null;
+    image?: string | null;
+  };
+  onSignOut: () => void;
+}
+
+const UserMenu = ({ user, onSignOut }: UserMenuProps) => {
+  const [open, setOpen] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        buttonRef.current?.focus();
+      }
+    };
+
+    const handlePointerDown = (event: PointerEvent) => {
+      // SAFETY: pointerdown event targets are always DOM nodes
+      const target = event.target as Node;
+      if (buttonRef.current && !buttonRef.current.contains(target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("pointerdown", handlePointerDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("pointerdown", handlePointerDown);
+    };
+  }, [open]);
+
+  const initial = user.name.charAt(0).toUpperCase();
+
+  return (
+    <div className="relative">
+      <Button
+        ref={buttonRef}
+        type="button"
+        variant="ghost"
+        className="min-h-11 gap-2 px-2"
+        aria-expanded={open}
+        aria-haspopup="menu"
+        aria-controls="user-menu"
+        onClick={() => setOpen((current) => !current)}
+      >
+        {user.image ? (
+          <img
+            src={user.image}
+            alt=""
+            className="size-6 rounded-full object-cover"
+          />
+        ) : (
+          <span
+            aria-hidden="true"
+            className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-full text-xs font-semibold"
+          >
+            {initial}
+          </span>
+        )}
+        <span className="text-foreground max-w-24 truncate text-sm font-medium">
+          {user.name}
+        </span>
+        <IconChevronDown
+          size={15}
+          stroke={1.8}
+          className={cn(
+            "text-muted-foreground transition-transform duration-200",
+            open && "rotate-180"
+          )}
+        />
+      </Button>
+
+      {open ? (
+        <div id="user-menu" className="absolute top-full right-0 mt-2 w-48">
+          <div className="border-border bg-popover rounded-xl border p-1.5 shadow-xl">
+            <div className="border-border/70 mb-1 border-b px-3 py-2">
+              <p className="text-foreground truncate text-sm font-medium">
+                {user.name}
+              </p>
+              {user.email ? (
+                <p className="text-muted-foreground truncate text-xs">
+                  {user.email}
+                </p>
+              ) : null}
+            </div>
+
+            <button
+              type="button"
+              onClick={onSignOut}
+              className="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
+            >
+              <IconLogout size={16} stroke={1.8} />
+              Sign Out
+            </button>
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+};
+
 const Navbar = () => {
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const { data: session, isPending } = authClient.useSession();
 
   useEffect(() => {
     if (!menuOpen) {
@@ -44,6 +163,94 @@ const Navbar = () => {
     };
   }, [menuOpen]);
 
+  const handleSignOut = async () => {
+    await authClient.signOut();
+    setMenuOpen(false);
+    router.navigate({ to: "/" });
+  };
+
+  let desktopAuth: ReactNode;
+  if (isPending) {
+    desktopAuth = (
+      <div
+        aria-hidden="true"
+        className="bg-muted h-10 w-24 animate-pulse rounded-lg"
+      />
+    );
+  } else if (session) {
+    desktopAuth = <UserMenu user={session.user} onSignOut={handleSignOut} />;
+  } else {
+    desktopAuth = (
+      <Button
+        render={<Link to="/login" />}
+        variant="default"
+        size="sm"
+        className="min-h-10 px-4"
+      >
+        Sign In
+      </Button>
+    );
+  }
+
+  let mobileAuth: ReactNode;
+  if (isPending) {
+    mobileAuth = (
+      <div
+        aria-hidden="true"
+        className="bg-muted mt-3 h-11 w-full animate-pulse rounded-lg"
+      />
+    );
+  } else if (session) {
+    mobileAuth = (
+      <div className="border-border bg-muted/40 mt-3 flex items-center gap-3 rounded-lg border p-3">
+        {session.user.image ? (
+          <img
+            src={session.user.image}
+            alt=""
+            className="size-9 rounded-full object-cover"
+          />
+        ) : (
+          <span
+            aria-hidden="true"
+            className="bg-primary text-primary-foreground flex size-9 items-center justify-center rounded-full text-sm font-semibold"
+          >
+            {session.user.name.charAt(0).toUpperCase()}
+          </span>
+        )}
+
+        <div className="min-w-0 flex-1">
+          <p className="text-foreground truncate text-sm font-medium">
+            {session.user.name}
+          </p>
+          <p className="text-muted-foreground truncate text-xs">
+            {session.user.email}
+          </p>
+        </div>
+
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="min-h-11"
+          onClick={handleSignOut}
+        >
+          Sign Out
+        </Button>
+      </div>
+    );
+  } else {
+    mobileAuth = (
+      <Button
+        render={<Link to="/login" />}
+        variant="default"
+        size="sm"
+        className="mt-3 min-h-11 w-full"
+      >
+        Sign In
+      </Button>
+    );
+  }
+
   return (
     <header className="border-border/70 bg-background/85 sticky top-0 z-50 border-b backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
@@ -53,7 +260,7 @@ const Navbar = () => {
           aria-label="NexVaultX home"
           className="focus-visible:ring-ring flex min-h-11 shrink-0 items-center gap-2 rounded-md focus-visible:ring-2 focus-visible:outline-none"
         >
-          <img src={logo} alt="NexVaultX" className="h-8 w-8 object-contain" />
+          <Logo className="h-8 w-8 object-contain" />
 
           <span className="text-foreground text-lg font-semibold tracking-tight">
             NexVaultX
@@ -68,7 +275,7 @@ const Navbar = () => {
           <div className="group relative">
             <button
               type="button"
-              className="text-muted-foreground hover:text-foreground hover:bg-muted/70 focus-visible:ring-ring hover:border-border inline-flex min-h-10 items-center gap-1 rounded-lg border border-transparent px-4 py-2 text-sm font-medium transition-all duration-150 focus-visible:ring-2 focus-visible:outline-none"
+              className="text-muted-foreground hover:text-foreground hover:bg-muted/70 focus-visible:ring-ring hover:border-border inline-flex min-h-10 items-center gap-1 rounded-lg border border-transparent px-4 py-2 text-sm font-medium transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none"
             >
               Content
               <IconChevronDown
@@ -112,16 +319,14 @@ const Navbar = () => {
             />
           </div>
 
-          <ThemeToggle />
+          <ThemeToggle variant="circle" start="center" />
 
-          <Button variant="default" size="sm" className="min-h-10 px-4">
-            Sign In
-          </Button>
+          {desktopAuth}
         </div>
 
         {/* Mobile actions */}
         <div className="ml-auto flex items-center gap-2 md:hidden">
-          <ThemeToggle />
+          <ThemeToggle variant="circle" start="center" />
 
           <Button
             ref={menuButtonRef}
@@ -184,13 +389,7 @@ const Navbar = () => {
               ))}
             </nav>
 
-            <Button
-              variant="default"
-              size="sm"
-              className="mt-3 min-h-11 w-full"
-            >
-              Sign In
-            </Button>
+            {mobileAuth}
           </div>
         </div>
       )}

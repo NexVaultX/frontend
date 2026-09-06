@@ -33,23 +33,21 @@ NexVaultX is a modern, open-source marketplace for Minecraft plugins, mods, reso
 - 🌙 Dark mode first.
 - 🚀 Built on a modern TanStack-first stack.
 
-> [!IMPORTANT]
-> The `main` branch is the development branch.
-> Everytime `main` gets merged into `prod`, our website will re-deploy
+> [!IMPORTANT] The `main` branch is the development branch. Everytime `main` gets merged into `prod`, our website will re-deploy
 
 ## Tech Stack
 
-| Technology | Purpose |
-|------------|---------|
-| **React 19** | User interface |
-| **TypeScript** | End-to-end type safety |
-| **TanStack Start** | Full-stack React framework |
-| **TanStack Router** | Type-safe routing |
-| **TanStack Query** | Data fetching & caching |
-| **Tailwind CSS v4** | Styling |
-| **shadcn/ui** | Accessible UI components |
-| **PNPM** | Package manager |
-| **Ultracite** | Linting & formatting |
+| Technology          | Purpose                    |
+| ------------------- | -------------------------- |
+| **React 19**        | User interface             |
+| **TypeScript**      | End-to-end type safety     |
+| **TanStack Start**  | Full-stack React framework |
+| **TanStack Router** | Type-safe routing          |
+| **TanStack Query**  | Data fetching & caching    |
+| **Tailwind CSS v4** | Styling                    |
+| **shadcn/ui**       | Accessible UI components   |
+| **PNPM**            | Package manager            |
+| **Ultracite**       | Linting & formatting       |
 
 ## Getting Started
 
