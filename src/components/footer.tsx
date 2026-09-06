@@ -30,12 +30,12 @@ const COMPANY_LINKS = [
 
 const SOCIAL_LINKS = [
   {
-    href: "https://github.com/openvault",
+    href: "https://github.com/NexVaultX",
     icon: IconBrandGithub,
     label: "GitHub",
   },
   {
-    href: "https://discord.gg/openvault",
+    href: "https://discord.gg/6JKttcu9cc",
     icon: IconBrandDiscord,
     label: "Discord",
   },
