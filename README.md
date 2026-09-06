@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-# **OpenVault** (FastVault) Frontend
-
-=======
->>>>>>> origin/main
 <p align="center">
   <img
     alt="NexVaultX Frontend"
@@ -11,13 +6,6 @@
 </p>
 
 <p align="center">
-<<<<<<< HEAD
-  <a href="https://github.com/FastVault/frontend/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/FastVault/frontend/ci.yml?branch=main&style=flat-square&label=CI" alt="CI">
-  </a>
-  <a href="https://github.com/FastVault/frontend">
-    <img src="https://img.shields.io/github/license/FastVault/frontend?style=flat-square" alt="License">
-=======
   <strong>The modern, open-source marketplace for Minecraft creators.</strong><br />
   Discover, share, and manage community-created Minecraft content.
 </p>
@@ -28,7 +16,6 @@
       alt="GitHub Health"
       src="https://shieldcn.dev/group/github/stars/NexVaultX/frontend+github/forks/NexVaultX/frontend+github/commits/NexVaultX/frontend+discord/1545907423502536766.svg?variant=branded"
     />
->>>>>>> origin/main
   </a>
   <br/>
   <a href="https://github.com/NexVaultX/frontend">
@@ -85,28 +72,8 @@ This repository contains the **web frontend and its server-side application laye
 * Oxfmt
 * Ultracite
 
-> [!IMPORTANT]
-> `main` is the development branch. Merging `main` into `prod` triggers an automatic redeploy of the production site.
-
 ## Tech Stack
 
-<<<<<<< HEAD
-| Technology      | Purpose                                  |
-| --------------- | ---------------------------------------- |
-| React           | User interface                           |
-| TypeScript      | Type-safe development                    |
-| TanStack Start  | Full-stack React framework               |
-| TanStack Router | Type-safe routing                        |
-| Tailwind CSS    | Styling                                  |
-| shadcn/ui       | Reusable UI components                   |
-| Vite            | Development and build tooling            |
-| Nitro           | Production server (deployment)           |
-| Vitest          | Testing                                  |
-| Ultracite       | Lint/format preset (Oxlint + Oxfmt)      |
-| Oxlint          | Code quality                             |
-| Oxfmt           | Code formatting                          |
-| Docker          | Containerized development and deployment |
-=======
 | Technology          | Purpose                                   |
 | ------------------- | ----------------------------------------- |
 | **React 19**        | User interface                            |
@@ -125,7 +92,6 @@ This repository contains the **web frontend and its server-side application laye
 | **Oxfmt**           | Formatting                                |
 | **Ultracite**       | Unified code-quality checks and fixes     |
 | **PNPM**            | Package management                        |
->>>>>>> origin/main
 
 ## Requirements
 
@@ -180,78 +146,7 @@ The development server runs on:
 http://localhost:3000
 ```
 
-<<<<<<< HEAD
-## Docker
-
-The project ships with Docker configuration for both development and production.
-
-### Requirements
-
-- [Docker](https://docs.docker.com/get-docker/) with Docker Compose v2
-
-### Compose files
-
-| File                | Purpose                                             |
-| ------------------- | --------------------------------------------------- |
-| `compose.yaml`      | Base configuration (shared service definition)      |
-| `compose.dev.yaml`  | Development override (hot reload, source mounted)   |
-| `compose.prod.yaml` | Production override (Nitro server, optimized image) |
-
-### Development
-
-Runs the Vite dev server with hot reload. The source tree is mounted into the container, so changes are picked up immediately.
-
-```bash
-docker compose -f compose.yaml -f compose.dev.yaml up
-```
-
-The development server will be available at:
-
-```text
-http://localhost:3000
-```
-
-### Production
-
-Builds an optimized multi-stage image and runs the Nitro production server.
-
-```bash
-docker compose -f compose.yaml -f compose.prod.yaml up -d --build
-```
-
-The production server will be available at:
-
-```text
-http://localhost:3000
-```
-
-### Configuration
-
-| Variable | Default  | Description                        |
-| -------- | -------- | ---------------------------------- |
-| `PORT`   | `3000`   | Host port mapped to the container  |
-| `TAG`    | `latest` | Image tag used for the built image |
-
-Example with custom port and tag:
-
-```bash
-PORT=8080 TAG=v1.0.0 docker compose -f compose.yaml -f compose.prod.yaml up -d --build
-```
-
-### Dockerfile stages
-
-The multi-stage `Dockerfile` builds a small, secure production image:
-
-| Stage     | Purpose                                          |
-| --------- | ------------------------------------------------ |
-| `deps`    | Install dependencies with pnpm (frozen lockfile) |
-| `build`   | Compile the production bundle (Nitro output)     |
-| `runtime` | Run the Nitro server as a non-root user          |
-
-## Development
-=======
 ## Available Commands
->>>>>>> origin/main
 
 | Command          | Description                                        |
 | ---------------- | -------------------------------------------------- |
@@ -267,22 +162,7 @@ The multi-stage `Dockerfile` builds a small, secure production image:
 | `pnpm fix`       | Apply Ultracite fixes                              |
 | `pnpm prepare`   | Initialize Husky Git hooks                         |
 
-<<<<<<< HEAD
-| Command          | Description                     |
-| ---------------- | ------------------------------- |
-| `pnpm dev`       | Start the development server    |
-| `pnpm build`     | Create a production build       |
-| `pnpm preview`   | Preview the production build    |
-| `pnpm start`     | Run the Nitro production server |
-| `pnpm test`      | Run tests                       |
-| `pnpm lint`      | Check the code with Oxlint      |
-| `pnpm format`    | Format the codebase with Oxfmt  |
-| `pnpm check`     | Lint + format check (read-only) |
-| `pnpm fix`       | Lint + auto-fix issues          |
-| `pnpm typecheck` | Run TypeScript checks           |
-=======
 These commands are defined directly in the repository's `package.json`.
->>>>>>> origin/main
 
 ## Project Structure
 
