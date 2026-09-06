@@ -1,79 +1,64 @@
-# **OpenVault** (FastVault) Frontend
-
 <p align="center">
-  <strong>The modern frontend for OpenVault.</strong>
-  <br>
-  Fast, clean, and developer-focused.
+  <img
+    alt="NexVaultX Frontend"
+    src="https://shieldcn.dev/header/surface.svg?title=NexVaultX+Frontend&subtitle=The+modern+frontend+for+NexVaultX.%0AFast,+clean,+and+developer-focused.&mode=dark&image=https%3A%2F%2Fplus.unsplash.com%2Fpremium_photo-1678566111481-8e275550b700%3Fq%3D80%26w%3D387%26auto%3Dformat%26fit%3Dcrop"
+  />
 </p>
 
 <p align="center">
-  <a href="https://github.com/FastVault/frontend">
-    <img src="https://img.shields.io/github/license/FastVault/frontend?style=flat-square" alt="License">
-  </a>
-  <a href="https://github.com/FastVault/frontend">
-    <img src="https://img.shields.io/github/stars/FastVault/frontend?style=flat-square" alt="Stars">
-  </a>
-  <a href="https://github.com/FastVault/frontend">
-    <img src="https://img.shields.io/github/last-commit/FastVault/frontend?style=flat-square" alt="Last commit">
+  <strong>The modern, open-source marketplace for Minecraft creators.</strong><br/>
+  Built with TanStack Start, React, TypeScript, PNPM, and Ultracite.
+</p>
+
+<p align="center">
+  <a href="https://github.com/NexVaultX/frontend">
+    <img
+      alt="GitHub Health"
+      src="https://shieldcn.dev/group/github/stars/NexVaultX/frontend+github/forks/NexVaultX/frontend+github/commits/NexVaultX/frontend.svg?variant=primary"
+    />
   </a>
 </p>
 
 ---
 
-## About
+## Overview
 
-OpenVault Frontend is the web application powering the OpenVault platform.
+NexVaultX is a modern, open-source marketplace for Minecraft plugins, mods, resource packs, datapacks, shaders, and other creator content.
 
-It is designed to provide a fast, modern, and intuitive interface for discovering and interacting with Minecraft projects while keeping the codebase maintainable and scalable.
+### Features
 
-The frontend is built with a modern React ecosystem and follows a component-driven architecture.
+- ⚡ Fast server-rendered React application.
+- 🔒 End-to-end type safety with TypeScript.
+- ♿ Accessible UI built with shadcn/ui.
+- 🎨 Beautiful, responsive interface.
+- 🌙 Dark mode first.
+- 🚀 Built on a modern TanStack-first stack.
 
 ## Tech Stack
 
-| Technology      | Purpose                       |
-| --------------- | ----------------------------- |
-| React           | User interface                |
-| TypeScript      | Type-safe development         |
-| TanStack Start  | Full-stack React framework    |
-| TanStack Router | Type-safe routing             |
-| Tailwind CSS    | Styling                       |
-| shadcn/ui       | Reusable UI components        |
-| Vite            | Development and build tooling |
-| Vitest          | Testing                       |
-| ESLint          | Code quality                  |
-| Prettier        | Code formatting               |
-
-## Project Structure
-
-```text
-src/
-├── components/
-│   └── ui/             # Reusable UI primitives
-│
-├── lib/                # Shared utilities and helpers
-│
-├── routes/             # Application routes
-│
-├── router.tsx          # Router configuration
-│
-└── styles.css          # Global styles
-```
-
-As OpenVault grows, the structure will be expanded around individual features and domains to keep the application modular and maintainable.
+| Technology | Purpose |
+|------------|---------|
+| **React 19** | User interface |
+| **TypeScript** | End-to-end type safety |
+| **TanStack Start** | Full-stack React framework |
+| **TanStack Router** | Type-safe routing |
+| **TanStack Query** | Data fetching & caching |
+| **Tailwind CSS v4** | Styling |
+| **shadcn/ui** | Accessible UI components |
+| **PNPM** | Package manager |
+| **Ultracite** | Linting & formatting |
 
 ## Getting Started
 
 ### Requirements
 
-Make sure you have the following installed:
+- **Node.js** 24+
+- **PNPM** 10+
 
-- Node.js
-- pnpm
-
-### Clone
+### Clone the repository
 
 ```bash
-git clone https://github.com/FastVault/frontend.git
+git clone https://github.com/NexVaultX/frontend.git
 cd frontend
 ```
 
@@ -83,122 +68,23 @@ cd frontend
 pnpm install
 ```
 
-### Start development
+### Start the development server
 
 ```bash
 pnpm dev
 ```
 
-The development server will be available at:
+The application will be available at:
 
 ```text
 http://localhost:3000
 ```
 
-## Development
-
-### Available commands
-
-| Command          | Description                  |
-| ---------------- | ---------------------------- |
-| `pnpm dev`       | Start the development server |
-| `pnpm build`     | Create a production build    |
-| `pnpm preview`   | Preview the production build |
-| `pnpm test`      | Run tests                    |
-| `pnpm lint`      | Check the code with ESLint   |
-| `pnpm format`    | Format the codebase          |
-| `pnpm check`     | Check formatting             |
-| `pnpm typecheck` | Run TypeScript checks        |
-
-Before opening a pull request, it is recommended to run:
-
-```bash
-pnpm lint
-pnpm check
-pnpm typecheck
-pnpm test
-pnpm build
-```
-
-## Architecture
-
-OpenVault follows a component-driven approach built around reusable primitives and predictable application structure.
-
-The frontend is intended to evolve toward a feature-oriented architecture:
-
-```text
-src/
-├── components/
-│   ├── ui/
-│   ├── layout/
-│   ├── navigation/
-│   └── ...
-│
-├── features/
-│   ├── projects/
-│   ├── search/
-│   ├── versions/
-│   ├── authentication/
-│   └── ...
-│
-├── lib/
-│   ├── api/
-│   ├── utils/
-│   └── ...
-│
-└── routes/
-```
-
-This keeps domain-specific logic close to the feature it belongs to while allowing shared components and utilities to remain independent.
-
-## Design Principles
-
-### Fast
-
-Keep navigation, rendering, and interactions responsive.
-
-### Simple
-
-Prefer clear interfaces and straightforward solutions over unnecessary complexity.
-
-### Consistent
-
-Use shared components, spacing, typography, and interaction patterns throughout the application.
-
-### Accessible
-
-Build interfaces that work across different devices, input methods, and accessibility needs.
-
-### Maintainable
-
-Keep components focused, dependencies intentional, and application logic easy to understand.
-
-### Scalable
-
-Establish patterns that can support OpenVault as the platform and codebase grow.
-
-## Contributing
-
-Contributions are welcome.
-
-Before making a large change, consider opening an issue to discuss the idea and its implementation.
-
-When submitting a pull request:
-
-1. Keep changes focused.
-2. Follow the existing project structure and conventions.
-3. Add or update tests where appropriate.
-4. Run the project checks locally.
-5. Provide a clear description of the change.
-
-## License
-
-OpenVault Frontend is licensed under the **Apache License 2.0**.
-
-See [`LICENSE`](./LICENSE) for the complete license text.
-
 ---
 
 <p align="center">
-  Built for OpenVault.
+  <img
+    alt="GitHub Stars Chart"
+    src="https://shieldcn.dev/chart/github/stars/NexVaultX/frontend.svg"
+  />
 </p>
