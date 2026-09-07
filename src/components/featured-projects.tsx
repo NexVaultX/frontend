@@ -131,7 +131,7 @@ const MarqueeTrack = ({ children }: { children: ReactNode }) => {
 };
 
 const ProjectCard = ({ project }: { project: Project }) => (
-  <article className="marquee-card group border-border bg-card hover:border-foreground/20 focus-within:border-foreground/20 ease-smooth hover:shadow-glow focus-within:shadow-glow relative flex h-full min-h-[240px] w-[calc(100vw-48px)] shrink-0 flex-col overflow-hidden rounded-2xl border p-6 transition-[transform,box-shadow,border-color] duration-300 focus-within:-translate-y-1.5 focus-within:scale-[1.02] focus-within:ring-1 hover:-translate-y-1.5 hover:scale-[1.02] hover:ring-1 motion-reduce:transform-none motion-reduce:transition-none sm:w-[360px]">
+  <article className="marquee-card group border-border bg-card focus-within:border-foreground/20 relative flex h-full min-h-[240px] w-[calc(100vw-48px)] shrink-0 flex-col overflow-hidden rounded-2xl border p-6 transition-colors duration-300 focus-within:ring-1 motion-reduce:transition-none sm:w-[360px]">
     <a
       href={`/project/${project.name.toLowerCase().replaceAll(" ", "-")}`}
       className="focus-visible:ring-ring absolute inset-0 z-10 rounded-2xl focus-visible:ring-2 focus-visible:outline-none"
@@ -142,11 +142,11 @@ const ProjectCard = ({ project }: { project: Project }) => (
 
     <div
       aria-hidden="true"
-      className="via-foreground/15 absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent to-transparent opacity-0 transition-opacity duration-300 group-focus-within:opacity-100 group-hover:opacity-100"
+      className="via-foreground/15 absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent to-transparent opacity-0 transition-opacity duration-300 group-focus-within:opacity-100"
     />
 
     <div className="flex items-start gap-4">
-      <div className="border-border bg-primary/10 text-primary group-hover:bg-primary/15 group-focus-within:bg-primary/15 flex size-14 shrink-0 items-center justify-center rounded-xl border text-xl font-bold transition-[transform,background-color,border-color] duration-300 group-focus-within:scale-105 group-hover:scale-105">
+      <div className="border-border bg-primary/10 text-primary group-focus-within:bg-primary/15 flex size-14 shrink-0 items-center justify-center rounded-xl border text-xl font-bold transition-[transform,background-color,border-color] duration-300 group-focus-within:scale-105">
         {project.initial}
       </div>
 
@@ -180,7 +180,7 @@ const ProjectCard = ({ project }: { project: Project }) => (
 
       <span
         aria-hidden="true"
-        className="text-primary inline-flex translate-x-1 items-center gap-1 text-xs font-semibold opacity-0 transition-[transform,opacity] duration-300 group-focus-within:translate-x-0 group-focus-within:opacity-100 group-hover:translate-x-0 group-hover:opacity-100"
+        className="text-primary inline-flex translate-x-1 items-center gap-1 text-xs font-semibold opacity-0 transition-[transform,opacity] duration-300 group-focus-within:translate-x-0 group-focus-within:opacity-100"
       >
         View
         <IconArrowRight size={14} />

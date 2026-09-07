@@ -233,14 +233,6 @@
   }
 }
 
-/* Dim sibling cards when one is hovered in the featured-projects marquee. */
-@media (hover: hover) {
-  .marquee-track:has(.marquee-card:hover) .marquee-card:not(:hover) {
-    opacity: 0.65;
-    transition: opacity 0.2s ease;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
