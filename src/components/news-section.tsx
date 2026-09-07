@@ -17,7 +17,7 @@ const NEWS: NewsItem[] = [
     dateLabel: "Aug 28, 2026",
     excerpt:
       "A major update brings redesigned project pages, faster search, and a brand-new launcher integration.",
-    title: "OpenVault 2.0 is here",
+    title: "NexVaultX 2.0 is here",
   },
   {
     category: "Community",
@@ -53,7 +53,7 @@ const NewsSection = () => (
             News
           </h2>
           <p className="text-muted-foreground mt-2">
-            Updates from the OpenVault team and community.
+            Updates from the NexVaultX team and community.
           </p>
         </div>
         <a

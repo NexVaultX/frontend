@@ -6,7 +6,7 @@
 
 services:
   web:
-    image: openvault-frontend:dev
+    image: nexvaultx-frontend:dev
     build:
       target: deps
     ports:

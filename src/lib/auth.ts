@@ -8,7 +8,7 @@ import { db } from "@/db";
 import env from "../../env.config";
 
 export const auth = betterAuth({
-  appName: "OpenVault",
+  appName: "NexVaultX",
   baseURL: env.BETTER_AUTH_URL,
   database: drizzleAdapter(db, {
     provider: "pg",

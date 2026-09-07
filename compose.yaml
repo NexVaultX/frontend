@@ -11,11 +11,11 @@
 #   Development: docker compose -f compose.yaml -f compose.dev.yaml up
 #   Production:  docker compose -f compose.yaml -f compose.prod.yaml up -d --build
 
-name: openvault-frontend
+name: nexvaultx-frontend
 
 services:
   web:
-    image: openvault-frontend:${TAG:-latest}
+    image: nexvaultx-frontend:${TAG:-latest}
     build:
       context: .
       dockerfile: Dockerfile

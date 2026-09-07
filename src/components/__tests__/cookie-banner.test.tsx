@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { CookieBanner } from "@/components/cookie-banner";
 
-const CONSENT_STORAGE_KEY = "openvault-cookie-consent";
+const CONSENT_STORAGE_KEY = "nexvaultx-cookie-consent";
 
 describe(CookieBanner, () => {
   it("renders when no consent has been stored", () => {

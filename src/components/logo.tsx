@@ -6,12 +6,12 @@ const Logo = ({ className }: LogoProps) => (
   <>
     <img
       src="/logo_light.png"
-      alt="OpenVault"
+      alt="NexVaultX"
       className={`${className} dark:hidden`}
     />
     <img
       src="/logo_dark.png"
-      alt="OpenVault"
+      alt="NexVaultX"
       className={`hidden ${className} dark:block`}
     />
   </>

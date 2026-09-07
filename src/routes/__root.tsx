@@ -13,7 +13,7 @@ const RootDocument = ({ children }: { children: React.ReactNode }) => (
       <HeadContent />
     </head>
     <body>
-      <ThemeProvider storageKey="openvault-theme" defaultTheme="system">
+      <ThemeProvider storageKey="nexvaultx-theme" defaultTheme="system">
         {children}
       </ThemeProvider>
       <CookieBanner />
@@ -44,7 +44,7 @@ export const Route = createRootRoute({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "OpenVault — Free & Open-Source Minecraft Mod Platform",
+        title: "NexVaultX — Free & Open-Source Minecraft Mod Platform",
       },
       {
         name: "description",

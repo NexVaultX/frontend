@@ -4,8 +4,8 @@ import { useSyncExternalStore } from "react";
 
 import { Button } from "@/components/ui/button";
 
-const CONSENT_STORAGE_KEY = "openvault-cookie-consent";
-const CONSENT_EVENT = "openvault-cookie-consent-change";
+const CONSENT_STORAGE_KEY = "nexvaultx-cookie-consent";
+const CONSENT_EVENT = "nexvaultx-cookie-consent-change";
 
 type Consent = "accepted" | "declined";
 

@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a bug or unexpected behavior in the OpenVault frontend
+description: Report a bug or unexpected behavior in the NexVaultX frontend
 title: "[Bug]: "
 labels: [bug, triage]
 body:

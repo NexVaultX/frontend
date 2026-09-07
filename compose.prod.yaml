@@ -4,7 +4,7 @@
 
 services:
   web:
-    image: openvault-frontend:${TAG:-latest}
+    image: nexvaultx-frontend:${TAG:-latest}
     build:
       target: runtime
     ports:
