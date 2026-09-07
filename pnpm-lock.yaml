@@ -20,9 +20,6 @@ importers:
       '@fontsource-variable/inter':
         specifier: ^5.3.0
         version: 5.3.0
-      '@fontsource/antic':
-        specifier: ^5.3.0
-        version: 5.3.0
       '@lonik/themer':
         specifier: ^0.5.4
         version: 0.5.4(@tanstack/react-router@1.170.32(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0))
@@ -1024,9 +1021,6 @@ packages:
 
   '@fontsource-variable/inter@5.3.0':
     resolution: {integrity: sha512-OupL48va4JNofb97w6NYeF9S7W/kHNKM0Er8Dem5nqi4jeOLrVJDoE8tZEpnMJmtkvNbB1EIPPwHcdkF6b1oUA==}
-
-  '@fontsource/antic@5.3.0':
-    resolution: {integrity: sha512-ImQWKeGuVkYVt+d+bh6Rz/hIelxnf0mlnUd/H8EFYXeVROeDuRTPoI6UzJqHg5FeEygHVaMeBrJfmryL2y3EXw==}
 
   '@github/markdownlint-github@0.8.3':
     resolution: {integrity: sha512-8DqM9t0frFpQCFYMqH2iyic/zB7budSONWfxMjUG8k4JTIJu+L5PaOpp+/xzNHQtb26WYIcc0aTpPWzXRO9J2Q==}
@@ -5850,8 +5844,6 @@ snapshots:
   '@floating-ui/utils@0.2.12': {}
 
   '@fontsource-variable/inter@5.3.0': {}
-
-  '@fontsource/antic@5.3.0': {}
 
   '@github/markdownlint-github@0.8.3':
     dependencies:

@@ -10,6 +10,7 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 
 import { FormField } from "@/components/form-field";
+import { GoogleSignInButton } from "@/components/google-sign-in-button";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { validateSignupInput } from "@/lib/auth-validation";
@@ -75,6 +76,18 @@ const SignupPage = () => {
             {formError}
           </div>
         ) : null}
+
+        <div className="mt-6">
+          <GoogleSignInButton />
+        </div>
+
+        <div className="mt-6 flex items-center gap-3">
+          <hr className="bg-border h-px flex-1 border-0" />
+          <span className="text-muted-foreground text-xs tracking-wide uppercase">
+            or
+          </span>
+          <hr className="bg-border h-px flex-1 border-0" />
+        </div>
 
         <form onSubmit={handleSubmit} noValidate className="mt-6 grid gap-4">
           <FormField
