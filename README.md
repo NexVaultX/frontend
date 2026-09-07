@@ -1,108 +1,104 @@
 <p align="center">
   <img
     alt="NexVaultX Frontend"
-    src="https://shieldcn.dev/header/surface.svg?title=NexVaultX+Frontend&subtitle=The+modern+frontend+for+NexVaultX.%0AFast,+clean,+and+developer-focused.&mode=dark&image=https%3A%2F%2Fplus.unsplash.com%2Fpremium_photo-1678566111481-8e275550b700%3Fq%3D80%26w%3D387%26auto%3Dformat%26fit%3Dcrop"
+    src="https://shieldcn.dev/header/surface.svg?title=NexVaultX+Frontend"
   />
 </p>
 
 <p align="center">
-  <strong>The modern, open-source marketplace for Minecraft creators.</strong><br />
+  <strong>The modern, open-source marketplace for Minecraft creators.</strong>
+  <br />
   Discover, share, and manage community-created Minecraft content.
 </p>
 
 <p align="center">
   <a href="https://github.com/NexVaultX/frontend">
     <img
-      alt="GitHub Health"
-      src="https://shieldcn.dev/group/github/stars/NexVaultX/frontend+github/forks/NexVaultX/frontend+github/commits/NexVaultX/frontend+discord/1545907423502536766.svg?variant=branded"
-    />
-  </a>
-  <br/>
-  <a href="https://github.com/NexVaultX/frontend">
-    <img
       alt="License"
-      src="https://shieldcn.dev/github/NexVaultX/frontend/license.svg?mode=light&brand=github"
+      src="https://shieldcn.dev/github/NexVaultX/frontend/license.svg"
     />
   </a>
 </p>
 
----
+# NexVaultX Frontend
 
 ## Overview
 
-**NexVaultX Frontend** is the web application for [NexVaultX](https://github.com/NexVaultX), an open-source marketplace for Minecraft creators.
+**NexVaultX Frontend** is the web application for
+[NexVaultX](https://github.com/NexVaultX), an open-source marketplace for
+Minecraft creators.
 
-NexVaultX is designed for discovering, sharing, and managing community-created content including:
+This repository contains the **frontend and server-side application layer**,
+built with TanStack Start, TanStack Router, and Nitro. It is part of the
+NexVaultX platform but does not include the full infrastructure stack.
 
-- Mods
-- Plugins
-- Resource packs
-- Datapacks
-- Shaders
-- Other Minecraft creator content
+### Features
 
-This repository contains the **web frontend and its server-side application layer**. It is not the complete NexVaultX platform or infrastructure stack.
+#### Product
 
-## Features
+* Minecraft content marketplace experience
+* Content discovery and browsing
+* Creator-focused interfaces
+* Responsive web interface
+* Dark-mode-first design
+* Accessible component foundation
+* Server-rendered application
 
-### Product
+#### Engineering
 
-- Minecraft content marketplace experience
-- Content discovery and browsing
-- Creator-focused interfaces
-- Responsive web interface
-- Dark-mode-first design
-- Accessible component foundation
-- Server-rendered application
+* React 19
+* TypeScript
+* TanStack Start (full-stack React framework with SSR)
+* TanStack Router (file-based, type-safe routing)
+* Tailwind CSS v4
+* Base UI + shadcn-style components (UI foundation)
+* Better Auth (authentication)
+* Drizzle ORM (database access and schema management)
+* PostgreSQL (relational database)
+* Vitest (testing)
+* Oxlint (linting)
+* Oxfmt (formatting)
+* Ultracite (unified code-quality checks and fixes)
+* PNPM (package management)
 
-### Engineering
-
-- React 19
-- TypeScript
-- TanStack Start
-- TanStack Router
-- TanStack Query
-- Tailwind CSS v4
-- shadcn/ui
-- Better Auth
-- Drizzle ORM
-- PostgreSQL
-- Vitest
-- Oxlint
-- Oxfmt
-- Ultracite
+---
 
 ## Tech Stack
 
-| Technology          | Purpose                                   |
-| ------------------- | ----------------------------------------- |
-| **React 19**        | User interface                            |
-| **TypeScript**      | Static typing                             |
-| **TanStack Start**  | Full-stack React framework and SSR        |
-| **TanStack Router** | Type-safe, file-based routing             |
-| **TanStack Query**  | Data fetching and server-state management |
-| **Tailwind CSS v4** | Styling                                   |
-| **shadcn/ui**       | UI component foundation                   |
-| **Better Auth**     | Authentication                            |
-| **Drizzle ORM**     | Database access and schema management     |
-| **PostgreSQL**      | Relational database                       |
-| **Vite**            | Development and build tooling             |
-| **Vitest**          | Testing                                   |
-| **Oxlint**          | Linting                                   |
-| **Oxfmt**           | Formatting                                |
-| **Ultracite**       | Unified code-quality checks and fixes     |
-| **PNPM**            | Package management                        |
+| Technology          | Purpose                               |
+| ------------------- | ------------------------------------- |
+| **React 19**        | User interface                        |
+| **TypeScript**      | Static typing                         |
+| **TanStack Start**  | Full-stack React framework and SSR    |
+| **TanStack Router** | Type-safe, file-based routing         |
+| **Tailwind CSS v4** | Styling                               |
+| **Base UI**         | Accessible UI primitives              |
+| **Better Auth**     | Authentication                        |
+| **Drizzle ORM**     | Database access and schema management |
+| **PostgreSQL**      | Relational database                   |
+| **Vite**            | Development and build tooling         |
+| **Nitro**           | Production server runtime             |
+| **Vitest**          | Testing                               |
+| **Oxlint**          | Linting                               |
+| **Oxfmt**           | Formatting                            |
+| **Ultracite**       | Unified code-quality checks and fixes |
+| **PNPM**            | Package management                    |
+
+---
 
 ## Requirements
 
-Before getting started, make sure you have:
+Before starting development, ensure you have:
 
-- **Node.js 24+**
-- **PNPM 11.3.0**
-- **PostgreSQL** for local server-side functionality
-- Git
+* **Node.js 22+**
+* **PNPM 11.3.0** (managed via `packageManager` in `package.json`)
+* **PostgreSQL** for local server-side database integration
+* Git
 
-The repository pins PNPM through the `packageManager` field, so using the pinned version is recommended.
+> **Note:** The repository pins PNPM through the `packageManager` field, so
+> using the pinned version is recommended.
+
+---
 
 ## Getting Started
 
@@ -121,18 +117,17 @@ pnpm install
 
 ### Configure the Environment
 
-Create a `.env.local` file in the repository root:
+Create a `.env.local` file in the root directory with the following
+variables:
 
 ```env
-BETTER_AUTH_SECRET=
-BETTER_AUTH_URL=http://localhost:3000
+BETTER_AUTH_SECRET=your-secret-here  # Must be at least 32 characters
+BETTER_AUTH_URL=http://localhost:6001
 DATABASE_URL=postgresql://user:password@localhost:5432/nexvaultx
 NODE_ENV=development
 ```
 
-The application validates its environment configuration at runtime. `BETTER_AUTH_SECRET` must contain at least 32 characters, `BETTER_AUTH_URL` must be a valid URL, and `DATABASE_URL` must be a valid URL.
-
-> **Never commit ****`.env.local`**** or real credentials to the repository.**
+> Never commit `.env.local` or real credentials to the repository.
 
 ### Start the Development Server
 
@@ -140,151 +135,114 @@ The application validates its environment configuration at runtime. `BETTER_AUTH
 pnpm dev
 ```
 
-The development server runs on:
+The development server runs on `http://localhost:6001`.
 
-```text
-http://localhost:3000
-```
+---
 
 ## Available Commands
 
-| Command          | Description                                        |
-| ---------------- | -------------------------------------------------- |
-| `pnpm dev`       | Start the Vite development server on port 3000     |
-| `pnpm build`     | Build the production application                   |
-| `pnpm preview`   | Preview the production build                       |
-| `pnpm start`     | Start the built Nitro server                       |
-| `pnpm test`      | Run the Vitest test suite                          |
-| `pnpm typecheck` | Run the TypeScript compiler without emitting files |
-| `pnpm lint`      | Run Oxlint                                         |
-| `pnpm format`    | Format TypeScript and JavaScript files with Oxfmt  |
-| `pnpm check`     | Run Ultracite checks                               |
-| `pnpm fix`       | Apply Ultracite fixes                              |
-| `pnpm prepare`   | Initialize Husky Git hooks                         |
+| Command          | Description                         |
+| ---------------- | ----------------------------------- |
+| `pnpm dev`       | Starts the development server       |
+| `pnpm build`     | Builds the production bundle        |
+| `pnpm preview`   | Previews the production build       |
+| `pnpm start`     | Starts the built Nitro server       |
+| `pnpm test`      | Runs the Vitest test suite          |
+| `pnpm typecheck` | Runs the TypeScript type checker    |
+| `pnpm lint`      | Runs the Oxlint linter              |
+| `pnpm lint:md`   | Runs markdownlint on Markdown files |
+| `pnpm format`    | Runs the Oxfmt formatter            |
+| `pnpm check`     | Runs the Ultracite checker          |
+| `pnpm fix`       | Applies Ultracite checks            |
+| `pnpm prepare`   | Initializes Husky Git hooks         |
 
-These commands are defined directly in the repository's `package.json`.
-
-## Project Structure
-
-```text
-.
-├── src/
-│   ├── components/     # Shared UI components
-│   ├── db/             # Database integration
-│   ├── lib/            # Shared application logic
-│   ├── routes/         # TanStack Router routes
-│   ├── __tests__/      # Test suites
-│   ├── test/           # Test configuration/helpers
-│   ├── router.tsx      # Router configuration
-│   ├── routeTree.gen.ts
-│   └── styles.css      # Global styles
-├── drizzle/            # Drizzle database migrations
-├── .github/            # GitHub configuration and automation
-├── .husky/             # Git hooks
-├── Dockerfile          # Production container image
-├── compose.yaml        # Base Docker Compose configuration
-├── compose.dev.yaml    # Development Compose configuration
-├── compose.prod.yaml   # Production Compose configuration
-├── env.config.ts       # Environment validation
-├── drizzle.config.ts   # Drizzle configuration
-├── vite.config.ts      # Vite/TanStack Start/Nitro configuration
-├── package.json
-└── README.md
-```
-
-The application is organized around TanStack Start and TanStack Router, with shared UI in `components`, application utilities in `lib`, database functionality in `db`, and routes under `routes`.
+---
 
 ## Architecture
 
-At a high level, the application follows this structure:
+The application follows this structure:
 
 ```text
-React
-  │
-  ├── TanStack Start
-  │     ├── TanStack Router
-  │     └── SSR / server runtime
-  │
-  ├── TanStack Query
-  │     └── Server-state and data fetching
-  │
-  ├── Better Auth
-  │     └── Authentication
-  │
-  └── Drizzle ORM
-        └── PostgreSQL
+src/
+├── components/   # UI components (Base UI + shadcn-style)
+├── routes/       # TanStack Start file-based routes
+├── lib/          # Shared utilities and configuration
+├── db/           # Drizzle ORM schema and client
+└── styles/       # Global styles and design tokens
 ```
 
-The Vite configuration integrates TanStack Start, TanStack Router support, Tailwind CSS, TanStack DevTools, Nitro, and React.
+The Vite configuration integrates TanStack Start, TanStack Router, Tailwind
+CSS, TanStack DevTools, Nitro, and React.
+
+---
 
 ## Database
 
-The application uses **PostgreSQL** through **Drizzle ORM**.
+The application uses **PostgreSQL** via **Drizzle ORM**.
 
-A local PostgreSQL instance is required when working with functionality that depends on the application's server-side database integration.
+* A local PostgreSQL instance is required for server-side database
+  functionality.
+* The connection is configured via `DATABASE_URL`:
 
-The connection is configured through:
+  ```env
+  DATABASE_URL=postgresql://user:password@localhost:5432/nexvaultx
+  ```
 
-```env
-DATABASE_URL=postgresql://user:password@localhost:5432/nexvaultx
-```
+* Database migrations are stored in the `drizzle/` directory.
 
-Database migrations are stored in the `drizzle/` directory.
+---
 
 ## Authentication
 
-Authentication is handled with **Better Auth**.
+The application uses **Better Auth** for authentication.
 
-The required authentication configuration is:
+* Required configuration:
 
-```env
-BETTER_AUTH_SECRET=
-BETTER_AUTH_URL=http://localhost:3000
-```
+  ```env
+  BETTER_AUTH_SECRET=your-secret-here
+  BETTER_AUTH_URL=http://localhost:6001
+  ```
 
-`BETTER_AUTH_SECRET` must contain at least 32 characters.
+* For local development, `BETTER_AUTH_URL` should be set to the local
+  application URL.
 
-For local development, `BETTER_AUTH_URL` should point to the local application URL.
+---
 
 ## Development Workflow
 
-Development follows a simple promotion workflow:
+The workflow follows a simple promotion pattern:
 
 ```text
-feature branch
-      │
-      ▼
-    main
-      │
-      ▼
-    prod
-      │
-      ▼
-production deployment
+feature branch → main → prod → production deployment
 ```
 
 ### `main`
 
-`main` is the primary development branch.
-
-New work should be developed on a dedicated branch and merged into `main` through the project's normal pull request workflow.
+* The primary development branch.
+* New work is developed on a dedicated branch and merged into `main` via
+  pull requests.
 
 ### `prod`
 
-`prod` represents the production branch.
+* Represents the production branch.
+* Merging `main` into `prod` triggers automatic production deployment.
+* The `prod` branch is protected: changes can only land through a pull
+  request whose head branch is `main`.
 
-Merging `main` into `prod` triggers the production deployment.
+> [!IMPORTANT] Do not develop directly on `prod`. Changes must flow through
+> `main` first.
 
-> [!IMPORTANT] Do not develop directly on `prod`. Changes should flow through `main` before being promoted to production.
+---
 
 ## Code Quality
 
-Before opening a pull request, run the project's validation commands:
+Before opening a pull request, run the following commands:
 
 ```bash
 pnpm check
 pnpm typecheck
 pnpm test
+pnpm lint:md
 ```
 
 For automatic fixes:
@@ -299,19 +257,24 @@ For formatting:
 pnpm format
 ```
 
-The project uses Ultracite together with Oxlint and Oxfmt for code-quality enforcement.
+The project uses **Ultracite**, **Oxlint**, and **Oxfmt** for code-quality
+enforcement, and **markdownlint** (via `markdownlint-cli2` with the GitHub
+ruleset) for documentation.
+
+---
 
 ## Testing
 
-Tests use **Vitest** with Testing Library.
-
-Run the test suite with:
+Tests use **Vitest** with Testing Library. Run the test suite with:
 
 ```bash
 pnpm test
 ```
 
-The repository is configured to succeed when no tests are present, allowing the test command to remain part of the standard development workflow while coverage is expanded.
+The repository is configured to succeed when no tests are present, allowing
+the test command to remain part of the workflow.
+
+---
 
 ## Production Build
 
@@ -321,135 +284,91 @@ Build the production application with:
 pnpm build
 ```
 
-To preview the generated build:
+Preview the generated build with:
 
 ```bash
 pnpm preview
 ```
 
-The production server can be started with:
+Start the production server:
 
 ```bash
 pnpm start
 ```
 
-The application uses Nitro for its production server output.
+The application uses **Nitro** for its production server output.
+
+---
 
 ## Docker
 
-The repository includes a multi-stage Dockerfile with separate dependency, build, and runtime stages.
-
-The runtime image executes the generated Nitro server as a non-root user and exposes port `3000`.
-
 ### Development
+
+Run the development environment with Docker:
 
 ```bash
 docker compose -f compose.yaml -f compose.dev.yaml up
 ```
 
-The development Compose configuration mounts the source tree and runs the Vite development server with hot reload.
+The development Compose configuration mounts the source tree and runs the
+Vite development server with hot reload. The container listens on port
+`6001` and is exposed on host port `1112`:
+
+```text
+host :1112 → container :6001 (Vite dev server)
+```
 
 ### Production
 
+Run the production environment with Docker:
+
 ```bash
-docker compose -f compose.yaml -f compose.prod.yaml up -d --build
+docker compose -f compose.yaml -f compose.prod.yaml up -d
 ```
 
-The production Compose configuration builds and runs the production image with the Nitro server.
+The production Compose configuration builds and runs the production image
+with the Nitro server. The container listens on port `3000` and is exposed
+on host port `1112`:
+
+```text
+host :1112 → container :3000 (Nitro server)
+```
+
+> The host port defaults to `1112` to avoid conflicts with other services
+> (for example, Dokploy commonly occupies host port `3000`). Override it
+> with the `PORT` environment variable if needed.
+
+---
 
 ## Deployment
 
-Production deployment follows:
+Production deployment follows this workflow:
 
 ```text
 main → prod → automatic production deployment
 ```
 
-Changes merged from `main` into `prod` are automatically deployed to production.
-
-The repository also provides production Docker and Docker Compose configuration for running the application as a containerized Nitro server.
-
-## Contributing
-
-Contributions are welcome.
-
-A typical contribution workflow is:
-
-```bash
-git checkout main
-git pull
-git checkout -b feat/your-change
-```
-
-Then:
-
-1. Make your changes.
-2. Run the relevant tests.
-3. Run type checking.
-4. Run the project's code-quality checks.
-5. Open a pull request against `main`.
-6. Address review feedback.
-7. Once merged, changes can be promoted from `main` to `prod` for production deployment.
-
-For larger features or architectural changes, open an issue first so the implementation can be discussed before significant work begins.
-
-## Branch Naming
-
-Use descriptive branch names following the Conventional Branch style:
-
-```text
-feat/add-content-search
-fix/auth-session
-docs/improve-readme
-refactor/router-setup
-chore/update-dependencies
-```
-
-Keep branch names short, descriptive, and scoped to the change being made.
-
-## Security
-
-If you discover a security vulnerability, **do not disclose it publicly through a GitHub issue**.
-
-Please use the repository's private security reporting mechanism when available.
-
-See [`SECURITY.md`](SECURITY.md) for the project's security policy and reporting instructions.
-
-## Code of Conduct
-
-NexVaultX is intended to be a welcoming open-source project.
-
-Please see [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) for the project's community standards.
-
-## Support
-
-For bugs and feature requests, use:
-
-- [GitHub Issues](https://github.com/NexVaultX/frontend/issues)
-- [GitHub Discussions](https://github.com/NexVaultX/frontend/discussions), when available
-
-For general community discussion, use the project's official Discord community.
-
-## Project Status
-
-NexVaultX Frontend is under active development.
-
-APIs, routes, UI components, and internal architecture may change as the marketplace evolves.
-
-For the current state of development, see the repository's issues and pull requests.
-
-## License
-
-NexVaultX Frontend is licensed under the **Apache License 2.0**.
-
-See [`LICENSE`](LICENSE) for the complete license text.
+Changes merged from `main` into `prod` are automatically deployed to
+production.
 
 ---
 
-<p align="center">
-  <a href="https://github.com/NexVaultX/frontend">GitHub</a>
-  ·
-  <a href="https://github.com/NexVaultX/frontend/issues">Issues</a>
-  ·
-  <a href="https://github.com/NexVaultX/frontend/pulls">Pull Requests</a>
-</p>
+## Contributing
+
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for the
+full contribution guide, including branch strategy, code-quality
+requirements, and the pull request process.
+
+---
+
+## Security
+
+Found a security issue? See [SECURITY.md](SECURITY.md) for our vulnerability
+reporting policy.
+
+---
+
+## Code of Conduct
+
+Please review [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) before participating
+in the community.

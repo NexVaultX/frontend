@@ -1,4 +1,4 @@
-# Development override for OpenVault Frontend.
+# Development override for NexVaultX Frontend.
 #
 # Mounts the source tree and runs the Vite dev server with hot reload.
 #
@@ -10,7 +10,7 @@ services:
     build:
       target: deps
     ports:
-      - "${PORT:-3000}:3000"
+      - "${PORT:-1112}:6001"
     environment:
       NODE_ENV: development
     volumes:

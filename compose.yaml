@@ -1,4 +1,4 @@
-# Base Compose configuration for OpenVault Frontend.
+# Base Compose configuration for NexVaultX Frontend.
 #
 # This file defines the shared service. Environment-specific overrides live in
 # compose.dev.yaml (development) and compose.prod.yaml (production).
