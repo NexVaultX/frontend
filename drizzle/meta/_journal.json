@@ -15,6 +15,13 @@
       "when": 1788694070279,
       "tag": "0001_ordinary_hellcat",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788795110064,
+      "tag": "0002_quick_kylun",
+      "breakpoints": true
     }
   ]
 }

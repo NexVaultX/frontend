@@ -1,4 +1,5 @@
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
+import { passkey } from "@better-auth/passkey";
 import { betterAuth } from "better-auth";
 import { username } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
@@ -6,6 +7,8 @@ import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { db } from "@/db";
 
 import env from "../../env.config";
+
+const rpID = new URL(env.BETTER_AUTH_URL).hostname;
 
 export const auth = betterAuth({
   appName: "NexVaultX",
@@ -20,6 +23,11 @@ export const auth = betterAuth({
   },
   plugins: [
     username(),
+    passkey({
+      origin: env.BETTER_AUTH_URL,
+      rpID,
+      rpName: "NexVaultX",
+    }),
     // MUST be the last plugin for TanStack Start cookie handling
     tanstackStartCookies(),
   ],

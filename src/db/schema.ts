@@ -2,6 +2,7 @@ import { relations } from "drizzle-orm";
 import {
   boolean,
   index,
+  integer,
   pgTable,
   text,
   timestamp,
@@ -89,8 +90,32 @@ export const verifications = pgTable(
   (table) => [index("verifications_identifier_idx").on(table.identifier)]
 );
 
+export const passkeys = pgTable(
+  "passkeys",
+  {
+    aaguid: text("aaguid"),
+    backedUp: boolean("backed_up").notNull(),
+    counter: integer("counter").notNull(),
+    createdAt: timestamp("created_at"),
+    credentialID: text("credential_id").notNull(),
+    deviceType: text("device_type").notNull(),
+    id: text("id").primaryKey(),
+    name: text("name"),
+    publicKey: text("public_key").notNull(),
+    transports: text("transports"),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+  },
+  (table) => [
+    index("passkeys_userId_idx").on(table.userId),
+    index("passkeys_credentialID_idx").on(table.credentialID),
+  ]
+);
+
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
+  passkeys: many(passkeys),
   sessions: many(sessions),
 }));
 
@@ -104,6 +129,13 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
 export const accountsRelations = relations(accounts, ({ one }) => ({
   user: one(users, {
     fields: [accounts.userId],
+    references: [users.id],
+  }),
+}));
+
+export const passkeysRelations = relations(passkeys, ({ one }) => ({
+  user: one(users, {
+    fields: [passkeys.userId],
     references: [users.id],
   }),
 }));

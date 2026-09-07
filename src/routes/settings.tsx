@@ -4,6 +4,7 @@ import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 
 import { SettingsAccount } from "@/components/settings/settings-account";
 import { SettingsDangerZone } from "@/components/settings/settings-danger-zone";
+import { SettingsPasskeys } from "@/components/settings/settings-passkeys";
 import { SettingsProfile } from "@/components/settings/settings-profile";
 import { SettingsSessions } from "@/components/settings/settings-sessions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -32,6 +33,7 @@ const SettingsPage = () => {
         <TabsList aria-label="Settings sections">
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="account">Account</TabsTrigger>
+          <TabsTrigger value="passkeys">Passkeys</TabsTrigger>
           <TabsTrigger value="sessions">Sessions</TabsTrigger>
           <TabsTrigger value="danger">Danger Zone</TabsTrigger>
         </TabsList>
@@ -42,6 +44,10 @@ const SettingsPage = () => {
 
         <TabsContent value="account">
           <SettingsAccount />
+        </TabsContent>
+
+        <TabsContent value="passkeys">
+          <SettingsPasskeys />
         </TabsContent>
 
         <TabsContent value="sessions">
