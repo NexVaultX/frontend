@@ -331,6 +331,14 @@ complement the a11y section above.
   arbitrary grays
 * Respect both light and dark themes — test every new component in both
 
+### Visual Effects
+
+* No gradients, shadows, or glows unless explicitly asked — keep
+  surfaces flat with `bg-card`/`bg-muted` and `border` for separation
+* Never add `bg-gradient-*`, `shadow-*`, `drop-shadow`, `blur-*`, or
+  glow effects speculatively; only apply them when the user requests
+  them
+
 ### Components & Patterns
 
 * Prefer shadcn/Base UI primitives (`Button`, `Dialog`, `Drawer`,

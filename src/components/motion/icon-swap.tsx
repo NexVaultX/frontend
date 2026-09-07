@@ -11,8 +11,7 @@ import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
-const BLUR_TRANSITION = { duration: 0.2, ease: "easeInOut" } as const;
-const SWAP_BLUR = "blur(8px)";
+const SWAP_TRANSITION = { duration: 0.2, ease: "easeInOut" } as const;
 
 interface IconSwapProps {
   value: string;
@@ -35,28 +34,16 @@ const IconSwap = ({ value, children, className }: IconSwapProps) => {
           <m.span
             key={value}
             aria-hidden
-            initial={
-              reduce ? false : { filter: SWAP_BLUR, opacity: 0, scale: 0.25 }
-            }
+            initial={reduce ? false : { opacity: 0, scale: 0.25 }}
             animate={
               reduce
-                ? { filter: "blur(0px)", opacity: 1, scale: 1 }
-                : {
-                    filter: "blur(0px)",
-                    opacity: 1,
-                    scale: 1,
-                    transition: BLUR_TRANSITION,
-                  }
+                ? { opacity: 1, scale: 1 }
+                : { opacity: 1, scale: 1, transition: SWAP_TRANSITION }
             }
             exit={
               reduce
                 ? undefined
-                : {
-                    filter: SWAP_BLUR,
-                    opacity: 0,
-                    scale: 0.25,
-                    transition: BLUR_TRANSITION,
-                  }
+                : { opacity: 0, scale: 0.25, transition: SWAP_TRANSITION }
             }
             className="col-start-1 row-start-1 inline-flex items-center justify-center"
           >

@@ -38,7 +38,7 @@ const Hero = () => (
         <Button
           variant="default"
           size="lg"
-          className="ease-smooth min-h-11 transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98] motion-reduce:transform-none motion-reduce:transition-none"
+          className="ease-smooth min-h-11 transition-transform duration-200 hover:-translate-y-0.5 active:scale-[0.98] motion-reduce:transform-none motion-reduce:transition-none"
         >
           Browse Projects
           <IconArrowRight size={16} />

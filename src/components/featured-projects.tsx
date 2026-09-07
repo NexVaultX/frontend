@@ -140,11 +140,6 @@ const ProjectCard = ({ project }: { project: Project }) => (
       <span className="sr-only">View {project.name}</span>
     </a>
 
-    <div
-      aria-hidden="true"
-      className="via-foreground/15 absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent to-transparent opacity-0 transition-opacity duration-300 group-focus-within:opacity-100"
-    />
-
     <div className="flex items-start gap-4">
       <div className="border-border bg-primary/10 text-primary group-focus-within:bg-primary/15 flex size-14 shrink-0 items-center justify-center rounded-xl border text-xl font-bold transition-[transform,background-color,border-color] duration-300 group-focus-within:scale-105">
         {project.initial}

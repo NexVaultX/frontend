@@ -76,7 +76,7 @@ const NewsSection = () => (
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {NEWS.map((item, index) => (
           <Reveal key={item.title} delay={index * 0.06}>
-            <article className="group border-border bg-card ease-smooth hover:shadow-glow relative h-full rounded-xl border p-6 transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none">
+            <article className="group border-border bg-card ease-smooth relative h-full rounded-xl border p-6 transition-transform duration-300 hover:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none">
               <a
                 href={`/news/${item.title.toLowerCase().replaceAll(" ", "-")}`}
                 className="focus-visible:ring-ring absolute inset-0 rounded-xl focus-visible:ring-2 focus-visible:outline-none"

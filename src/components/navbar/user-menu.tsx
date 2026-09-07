@@ -60,7 +60,7 @@ const UserMenu = ({ user, onSignOut }: UserMenuProps) => {
           align="end"
           className="z-50 outline-none"
         >
-          <Menu.Popup className="border-border bg-popover min-w-48 origin-[var(--transform-origin)] rounded-xl border p-1.5 shadow-xl transition-[scale,opacity] duration-100 ease-out outline-none data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0">
+          <Menu.Popup className="border-border bg-popover min-w-48 origin-[var(--transform-origin)] rounded-xl border p-1.5 transition-[scale,opacity] duration-100 ease-out outline-none data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0">
             <div className="border-border/70 mb-1 border-b px-3 py-2">
               <p className="text-foreground truncate text-sm font-medium">
                 {user.name}

@@ -25,7 +25,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className="border-border/70 bg-background/85 sticky top-0 z-50 border-b backdrop-blur-xl">
+    <header className="border-border/70 bg-background sticky top-0 z-50 border-b">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6 lg:px-8">
         <NavbarLogo />
 
