@@ -22,6 +22,7 @@
     "@better-auth/drizzle-adapter": "^1.7.2",
     "@better-auth/passkey": "^1.7.3",
     "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource/antic": "^5.3.0",
     "@lonik/themer": "^0.5.4",
     "@tabler/icons-react": "^3.46.0",
     "@tailwindcss/vite": "^4",
