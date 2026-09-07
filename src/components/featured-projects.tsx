@@ -84,18 +84,23 @@ const shuffleProjects = (projects: Project[]) => {
 };
 
 const ProjectCard = ({ project }: { project: Project }) => (
-  <article className="group border-border bg-card hover:border-foreground/20 relative flex h-full min-h-[220px] w-[calc(100vw-48px)] shrink-0 flex-col overflow-hidden rounded-xl border p-5 transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-lg sm:w-[360px]">
+  <article className="group NexVaultX-projects-card border-border bg-card hover:border-foreground/20 focus-within:border-foreground/20 ease-smooth hover:ring-ring/25 focus-within:ring-ring/25 relative flex h-full min-h-[240px] w-[calc(100vw-48px)] shrink-0 flex-col overflow-hidden rounded-2xl border p-6 transition-[transform,box-shadow,border-color,opacity] duration-300 focus-within:-translate-y-1.5 focus-within:scale-[1.02] focus-within:shadow-lg focus-within:ring-1 hover:-translate-y-1.5 hover:scale-[1.02] hover:shadow-lg hover:ring-1 motion-reduce:transform-none motion-reduce:transition-none sm:w-[360px]">
     <a
       href={`/project/${project.name.toLowerCase().replaceAll(" ", "-")}`}
-      className="focus-visible:ring-ring absolute inset-0 z-10 rounded-xl focus-visible:ring-2 focus-visible:outline-none"
+      className="focus-visible:ring-ring absolute inset-0 z-10 rounded-2xl focus-visible:ring-2 focus-visible:outline-none"
       aria-label={`View ${project.name}`}
     >
       <span className="sr-only">View {project.name}</span>
     </a>
 
+    <div
+      aria-hidden="true"
+      className="via-foreground/15 absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent to-transparent opacity-0 transition-opacity duration-300 group-focus-within:opacity-100 group-hover:opacity-100"
+    />
+
     <div className="flex items-start gap-4">
       <div
-        className="border-border bg-muted text-foreground group-hover:border-foreground/20 group-hover:bg-muted/70 flex size-14 shrink-0 items-center justify-center rounded-xl border text-xl font-bold transition-[transform,background-color,border-color] duration-300 group-hover:scale-105"
+        className="border-border bg-muted text-foreground group-hover:border-foreground/20 group-hover:bg-muted/70 group-focus-within:border-foreground/20 group-focus-within:bg-muted/70 flex size-14 shrink-0 items-center justify-center rounded-xl border text-xl font-bold transition-[transform,background-color,border-color] duration-300 group-focus-within:scale-105 group-hover:scale-105"
         aria-hidden="true"
       >
         {project.initial}
@@ -131,17 +136,12 @@ const ProjectCard = ({ project }: { project: Project }) => (
 
       <span
         aria-hidden="true"
-        className="text-muted-foreground inline-flex translate-x-1 items-center gap-1 text-xs font-medium opacity-0 transition-[transform,opacity] duration-300 group-hover:translate-x-0 group-hover:opacity-100"
+        className="text-foreground inline-flex translate-x-1 items-center gap-1 text-xs font-semibold opacity-0 transition-[transform,opacity] duration-300 group-focus-within:translate-x-0 group-focus-within:opacity-100 group-hover:translate-x-0 group-hover:opacity-100"
       >
         View
         <IconArrowRight size={14} />
       </span>
     </div>
-
-    <div
-      aria-hidden="true"
-      className="bg-foreground absolute right-5 bottom-0 left-5 h-px origin-left scale-x-[0.01] opacity-0 transition-[transform,opacity] duration-300 group-hover:scale-x-100 group-hover:opacity-100"
-    />
   </article>
 );
 
@@ -209,6 +209,13 @@ const FeaturedProjects = () => {
 
         .NexVaultX-projects:hover .NexVaultX-projects-track {
           animation-play-state: paused;
+        }
+
+        @media (hover: hover) {
+          .NexVaultX-projects:has(.NexVaultX-projects-card:hover)
+            .NexVaultX-projects-card:not(:hover) {
+            opacity: 0.65;
+          }
         }
 
         @media (max-width: 640px) {
