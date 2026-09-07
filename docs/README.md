@@ -32,6 +32,11 @@ frontend. Each guide lives in its own directory under `docs/`.
 
 * [Docker](deployment/docker.md) — build and run the production image
 
+## Search
+
+* [Meilisearch](search/meilisearch.md) — index, seed, and query the
+  mods search engine
+
 ## Theming
 
 * [Custom Theme](theming/custom-theme.md) — apply a theme from

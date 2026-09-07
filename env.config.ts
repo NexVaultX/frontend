@@ -12,6 +12,9 @@ const env = defineEnv({
     DATABASE_URL: z.url(),
     GOOGLE_CLIENT_ID: z.string().optional(),
     GOOGLE_CLIENT_SECRET: z.string().optional(),
+    MEILI_HOST: z.url().default("http://localhost:7700"),
+    MEILI_MASTER_KEY: z.string().optional(),
+    MEILI_SEARCH_KEY: z.string().optional(),
   },
   shared: {
     NODE_ENV: z
