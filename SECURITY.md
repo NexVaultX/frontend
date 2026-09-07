@@ -24,13 +24,13 @@ You can report a vulnerability using GitHub's **private vulnerability reporting*
 
 When submitting a report, please include as much of the following information as possible:
 
-* A clear description of the vulnerability
-* The affected component, route, feature, or dependency
-* The affected version, branch, or commit
-* Steps to reproduce the issue
-* A proof of concept, if available
-* The potential security impact
-* Any suggested mitigation or fix
+- A clear description of the vulnerability
+- The affected component, route, feature, or dependency
+- The affected version, branch, or commit
+- Steps to reproduce the issue
+- A proof of concept, if available
+- The potential security impact
+- Any suggested mitigation or fix
 
 Please avoid including real user data, credentials, authentication tokens, database credentials, or other sensitive information in the report.
 
@@ -50,32 +50,32 @@ Response and remediation times may vary depending on the severity and complexity
 
 Security reports may include, but are not limited to:
 
-* Authentication and authorization vulnerabilities
-* Session-management issues
-* Account takeover vulnerabilities
-* Injection vulnerabilities
-* Cross-site scripting (XSS)
-* Cross-site request forgery (CSRF)
-* Server-side request forgery (SSRF)
-* Sensitive information disclosure
-* Insecure database access
-* Privilege escalation
-* Security issues in server-side application logic
-* Vulnerable dependencies that directly affect NexVaultX
-* Improper handling of secrets or credentials
+- Authentication and authorization vulnerabilities
+- Session-management issues
+- Account takeover vulnerabilities
+- Injection vulnerabilities
+- Cross-site scripting (XSS)
+- Cross-site request forgery (CSRF)
+- Server-side request forgery (SSRF)
+- Sensitive information disclosure
+- Insecure database access
+- Privilege escalation
+- Security issues in server-side application logic
+- Vulnerable dependencies that directly affect NexVaultX
+- Improper handling of secrets or credentials
 
 ## Out of Scope
 
 The following generally do not constitute security vulnerabilities in NexVaultX:
 
-* Issues affecting unsupported or obsolete software versions
-* Vulnerabilities in third-party services that cannot be influenced by NexVaultX
-* Reports that require physical access to a user's device
-* Social engineering attacks against NexVaultX contributors or users
-* Denial-of-service reports without a demonstrated security impact
-* Automated scanner output without a reproducible security impact
-* Vulnerabilities that have already been publicly disclosed and addressed
-* Theoretical vulnerabilities without a realistic attack scenario
+- Issues affecting unsupported or obsolete software versions
+- Vulnerabilities in third-party services that cannot be influenced by NexVaultX
+- Reports that require physical access to a user's device
+- Social engineering attacks against NexVaultX contributors or users
+- Denial-of-service reports without a demonstrated security impact
+- Automated scanner output without a reproducible security impact
+- Vulnerabilities that have already been publicly disclosed and addressed
+- Theoretical vulnerabilities without a realistic attack scenario
 
 This does not prevent maintainers from investigating a report that falls outside these guidelines when appropriate.
 
@@ -93,12 +93,12 @@ Security fixes may be released independently of normal feature development.
 
 Depending on the severity of an issue, maintainers may:
 
-* Release a security patch
-* Update affected dependencies
-* Rotate compromised credentials or secrets
-* Disable an affected feature temporarily
-* Publish a security advisory
-* Notify affected users when appropriate
+- Release a security patch
+- Update affected dependencies
+- Rotate compromised credentials or secrets
+- Disable an affected feature temporarily
+- Publish a security advisory
+- Notify affected users when appropriate
 
 ## Thank You
 

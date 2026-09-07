@@ -34,12 +34,12 @@
 
 NexVaultX is designed for discovering, sharing, and managing community-created content including:
 
-* Mods
-* Plugins
-* Resource packs
-* Datapacks
-* Shaders
-* Other Minecraft creator content
+- Mods
+- Plugins
+- Resource packs
+- Datapacks
+- Shaders
+- Other Minecraft creator content
 
 This repository contains the **web frontend and its server-side application layer**. It is not the complete NexVaultX platform or infrastructure stack.
 
@@ -47,30 +47,30 @@ This repository contains the **web frontend and its server-side application laye
 
 ### Product
 
-* Minecraft content marketplace experience
-* Content discovery and browsing
-* Creator-focused interfaces
-* Responsive web interface
-* Dark-mode-first design
-* Accessible component foundation
-* Server-rendered application
+- Minecraft content marketplace experience
+- Content discovery and browsing
+- Creator-focused interfaces
+- Responsive web interface
+- Dark-mode-first design
+- Accessible component foundation
+- Server-rendered application
 
 ### Engineering
 
-* React 19
-* TypeScript
-* TanStack Start
-* TanStack Router
-* TanStack Query
-* Tailwind CSS v4
-* shadcn/ui
-* Better Auth
-* Drizzle ORM
-* PostgreSQL
-* Vitest
-* Oxlint
-* Oxfmt
-* Ultracite
+- React 19
+- TypeScript
+- TanStack Start
+- TanStack Router
+- TanStack Query
+- Tailwind CSS v4
+- shadcn/ui
+- Better Auth
+- Drizzle ORM
+- PostgreSQL
+- Vitest
+- Oxlint
+- Oxfmt
+- Ultracite
 
 ## Tech Stack
 
@@ -97,10 +97,10 @@ This repository contains the **web frontend and its server-side application laye
 
 Before getting started, make sure you have:
 
-* **Node.js 24+**
-* **PNPM 11.3.0**
-* **PostgreSQL** for local server-side functionality
-* Git
+- **Node.js 24+**
+- **PNPM 11.3.0**
+- **PostgreSQL** for local server-side functionality
+- Git
 
 The repository pins PNPM through the `packageManager` field, so using the pinned version is recommended.
 
@@ -275,8 +275,7 @@ New work should be developed on a dedicated branch and merged into `main` throug
 
 Merging `main` into `prod` triggers the production deployment.
 
-> [!IMPORTANT]
-> Do not develop directly on `prod`. Changes should flow through `main` before being promoted to production.
+> [!IMPORTANT] Do not develop directly on `prod`. Changes should flow through `main` before being promoted to production.
 
 ## Code Quality
 
@@ -426,8 +425,8 @@ Please see [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) for the project's communit
 
 For bugs and feature requests, use:
 
-* [GitHub Issues](https://github.com/NexVaultX/frontend/issues)
-* [GitHub Discussions](https://github.com/NexVaultX/frontend/discussions), when available
+- [GitHub Issues](https://github.com/NexVaultX/frontend/issues)
+- [GitHub Discussions](https://github.com/NexVaultX/frontend/discussions), when available
 
 For general community discussion, use the project's official Discord community.
 

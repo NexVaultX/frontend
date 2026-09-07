@@ -12,26 +12,26 @@ We expect all participants to treat others with respect regardless of age, disab
 
 Examples of behavior that contributes to a positive environment include:
 
-* Being respectful, constructive, and considerate toward others
-* Demonstrating empathy and patience
-* Respecting different opinions, technical approaches, and experiences
-* Giving and accepting constructive feedback gracefully
-* Helping others learn and improve
-* Taking responsibility for mistakes and learning from them
-* Keeping discussions focused on the project rather than individuals
-* Prioritizing the health and success of the NexVaultX community
+- Being respectful, constructive, and considerate toward others
+- Demonstrating empathy and patience
+- Respecting different opinions, technical approaches, and experiences
+- Giving and accepting constructive feedback gracefully
+- Helping others learn and improve
+- Taking responsibility for mistakes and learning from them
+- Keeping discussions focused on the project rather than individuals
+- Prioritizing the health and success of the NexVaultX community
 
 Examples of unacceptable behavior include:
 
-* Harassment, discrimination, or intimidation
-* Sexualized language, imagery, or unwanted sexual attention
-* Trolling, personal attacks, insults, or deliberately derogatory comments
-* Threats or encouragement of violence
-* Publishing or sharing someone's private information without their explicit permission
-* Deliberately disrupting project discussions, issues, pull requests, or community spaces
-* Impersonating maintainers, contributors, or other community members
-* Repeatedly contacting someone after they have asked you to stop
-* Other conduct that would reasonably be considered inappropriate or unprofessional in an open-source community
+- Harassment, discrimination, or intimidation
+- Sexualized language, imagery, or unwanted sexual attention
+- Trolling, personal attacks, insults, or deliberately derogatory comments
+- Threats or encouragement of violence
+- Publishing or sharing someone's private information without their explicit permission
+- Deliberately disrupting project discussions, issues, pull requests, or community spaces
+- Impersonating maintainers, contributors, or other community members
+- Repeatedly contacting someone after they have asked you to stop
+- Other conduct that would reasonably be considered inappropriate or unprofessional in an open-source community
 
 Technical disagreement is not inherently unacceptable behavior. Criticism of code, architecture, design decisions, or project direction is welcome when it remains respectful and focused on the subject rather than the person.
 
@@ -49,21 +49,21 @@ Moderation decisions may be communicated privately when appropriate. Maintainers
 
 This Code of Conduct applies to all official NexVaultX community spaces, including but not limited to:
 
-* GitHub repositories
-* Issues and pull requests
-* GitHub Discussions
-* Official Discord servers
-* Project-related events and meetings
-* Other communication channels officially operated or maintained by NexVaultX
+- GitHub repositories
+- Issues and pull requests
+- GitHub Discussions
+- Official Discord servers
+- Project-related events and meetings
+- Other communication channels officially operated or maintained by NexVaultX
 
 This Code of Conduct also applies when an individual is officially representing NexVaultX in public spaces.
 
 Examples include:
 
-* Using an official NexVaultX account or email address
-* Representing NexVaultX at an event
-* Acting as an appointed project representative
-* Publishing content on behalf of the project
+- Using an official NexVaultX account or email address
+- Representing NexVaultX at an event
+- Acting as an appointed project representative
+- Publishing content on behalf of the project
 
 Behavior occurring outside official community spaces may also be considered when it directly affects the safety or participation of members within the NexVaultX community.
 
@@ -73,10 +73,10 @@ If you experience or witness behavior that violates this Code of Conduct, report
 
 When reporting an incident, provide as much relevant information as you safely can, including:
 
-* What happened
-* When and where it happened
-* Who was involved
-* Any relevant messages, links, or other evidence
+- What happened
+- When and where it happened
+- Who was involved
+- Any relevant messages, links, or other evidence
 
 Please avoid publicly posting sensitive information or escalating an incident through public channels.
 
