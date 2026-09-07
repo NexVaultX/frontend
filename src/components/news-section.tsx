@@ -2,8 +2,10 @@ import { IconArrowUpRight, IconSpeakerphone } from "@tabler/icons-react";
 
 import { Reveal } from "@/components/reveal";
 
+type NewsCategory = "Announcement" | "Community" | "Development";
+
 interface NewsItem {
-  category: string;
+  category: NewsCategory;
   title: string;
   excerpt: string;
   date: string;
@@ -37,6 +39,12 @@ const NEWS: NewsItem[] = [
   },
 ];
 
+const CATEGORY_COLORS = {
+  Announcement: "bg-primary/10 text-primary border-primary/20",
+  Community: "bg-chart-3/10 text-chart-3 border-chart-3/20",
+  Development: "bg-chart-2/10 text-chart-2 border-chart-2/20",
+} satisfies Record<NewsCategory, string>;
+
 const NewsSection = () => (
   <section
     id="news"
@@ -67,8 +75,8 @@ const NewsSection = () => (
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {NEWS.map((item, index) => (
-          <Reveal key={item.title} delay={index * 60}>
-            <article className="group border-border bg-card ease-smooth hover:shadow-soft relative h-full rounded-xl border p-6 transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none">
+          <Reveal key={item.title} delay={index * 0.06}>
+            <article className="group border-border bg-card ease-smooth hover:shadow-glow relative h-full rounded-xl border p-6 transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none">
               <a
                 href={`/news/${item.title.toLowerCase().replaceAll(" ", "-")}`}
                 className="focus-visible:ring-ring absolute inset-0 rounded-xl focus-visible:ring-2 focus-visible:outline-none"
@@ -77,12 +85,14 @@ const NewsSection = () => (
                 <span className="sr-only">Read: {item.title}</span>
               </a>
 
-              <div className="bg-muted text-muted-foreground mb-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium">
+              <div
+                className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${CATEGORY_COLORS[item.category]}`}
+              >
                 <IconSpeakerphone size={12} />
                 {item.category}
               </div>
 
-              <h3 className="mb-2 font-semibold">{item.title}</h3>
+              <h3 className="mt-3 mb-2 font-semibold">{item.title}</h3>
               <p className="text-muted-foreground mb-4 line-clamp-3 text-sm">
                 {item.excerpt}
               </p>

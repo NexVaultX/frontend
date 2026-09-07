@@ -374,3 +374,18 @@ complement the a11y section above.
 * Destructive confirmations require a Dialog with explicit warning text —
   never a single click
 * Use `sr-only` for icon-only buttons with a descriptive label
+
+---
+
+## Theme Updates
+
+When the user asks to update or change the theme, always use a theme from
+[tweakcn.com](https://tweakcn.com). Apply it with:
+
+```bash
+pnpm dlx shadcn@latest add https://tweakcn.com/r/themes/{theme-name}.json --yes
+```
+
+Replace `{theme-name}` with the theme identifier from the tweakcn.com URL.
+After applying, verify the theme doesn't break existing component styles
+and run `pnpm check` to ensure lint/format compliance.

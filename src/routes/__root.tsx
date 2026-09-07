@@ -2,8 +2,11 @@ import { ThemeProvider } from "@lonik/themer";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { LazyMotion, domAnimation } from "motion/react";
 
 import { CookieBanner } from "@/components/cookie-banner";
+import { Footer } from "@/components/footer";
+import { Navbar } from "@/components/navbar/navbar";
 
 import appCss from "../styles.css?url";
 
@@ -13,10 +16,14 @@ const RootDocument = ({ children }: { children: React.ReactNode }) => (
       <HeadContent />
     </head>
     <body>
-      <ThemeProvider storageKey="nexvaultx-theme" defaultTheme="system">
-        {children}
-      </ThemeProvider>
-      <CookieBanner />
+      <LazyMotion features={domAnimation}>
+        <ThemeProvider storageKey="nexvaultx-theme" defaultTheme="system">
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+        </ThemeProvider>
+        <CookieBanner />
+      </LazyMotion>
       <TanStackDevtools
         config={{
           position: "bottom-right",
@@ -79,10 +86,10 @@ export const Route = createRootRoute({
     ],
   }),
   notFoundComponent: () => (
-    <main className="container mx-auto p-4 pt-16">
+    <div className="container mx-auto p-4 pt-16">
       <h1>404</h1>
       <p>The requested page could not be found.</p>
-    </main>
+    </div>
   ),
   shellComponent: RootDocument,
 });

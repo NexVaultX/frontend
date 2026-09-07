@@ -1,18 +1,26 @@
+"use client";
+
 import { IconArrowRight } from "@tabler/icons-react";
+import { m } from "motion/react";
 
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
+import { EASE_OUT } from "@/lib/ease";
 
 const Hero = () => (
-  <section className="page-enter px-4 pt-14 pb-12 sm:px-6 lg:px-8">
-    <div className="mx-auto max-w-4xl text-center">
-      {/* NexVaultX Logo */}
+  <section className="px-4 pt-14 pb-12 sm:px-6 lg:px-8">
+    <m.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: EASE_OUT }}
+      className="mx-auto max-w-4xl text-center"
+    >
       <div className="mb-8 flex justify-center">
         <Logo className="h-20 w-20 object-contain" />
       </div>
 
       <h1 className="text-foreground mb-5 text-4xl font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-        Discover the best <span className="text-foreground">Minecraft</span>{" "}
+        Discover the best <span className="text-primary">Minecraft</span>{" "}
         projects
       </h1>
 
@@ -21,7 +29,12 @@ const Hero = () => (
         the Minecraft community.
       </p>
 
-      <div className="flex items-center justify-center">
+      <m.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.5, ease: EASE_OUT }}
+        className="flex items-center justify-center"
+      >
         <Button
           variant="default"
           size="lg"
@@ -30,8 +43,8 @@ const Hero = () => (
           Browse Projects
           <IconArrowRight size={16} />
         </Button>
-      </div>
-    </div>
+      </m.div>
+    </m.div>
   </section>
 );
 

@@ -19,7 +19,7 @@ const SettingsPage = () => {
   };
 
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 py-12 sm:px-6">
+    <div className="mx-auto w-full max-w-2xl px-4 py-12 sm:px-6">
       <h1 className="text-foreground text-2xl font-semibold tracking-tight sm:text-3xl">
         Settings
       </h1>
@@ -36,7 +36,7 @@ const SettingsPage = () => {
 
         <SettingsDangerZone onSignOut={handleSignOut} />
       </div>
-    </main>
+    </div>
   );
 };
 

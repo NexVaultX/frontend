@@ -52,7 +52,7 @@ const LoginPage = () => {
   };
 
   return (
-    <main className="flex min-h-svh items-center justify-center px-4 py-12">
+    <div className="flex min-h-svh items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm">
         <h1 className="text-foreground text-2xl font-semibold tracking-tight">
           Welcome back
@@ -112,7 +112,7 @@ const LoginPage = () => {
           </Link>
         </p>
       </div>
-    </main>
+    </div>
   );
 };
 
