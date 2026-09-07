@@ -3,6 +3,7 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { LazyMotion, domAnimation } from "motion/react";
+import type { ReactNode } from "react";
 
 import { CookieBanner } from "@/components/cookie-banner";
 import { Footer } from "@/components/footer";
@@ -10,7 +11,7 @@ import { Navbar } from "@/components/navbar/navbar";
 
 import appCss from "../styles.css?url";
 
-const RootDocument = ({ children }: { children: React.ReactNode }) => (
+const RootDocument = ({ children }: { children: ReactNode }) => (
   <html lang="en" suppressHydrationWarning>
     <head>
       <HeadContent />
