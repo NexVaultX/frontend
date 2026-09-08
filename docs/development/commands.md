@@ -5,12 +5,16 @@ top of Oxlint and Oxfmt.
 
 ## Development
 
-| Command          | Description                          |
-| ---------------- | ------------------------------------ |
-| `pnpm dev`       | Start the dev server on port 6001    |
-| `pnpm build`     | Build the production bundle          |
-| `pnpm preview`   | Preview the production build         |
-| `pnpm start`     | Run the built server from `.output/` |
+| Command             | Description                              |
+| ------------------- | ---------------------------------------- |
+| `pnpm dev`          | Start the dev server on port 6001        |
+| `pnpm dev:api`      | Start the ElysiaJS API server (watch)    |
+| `pnpm dev:all`      | Run the app and API server together      |
+| `pnpm start:api`    | Start the API server (no watch)          |
+| `pnpm send:webhook` | Send a test mod webhook to the API       |
+| `pnpm build`        | Build the production bundle              |
+| `pnpm preview`      | Preview the production build             |
+| `pnpm start`        | Run the built server from `.output/`     |
 
 ## Quality
 
@@ -20,6 +24,9 @@ top of Oxlint and Oxfmt.
 | `pnpm fix`          | Lint + auto-fix issues               |
 | `pnpm typecheck`    | TypeScript type checking             |
 | `pnpm test`         | Run the Vitest suite                 |
+| `pnpm test:coverage`| Run the Vitest suite with coverage   |
+| `pnpm test:e2e`     | Build and run the Puppeteer E2E suite|
+| `pnpm test:e2e:dev` | Run the E2E suite without rebuilding |
 | `pnpm lint`         | Run Oxlint only                      |
 | `pnpm lint:md`      | Run markdownlint on Markdown files   |
 | `pnpm lint:md:fix`  | Auto-fix Markdown issues             |
@@ -51,3 +58,4 @@ reaches the hook.
 
 * [Setup](setup.md)
 * [Migrations](../database/migrations.md)
+* [API Server](../architecture/api.md)

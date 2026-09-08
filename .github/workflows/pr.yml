@@ -51,6 +51,9 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Check bundle size
+        run: pnpm check:bundle --no-build
+
   docker:
     name: Docker build
     runs-on: ubuntu-latest

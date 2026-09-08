@@ -10,6 +10,8 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
@@ -130,14 +132,21 @@ const SettingsPasskeys = () => {
           disabled={isAdding}
         >
           <IconPlus size={16} />
-          {isAdding ? "Adding…" : "Add Passkey"}
+          {isAdding ? (
+            <>
+              <Spinner className="mr-1" />
+              Adding…
+            </>
+          ) : (
+            "Add Passkey"
+          )}
         </Button>
       </form>
 
       {isPending ? (
-        <div className="mt-4 grid gap-3">
-          <div className="bg-muted h-16 animate-pulse rounded-lg" />
-          <div className="bg-muted h-16 animate-pulse rounded-lg" />
+        <div aria-busy="true" className="mt-4 grid gap-3">
+          <Skeleton className="h-16" />
+          <Skeleton className="h-16" />
         </div>
       ) : null}
 
@@ -148,7 +157,7 @@ const SettingsPasskeys = () => {
       ) : null}
 
       {!isPending && passkeys && passkeys.length > 0 ? (
-        <ul className="mt-4 grid gap-3">
+        <ul aria-busy={isPending} className="mt-4 grid gap-3">
           {passkeys.map((passkey) => {
             const isSynced = passkey.deviceType === "multiDevice";
             const DeviceIcon = isSynced ? IconFingerprint : IconDeviceMobile;
@@ -184,7 +193,14 @@ const SettingsPasskeys = () => {
                   onClick={() => handleRemove(passkey.id)}
                 >
                   <IconTrash size={15} />
-                  {removingId === passkey.id ? "Removing…" : "Remove"}
+                  {removingId === passkey.id ? (
+                    <>
+                      <Spinner className="mr-1" />
+                      Removing…
+                    </>
+                  ) : (
+                    "Remove"
+                  )}
                 </Button>
               </li>
             );

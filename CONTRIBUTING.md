@@ -34,13 +34,15 @@ pull request process.
 3. Create a `.env.local` file. See [README.md](README.md) for the required
    variables.
 
-4. Start the development server:
+4. Start the development servers (web app + ElysiaJS API server):
 
    ```bash
-   pnpm dev
+   pnpm dev:all
    ```
 
-The development server runs on `http://localhost:6001`.
+The web app runs on `http://localhost:6001` and the API server on
+`http://localhost:3002`. See [docs/development/setup.md](docs/development/setup.md)
+for the full setup guide.
 
 ## Branch Strategy
 

@@ -30,6 +30,12 @@ Required variables:
 | `DATABASE_URL`       | PostgreSQL connection string         |
 | `BETTER_AUTH_SECRET` | Secret for signing sessions (32+)    |
 | `BETTER_AUTH_URL`    | Public URL of the app                |
+| `MEILI_HOST`         | Meilisearch base URL                 |
+| `MEILI_SEARCH_KEY`   | Meilisearch search key               |
+| `API_URL`            | API server base URL                  |
+| `API_PORT`           | API server port (default `3002`)     |
+| `WEBHOOK_SECRET`     | Webhook HMAC secret (16+)            |
+| `VITE_API_URL`       | API base URL used by the browser     |
 
 Optional variables:
 
@@ -37,8 +43,9 @@ Optional variables:
 | ----------------------- | ------------------------------ |
 | `GOOGLE_CLIENT_ID`      | Google OAuth client ID         |
 | `GOOGLE_CLIENT_SECRET`  | Google OAuth client secret     |
+| `MEILI_MASTER_KEY`      | Meilisearch admin key (seeding)|
 
-Generate a secret with:
+Generate secrets with:
 
 ```bash
 openssl rand -base64 32
@@ -62,17 +69,35 @@ docker run -d \
 ./node_modules/.bin/drizzle-kit migrate
 ```
 
-## 5. Run the dev server
+## 5. Run the dev servers
+
+The web app and the ElysiaJS API server run side by side. Start both with:
 
 ```bash
-pnpm dev
+pnpm dev:all
 ```
 
-The app is served at `http://localhost:6001`.
+Or run them in separate terminals:
+
+```bash
+pnpm dev        # web app on http://localhost:6001
+pnpm dev:api    # API server on http://localhost:3002
+```
 
 ## 6. Verify
 
 * Open `http://localhost:6001` — the homepage renders.
+* Open `http://localhost:6001/projects` — the projects hub links to the
+  mods page.
+* Open `http://localhost:6001/mods` — search is real-time and results come
+  through the API server.
+* Open `http://localhost:3002/api/health` — the API server responds.
+* Send a test mod event and watch the live banner on the mods page:
+
+  ```bash
+  pnpm send:webhook mod.created "My Mod"
+  ```
+
 * Open `http://localhost:6001/signup` — create an account.
 * Open `http://localhost:6001/settings` — manage profile, passkeys,
   and sessions.
@@ -82,3 +107,4 @@ The app is served at `http://localhost:6001`.
 * [Commands](commands.md)
 * [Migrations](../database/migrations.md)
 * [Google Social Provider](../social-providers/google.md)
+* [API Server](../architecture/api.md)

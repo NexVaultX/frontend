@@ -37,6 +37,11 @@ frontend. Each guide lives in its own directory under `docs/`.
 * [Meilisearch](search/meilisearch.md) — index, seed, and query the
   mods search engine
 
+## API
+
+* [API Server](architecture/api.md) — ElysiaJS endpoints, webhooks, and
+  real-time SSE events
+
 ## Theming
 
 * [Custom Theme](theming/custom-theme.md) — apply a theme from

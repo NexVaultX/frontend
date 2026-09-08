@@ -5,6 +5,7 @@ import type { ChangeEvent, FormEvent } from "react";
 
 import { FormField } from "@/components/form-field";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 import { validatePasswordChangeInput } from "@/lib/auth-validation";
 
@@ -111,7 +112,12 @@ const SettingsAccount = () => {
         </output>
       ) : null}
 
-      <form onSubmit={handleSubmit} noValidate className="mt-4 grid gap-4">
+      <form
+        onSubmit={handleSubmit}
+        noValidate
+        aria-busy={status.type === "submitting"}
+        className="mt-4 grid gap-4"
+      >
         <FormField
           id="current-password"
           label="Current password"
@@ -152,7 +158,14 @@ const SettingsAccount = () => {
           className="mt-1 min-h-11 w-full sm:w-auto sm:px-6"
           disabled={status.type === "submitting"}
         >
-          {status.type === "submitting" ? "Updating…" : "Change Password"}
+          {status.type === "submitting" ? (
+            <>
+              <Spinner className="mr-1" />
+              Updating…
+            </>
+          ) : (
+            "Change Password"
+          )}
         </Button>
       </form>
     </section>

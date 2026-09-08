@@ -7,6 +7,7 @@ config({ path: ".env.local" });
 const env = defineEnv({
   env: process.env,
   server: {
+    API_URL: z.url().default("http://localhost:3002"),
     BETTER_AUTH_SECRET: z.string().min(32),
     BETTER_AUTH_URL: z.url(),
     DATABASE_URL: z.url(),

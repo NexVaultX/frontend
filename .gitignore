@@ -11,6 +11,7 @@ dist-ssr
 __unconfig*
 todos.json
 .tmp/
+coverage/
 
 # typescript
 *.tsbuildinfo

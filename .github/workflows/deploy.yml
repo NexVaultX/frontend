@@ -38,6 +38,9 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Check bundle size
+        run: pnpm check:bundle --no-build
+
   deploy:
     name: Build & push image
     runs-on: ubuntu-latest

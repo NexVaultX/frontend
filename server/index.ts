@@ -1,0 +1,27 @@
+import { cors } from "@elysia/cors";
+import { node } from "@elysia/node";
+import { Elysia } from "elysia";
+
+import "./env";
+import { eventsRoute } from "./routes/events";
+import { healthRoute } from "./routes/health";
+import { modsRoute } from "./routes/mods";
+import { webhooksRoute } from "./routes/webhooks";
+
+const port = Number(process.env.API_PORT ?? 3002);
+const allowedOrigins = (
+  process.env.CORS_ORIGIN ?? "http://localhost:6001,http://localhost:3001"
+)
+  .split(",")
+  .map((origin) => origin.trim());
+
+const app = new Elysia({ adapter: node() })
+  .use(cors({ origin: allowedOrigins }))
+  .use(healthRoute)
+  .use(modsRoute)
+  .use(eventsRoute)
+  .use(webhooksRoute);
+
+app.listen(port, () => {
+  console.log(`▸ API server listening on http://localhost:${port}`);
+});

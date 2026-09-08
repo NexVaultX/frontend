@@ -55,6 +55,8 @@ NexVaultX platform but does not include the full infrastructure stack.
 * Better Auth (authentication)
 * Drizzle ORM (database access and schema management)
 * PostgreSQL (relational database)
+* ElysiaJS (standalone API server with webhooks and SSE)
+* Meilisearch (content search)
 * Vitest (testing)
 * Oxlint (linting)
 * Oxfmt (formatting)
@@ -76,6 +78,8 @@ NexVaultX platform but does not include the full infrastructure stack.
 | **Better Auth**     | Authentication                        |
 | **Drizzle ORM**     | Database access and schema management |
 | **PostgreSQL**      | Relational database                   |
+| **ElysiaJS**        | Standalone API server (webhooks, SSE) |
+| **Meilisearch**     | Content search engine                 |
 | **Vite**            | Development and build tooling         |
 | **Nitro**           | Production server runtime             |
 | **Vitest**          | Testing                               |
@@ -124,6 +128,13 @@ variables:
 BETTER_AUTH_SECRET=your-secret-here  # Must be at least 32 characters
 BETTER_AUTH_URL=http://localhost:6001
 DATABASE_URL=postgresql://user:password@localhost:5432/nexvaultx
+MEILI_HOST=http://localhost:7700
+MEILI_MASTER_KEY=your-master-key      # Only needed when seeding
+MEILI_SEARCH_KEY=your-search-key
+API_URL=http://localhost:3002
+API_PORT=3002
+WEBHOOK_SECRET=your-webhook-secret    # Must be at least 16 characters
+VITE_API_URL=http://localhost:3002
 NODE_ENV=development
 ```
 
@@ -131,30 +142,47 @@ NODE_ENV=development
 
 ### Start the Development Server
 
+The app and the ElysiaJS API server run side by side. Start both with:
+
 ```bash
-pnpm dev
+pnpm dev:all
 ```
 
-The development server runs on `http://localhost:6001`.
+Or run them in separate terminals:
+
+```bash
+pnpm dev        # web app on http://localhost:6001
+pnpm dev:api    # API server on http://localhost:3002
+```
+
+The development server runs on `http://localhost:6001` and the API server
+on `http://localhost:3002`.
 
 ---
 
 ## Available Commands
 
-| Command          | Description                         |
-| ---------------- | ----------------------------------- |
-| `pnpm dev`       | Starts the development server       |
-| `pnpm build`     | Builds the production bundle        |
-| `pnpm preview`   | Previews the production build       |
-| `pnpm start`     | Starts the built Nitro server       |
-| `pnpm test`      | Runs the Vitest test suite          |
-| `pnpm typecheck` | Runs the TypeScript type checker    |
-| `pnpm lint`      | Runs the Oxlint linter              |
-| `pnpm lint:md`   | Runs markdownlint on Markdown files |
-| `pnpm format`    | Runs the Oxfmt formatter            |
-| `pnpm check`     | Runs the Ultracite checker          |
-| `pnpm fix`       | Applies Ultracite checks            |
-| `pnpm prepare`   | Initializes Husky Git hooks         |
+| Command             | Description                              |
+| ------------------- | ---------------------------------------- |
+| `pnpm dev`          | Starts the development server (port 6001)|
+| `pnpm dev:api`      | Starts the ElysiaJS API server (watch)   |
+| `pnpm dev:all`      | Runs the app and API server together     |
+| `pnpm start:api`    | Starts the API server (no watch)         |
+| `pnpm send:webhook` | Sends a test mod webhook to the API      |
+| `pnpm build`        | Builds the production bundle             |
+| `pnpm preview`      | Previews the production build            |
+| `pnpm start`        | Starts the built Nitro server            |
+| `pnpm test`         | Runs the Vitest test suite               |
+| `pnpm test:coverage`| Runs the Vitest suite with coverage      |
+| `pnpm test:e2e`     | Builds and runs the Puppeteer E2E suite  |
+| `pnpm test:e2e:dev` | Runs the E2E suite without rebuilding    |
+| `pnpm typecheck`    | Runs the TypeScript type checker         |
+| `pnpm lint`         | Runs the Oxlint linter                   |
+| `pnpm lint:md`      | Runs markdownlint on Markdown files      |
+| `pnpm format`       | Runs the Oxfmt formatter                 |
+| `pnpm check`        | Runs the Ultracite checker               |
+| `pnpm fix`          | Applies Ultracite checks                 |
+| `pnpm prepare`      | Initializes Husky Git hooks              |
 
 ---
 
@@ -169,10 +197,18 @@ src/
 ├── lib/          # Shared utilities and configuration
 ├── db/           # Drizzle ORM schema and client
 └── styles/       # Global styles and design tokens
+
+server/
+├── index.ts      # ElysiaJS entry point (Node adapter)
+├── lib/          # Event registry, Meilisearch client
+└── routes/       # health, mods search, SSE events, webhooks
 ```
 
 The Vite configuration integrates TanStack Start, TanStack Router, Tailwind
-CSS, TanStack DevTools, Nitro, and React.
+CSS, TanStack DevTools, Nitro, and React. The ElysiaJS API server runs as a
+standalone service on its own port and is the single entry point for mod
+search and real-time mod events. See
+[docs/architecture/api.md](docs/architecture/api.md) for details.
 
 ---
 
@@ -205,6 +241,39 @@ The application uses **Better Auth** for authentication.
 
 * For local development, `BETTER_AUTH_URL` should be set to the local
   application URL.
+
+---
+
+## API Server and Real-Time Updates
+
+A standalone **ElysiaJS** API server (`server/`) powers mod search and
+real-time mod events:
+
+* `GET /api/health` — liveness check
+* `GET /api/mods/search` — Meilisearch proxy used by the mods page
+* `GET /api/events` — Server-Sent Events (SSE) stream of mod events
+* `POST /api/webhooks/mods` — webhook endpoint (HMAC-SHA256 verified) that
+  broadcasts `mod.created`, `mod.updated`, and `mod.deleted` events
+
+The mods page subscribes to the SSE stream and shows a live banner when a
+mod changes, with a one-click refresh that bypasses the search cache. Send
+a test event with:
+
+```bash
+pnpm send:webhook mod.created "My Mod"
+```
+
+Required configuration:
+
+```env
+API_URL=http://localhost:3002
+API_PORT=3002
+WEBHOOK_SECRET=your-webhook-secret
+VITE_API_URL=http://localhost:3002
+```
+
+See [docs/architecture/api.md](docs/architecture/api.md) for the full API
+reference.
 
 ---
 

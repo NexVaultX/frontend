@@ -1,0 +1,89 @@
+name: E2E
+
+on:
+  pull_request:
+    branches: [main, prod]
+  push:
+    branches: [main]
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    name: Puppeteer E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      API_PORT: "3002"
+      API_URL: http://localhost:3002
+      DATABASE_URL: postgresql://nexvaultx:nexvaultx@localhost:5432/nexvaultx
+      BETTER_AUTH_SECRET: e2e-test-secret-0123456789abcdef0123456789abcdef
+      BETTER_AUTH_URL: http://localhost:3001
+      MEILI_HOST: http://localhost:7700
+      MEILI_MASTER_KEY: e2e-master-key-0123456789abcdef
+      MEILI_SEARCH_KEY: e2e-master-key-0123456789abcdef
+      PORT: "3001"
+      VITE_API_URL: http://localhost:3002
+      WEBHOOK_SECRET: e2e-webhook-secret-0123456789abcdef
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: ./.github/actions/setup-pnpm
+
+      - name: Start services (Postgres + Meilisearch)
+        run: docker compose up -d db meilisearch
+
+      - name: Wait for services
+        run: |
+          for i in $(seq 1 30); do
+            if docker compose exec -T db pg_isready -U nexvaultx > /dev/null 2>&1 && \
+               curl -sf http://localhost:7700/health > /dev/null 2>&1; then
+              echo "Services ready."
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Services did not become ready in time." >&2
+          exit 1
+
+      - name: Run migrations
+        run: pnpm db:migrate
+
+      - name: Seed mods
+        run: pnpm db:seed
+
+      - name: Build
+        run: pnpm build
+
+      - name: Start API server
+        run: |
+          pnpm start:api > /tmp/api.log 2>&1 &
+          echo "API_PID=$!" >> "$GITHUB_ENV"
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:3002/api/health > /dev/null 2>&1; then
+              echo "API server ready."
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "API server did not become ready in time." >&2
+          cat /tmp/api.log >&2
+          exit 1
+
+      - name: Run E2E tests
+        run: pnpm test:e2e:dev
+
+      - name: Shutdown services
+        if: always()
+        run: |
+          if [ -n "$API_PID" ]; then kill "$API_PID" 2>/dev/null || true; fi
+          docker compose down -v

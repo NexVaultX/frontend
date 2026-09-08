@@ -1,16 +1,18 @@
 # Meilisearch Search
 
 Meilisearch powers the `/mods` page. The frontend never talks to
-Meilisearch directly from the browser — search runs through a TanStack
-Start server function so the search key stays server-side.
+Meilisearch directly from the browser — search runs through the
+ElysiaJS API server so the search key stays server-side.
 
 ## How it works
 
-* `src/lib/meilisearch.ts` — client factories (`getSearchClient`,
-  `getAdminClient`) and the index name (`mods`)
-* `src/lib/mods.functions.ts` — `searchMods` server function that
-  validates filters, builds the Meilisearch query, and returns hits
-  plus facet counts
+* `server/lib/meilisearch.ts` — Meilisearch client factory used by the
+  API server (`getSearchClient`) and the index name (`mods`)
+* `server/routes/mods.ts` — `GET /api/mods/search` proxy that validates
+  filters, builds the Meilisearch query, and returns hits plus facet
+  counts
+* `src/lib/mods.functions.ts` — `searchMods` client-side helper that
+  calls the API server endpoint
 * `src/lib/mods-data.ts` — the hard-coded example mods used to seed the
   index
 * `scripts/seed-mods.ts` — creates the index, configures filterable /
@@ -21,7 +23,7 @@ Start server function so the search key stays server-side.
 * `MEILI_HOST` — Meilisearch base URL. Defaults to
   `http://localhost:7700`.
 * `MEILI_MASTER_KEY` — admin key, only needed when seeding.
-* `MEILI_SEARCH_KEY` — public search key used by the server function.
+* `MEILI_SEARCH_KEY` — public search key used by the API server.
 
 The master key is only needed when running the seed script. The running
 app only needs the search key.
@@ -58,7 +60,7 @@ The script:
 
 Re-running the script is safe — documents are upserted by `id`.
 
-## Search server function
+## Search endpoint
 
 `searchMods` accepts a validated payload:
 
@@ -76,6 +78,9 @@ Filters are validated against the known values in `mods-data.ts` before
 reaching Meilisearch, so arbitrary filter strings are rejected. The
 response includes `hits`, `estimatedTotalHits`, and `facetDistribution`
 for the filter dropdowns.
+
+The API server must be running for search to work (`pnpm dev:all` starts
+it). See [API Server](../architecture/api.md).
 
 ## Production instance
 
@@ -101,3 +106,4 @@ MEILI_MASTER_KEY=your-master-key \
 * [Commands](../development/commands.md)
 * [Docker](../deployment/docker.md)
 * [Architecture](../architecture/overview.md)
+* [API Server](../architecture/api.md)

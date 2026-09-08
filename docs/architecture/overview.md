@@ -1,7 +1,8 @@
 # Architecture Overview
 
 NexVaultX is a full-stack TypeScript application built with TanStack
-Start, React 19, Better Auth, and Drizzle ORM.
+Start, React 19, Better Auth, and Drizzle ORM, with a standalone
+ElysiaJS API server for search and real-time events.
 
 ## Stack
 
@@ -12,6 +13,8 @@ Start, React 19, Better Auth, and Drizzle ORM.
 | Animation  | Motion (framer-motion)                  |
 | Auth       | Better Auth                             |
 | Database   | PostgreSQL, Drizzle ORM                 |
+| Search     | Meilisearch                             |
+| API        | ElysiaJS (webhooks, SSE)                |
 | Validation | Zod                                     |
 | Lint       | Ultracite (Oxlint + Oxfmt)              |
 
@@ -26,6 +29,10 @@ src/
   lib/              Auth, validation, animation easing
   routes/           TanStack Start file-based routes
   styles.css        Tailwind theme and global styles
+server/
+  index.ts          ElysiaJS entry point (Node adapter)
+  lib/              Event registry, Meilisearch client
+  routes/           health, mods search, SSE events, webhooks
 drizzle/            Generated SQL migrations
 docs/               Guides (this documentation)
 ```
@@ -41,6 +48,14 @@ docs/               Guides (this documentation)
    `src/lib/auth-client.ts`.
 4. Drizzle reads and writes PostgreSQL through the pool in
    `src/db/index.ts`.
+5. Mod search runs through the ElysiaJS API server: the mods page calls
+   `searchMods`, which proxies to `GET /api/mods/search` on the API
+   server, which queries Meilisearch.
+6. Real-time mod events flow from webhook publishers to the API server
+   (`POST /api/webhooks/mods`), which broadcasts them over SSE
+   (`GET /api/events`) to the browser.
+
+See [API Server](api.md) for the full API reference.
 
 ## Authentication
 
@@ -67,3 +82,4 @@ WCAG 2.2 AA. See [Accessibility Standards](../accessibility/standards.md).
 * [Setup](../development/setup.md)
 * [Commands](../development/commands.md)
 * [Migrations](../database/migrations.md)
+* [API Server](api.md)

@@ -13,7 +13,8 @@ import { getSession } from "@/lib/auth.functions";
 
 const SettingsPage = () => {
   const router = useRouter();
-  const { data: session } = authClient.useSession();
+  // oxlint-disable-next-line no-use-before-define -- Route must be exported after the component for TanStack Router; SettingsPage only executes after Route is initialized
+  const session = Route.useLoaderData();
 
   const handleSignOut = async () => {
     await authClient.signOut();
@@ -68,6 +69,8 @@ export const Route = createFileRoute("/settings")({
     if (!session) {
       throw redirect({ to: "/login" });
     }
+    return { session };
   },
+  loader: ({ context }) => context.session,
   component: SettingsPage,
 });

@@ -12,6 +12,7 @@ import type { FormEvent } from "react";
 import { FormField } from "@/components/form-field";
 import { GoogleSignInButton } from "@/components/google-sign-in-button";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 import { validateSignupInput } from "@/lib/auth-validation";
 import { getSession } from "@/lib/auth.functions";
@@ -89,7 +90,12 @@ const SignupPage = () => {
           <hr className="bg-border h-px flex-1 border-0" />
         </div>
 
-        <form onSubmit={handleSubmit} noValidate className="mt-6 grid gap-4">
+        <form
+          onSubmit={handleSubmit}
+          noValidate
+          aria-busy={isSubmitting}
+          className="mt-6 grid gap-4"
+        >
           <FormField
             id="name"
             label="Name"
@@ -132,7 +138,14 @@ const SignupPage = () => {
             className="mt-2 min-h-11 w-full"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Creating account…" : "Create Account"}
+            {isSubmitting ? (
+              <>
+                <Spinner className="mr-1.5" label="Creating account" />
+                Creating account…
+              </>
+            ) : (
+              "Create Account"
+            )}
           </Button>
         </form>
 
