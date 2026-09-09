@@ -3,7 +3,7 @@
 ###############################################################################
 # Stage 1: Dependencies
 ###############################################################################
-FROM node:22-alpine AS deps
+FROM node:24-alpine AS deps
 
 # pnpm is managed via corepack (version pinned by packageManager field)
 RUN corepack enable
@@ -19,7 +19,7 @@ RUN pnpm install --frozen-lockfile
 ###############################################################################
 # Stage 2: Build
 ###############################################################################
-FROM node:22-alpine AS build
+FROM node:24-alpine AS build
 
 RUN corepack enable
 
@@ -38,7 +38,7 @@ RUN pnpm build
 ###############################################################################
 # Stage 3: Runtime
 ###############################################################################
-FROM node:22-alpine AS runtime
+FROM node:24-alpine AS runtime
 
 ENV NODE_ENV=production
 ENV PORT=3000

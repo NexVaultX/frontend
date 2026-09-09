@@ -1,0 +1,8 @@
+# mise (https://mise.jdx.dev) tool versions for NexVaultX Frontend.
+#
+# Node.js is pinned to the LTS major version used by the Dockerfile and CI.
+# pnpm is intentionally NOT listed here — it is pinned via the
+# `packageManager` field in package.json and enabled through Corepack.
+
+[tools]
+node = "24"

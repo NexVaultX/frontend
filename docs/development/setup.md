@@ -5,7 +5,7 @@ locally.
 
 ## Prerequisites
 
-* Node.js 22 or newer
+* Node.js 24 or newer
 * pnpm 11 (managed via Corepack)
 * PostgreSQL 16 or newer
 
@@ -74,13 +74,13 @@ docker run -d \
 The web app and the ElysiaJS API server run side by side. Start both with:
 
 ```bash
-pnpm dev:all
+pnpm dev
 ```
 
 Or run them in separate terminals:
 
 ```bash
-pnpm dev        # web app on http://localhost:6001
+pnpm dev:web    # web app on http://localhost:6001
 pnpm dev:api    # API server on http://localhost:3002
 ```
 

@@ -29,6 +29,9 @@ dist-ssr
 __unconfig*
 *.tsbuildinfo
 
+# Agent / tooling config
+.opencode
+
 # Tests / coverage
 coverage
 
