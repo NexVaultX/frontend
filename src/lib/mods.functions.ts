@@ -56,10 +56,18 @@ export const searchMods = createServerFn({ method: "GET" })
         : "downloads:desc"
     );
 
-    const response = await fetch(
-      `${env.API_URL}/api/mods/search?${params.toString()}`,
-      { signal: AbortSignal.timeout(8000) }
-    );
+    let response: Response;
+    try {
+      response = await fetch(
+        `${env.API_URL}/api/mods/search?${params.toString()}`,
+        { signal: AbortSignal.timeout(8000) }
+      );
+    } catch (fetchError) {
+      throw new Error(
+        "Could not reach the search service. Start the API server with `pnpm dev:all` and try again.",
+        { cause: fetchError }
+      );
+    }
 
     if (!response.ok) {
       throw new Error(`Search failed (${response.status})`);

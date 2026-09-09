@@ -224,6 +224,22 @@ describe("ModsPage", () => {
     });
   });
 
+  it("shows an actionable message when the search service is unreachable", async () => {
+    searchModsMock.mockRejectedValueOnce(new Error("fetch failed"));
+
+    render(<ModsPage />);
+
+    fireEvent.change(screen.getByLabelText("Category"), {
+      target: { value: "performance" },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole("alert")).toHaveTextContent(
+        "Could not reach the search service"
+      );
+    });
+  });
+
   it("searches immediately as the query changes (real-time)", async () => {
     searchModsMock.mockResolvedValue(responseFixture([modFixture]));
 

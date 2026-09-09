@@ -48,8 +48,26 @@ const SORT_OPTIONS = [
 const selectClassName =
   "border-input bg-background text-foreground focus-visible:ring-ring min-h-11 rounded-lg border px-3 text-sm focus-visible:ring-2 focus-visible:outline-none";
 
-const toErrorMessage = (cause: unknown) =>
-  cause instanceof Error ? cause.message : "Could not search mods.";
+const toErrorMessage = (cause: unknown) => {
+  if (!(cause instanceof Error)) {
+    return "Could not search mods.";
+  }
+
+  const message = cause.message.toLowerCase();
+  if (
+    message.includes("fetch failed") ||
+    message.includes("econnrefused") ||
+    message.includes("failed to fetch")
+  ) {
+    return "Could not reach the search service. Start the API server with `pnpm dev:all` and try again.";
+  }
+
+  if (message.includes("aborted due to timeout")) {
+    return "The search service timed out. Please try again.";
+  }
+
+  return cause.message;
+};
 
 const ModsSearchBar = ({
   query,
