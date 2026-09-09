@@ -1,7 +1,7 @@
 ---
 name: performance-guidelines
-description: Review code for web performance best practices and integrate TanStack Pacer (debounce/throttle/rate-limit/queue) and TanStack Virtual (list virtualization) where appropriate. Use when asked to "review performance", "optimize", "check bundle size", "reduce re-renders", "debounce", "throttle", "rate limit", "virtualize a list", or "audit performance".
-version: 1.0.0
+description: Review code for web performance best practices and integrate TanStack Pacer (debounce/throttle/rate-limit/queue), TanStack Virtual (list virtualization), and Unpic (image optimization) where appropriate. Use when asked to "review performance", "optimize", "check bundle size", "reduce re-renders", "debounce", "throttle", "rate limit", "virtualize a list", "optimize images", or "audit performance".
+version: 1.1.0
 author: nexvaultx
 type: skill
 category: performance
@@ -10,6 +10,8 @@ tags:
   - optimization
   - pacer
   - virtual
+  - unpic
+  - images
   - debounce
   - throttle
   - virtualization
@@ -108,7 +110,42 @@ const rowVirtualizer = useVirtualizer({
 - Batch DOM reads before writes (avoid layout thrash)
 - React Compiler is NOT enabled — memoize with `useCallback`/`useMemo` only where it measurably helps
 
-### Step 5: Output Findings
+### Step 5: Apply Unpic for Image Optimization
+
+Prefer **Unpic** (`@unpic/react`) for image rendering. It generates
+responsive `srcset`/`sizes` from CDN-backed URLs, sets explicit
+`width`/`height` (prevents CLS), and lazy-loads below-fold images.
+
+Install with `pnpm add @unpic/react`.
+
+```tsx
+import { Image } from "@unpic/react";
+
+<Image
+  src="https://cdn.example.com/mod/thumbnail.webp"
+  alt="Mod thumbnail"
+  layout="constrained"
+  width={640}
+  height={360}
+/>
+```
+
+Notes:
+
+- Use Unpic for content images (thumbnails, banners, gallery shots) served
+  from a CDN — it knows how to resize images from most CDNs and generates
+  responsive `srcset` automatically
+- For arbitrary remote URLs Unpic falls back to a plain `<img>`; only use
+  it where it can actually generate multiple sizes
+- Do NOT wrap tiny fixed-size images (e.g. 24–36px user avatars) in Unpic —
+  there is no responsive benefit at that size; keep a plain `<img>` with
+  explicit `width`/`height`
+- Do NOT use Unpic for local static assets (e.g. `/logo_light.png`) — it
+  is designed for CDN-backed remote images
+- The current app has no content images yet (mod cards use letter avatars);
+  when real thumbnails arrive, render them with Unpic
+
+### Step 6: Output Findings
 
 Output findings in terse `file:line` format, grouped by file. State the issue and location; skip explanation unless the fix is non-obvious.
 
