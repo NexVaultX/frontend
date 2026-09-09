@@ -50,7 +50,7 @@ const MobileUserCard = ({
     {user.image ? (
       <img
         src={user.image}
-        alt=""
+        alt={`${user.name}'s avatar`}
         className="size-9 rounded-full object-cover"
       />
     ) : (

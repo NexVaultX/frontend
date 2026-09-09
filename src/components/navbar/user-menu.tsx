@@ -23,6 +23,7 @@ const UserMenu = ({ user, onSignOut }: UserMenuProps) => {
       <Menu.Trigger
         render={(props) => (
           <Button
+            type="button"
             variant="ghost"
             className="group min-h-11 gap-2 px-2"
             {...props}
@@ -33,7 +34,7 @@ const UserMenu = ({ user, onSignOut }: UserMenuProps) => {
         {user.image ? (
           <img
             src={user.image}
-            alt=""
+            alt={`${user.name}'s avatar`}
             className="size-6 rounded-full object-cover"
           />
         ) : (
@@ -75,15 +76,17 @@ const UserMenu = ({ user, onSignOut }: UserMenuProps) => {
 
             <Menu.Item
               render={<Link to="/settings" />}
-              className="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring data-highlighted:bg-muted data-highlighted:text-foreground flex w-full cursor-default items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
+              className="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring data-highlighted:bg-muted data-highlighted:text-foreground flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
             >
               <IconSettings size={16} stroke={1.8} />
               Settings
             </Menu.Item>
 
+            <div className="border-border/70 my-1 border-t" />
+
             <Menu.Item
               onClick={onSignOut}
-              className="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring data-highlighted:bg-muted data-highlighted:text-foreground flex w-full cursor-default items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
+              className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive focus-visible:ring-ring focus-visible:ring-destructive/50 data-highlighted:bg-destructive/10 data-highlighted:text-destructive flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
             >
               <IconLogout size={16} stroke={1.8} />
               Sign Out

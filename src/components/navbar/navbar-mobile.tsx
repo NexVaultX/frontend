@@ -1,6 +1,7 @@
 "use client";
 
 import { IconX } from "@tabler/icons-react";
+import { Link } from "@tanstack/react-router";
 
 import { AuthButtons } from "@/components/navbar/auth-buttons";
 import type { NavbarUser } from "@/components/navbar/auth-buttons";
@@ -15,6 +16,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
+import { cn } from "@/lib/utils";
 
 interface NavbarMobileMenuProps {
   open: boolean;
@@ -23,6 +25,9 @@ interface NavbarMobileMenuProps {
   session: { user: NavbarUser } | null | undefined;
   onSignOut: () => void;
 }
+
+const mobileLinkClassName =
+  "text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring min-h-11 flex items-center rounded-lg px-3 py-3 text-sm font-medium transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none";
 
 const NavbarMobileMenu = ({
   open,
@@ -69,16 +74,39 @@ const NavbarMobileMenu = ({
             Content
           </p>
 
-          {CONTENT_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={onClose}
-              className="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring rounded-lg px-3 py-3 text-sm font-medium transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none"
-            >
-              {link.label}
-            </a>
-          ))}
+          {CONTENT_LINKS.map((link) => {
+            if (link.href === "/mods" || link.href === "/projects") {
+              return (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  preload="intent"
+                  activeProps={{
+                    "aria-current": "page",
+                    className: cn(
+                      mobileLinkClassName,
+                      "bg-muted text-foreground"
+                    ),
+                  }}
+                  onClick={onClose}
+                  className={mobileLinkClassName}
+                >
+                  {link.label}
+                </Link>
+              );
+            }
+
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={onClose}
+                className={mobileLinkClassName}
+              >
+                {link.label}
+              </a>
+            );
+          })}
         </nav>
 
         <AuthButtons
