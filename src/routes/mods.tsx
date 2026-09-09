@@ -14,6 +14,7 @@ import {
 } from "@/lib/mods-data";
 import { searchMods } from "@/lib/mods.functions";
 import type { ModSearchParams, ModSearchResponse } from "@/lib/mods.functions";
+import { cn } from "@/lib/utils";
 
 const DEFAULT_SORT = "downloads:desc";
 
@@ -140,7 +141,7 @@ const ModsFilters = ({
         name="category"
         value={category}
         onChange={(event) => onCategoryChange(event.target.value)}
-        className={`${selectClassName} w-full`}
+        className={cn(selectClassName, "w-full")}
       >
         <option value="">All categories</option>
         {MOD_CATEGORIES.map((value) => (
@@ -160,7 +161,7 @@ const ModsFilters = ({
         name="gameVersion"
         value={gameVersion}
         onChange={(event) => onGameVersionChange(event.target.value)}
-        className={`${selectClassName} w-full`}
+        className={cn(selectClassName, "w-full")}
       >
         <option value="">All versions</option>
         {MOD_GAME_VERSIONS.map((value) => (
@@ -180,7 +181,7 @@ const ModsFilters = ({
         name="loader"
         value={loader}
         onChange={(event) => onLoaderChange(event.target.value)}
-        className={`${selectClassName} w-full`}
+        className={cn(selectClassName, "w-full")}
       >
         <option value="">All loaders</option>
         {MOD_LOADERS.map((value) => (
@@ -200,7 +201,7 @@ const ModsFilters = ({
         name="sort"
         value={sort}
         onChange={(event) => onSortChange(event.target.value)}
-        className={`${selectClassName} w-full`}
+        className={cn(selectClassName, "w-full")}
       >
         {SORT_OPTIONS.map((option) => (
           <option key={option.value} value={option.value}>
@@ -505,7 +506,24 @@ const ModsPage = () => {
   );
 };
 
+const ModsSkeleton = () => (
+  <div
+    aria-busy="true"
+    className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8"
+  >
+    <Skeleton className="h-9 w-32" />
+    <Skeleton className="mt-3 h-5 w-72 max-w-full" />
+    <Skeleton className="mt-8 h-12 w-full rounded-xl" />
+    <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {Array.from({ length: 6 }, (_, index) => (
+        <Skeleton key={index} className="h-52 rounded-2xl" />
+      ))}
+    </div>
+  </div>
+);
+
 export const Route = createFileRoute("/mods")({
+  pendingComponent: ModsSkeleton,
   loader: async (): Promise<ModsLoaderData> => {
     const cached = modsCache.get(DEFAULT_SEARCH_PARAMS);
     if (cached) {

@@ -8,6 +8,8 @@ import {
 } from "@tabler/icons-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
+import { cn } from "@/lib/utils";
+
 const PROJECT_SECTIONS = [
   {
     icon: IconBox,
@@ -78,7 +80,7 @@ const ProjectsPage = () => (
               <Link
                 to={section.href}
                 preload="intent"
-                className={`${cardClassName} hover:bg-muted/50`}
+                className={cn(cardClassName, "hover:bg-muted/50")}
               >
                 <span className="text-primary">{icon}</span>
                 <h2 className="text-foreground mt-4 text-lg font-semibold">

@@ -10,16 +10,38 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CookiesRouteImport } from './routes/cookies'
+import { Route as DisclaimerRouteImport } from './routes/disclaimer'
+import { Route as ImpressumRouteImport } from './routes/impressum'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ModsRouteImport } from './routes/mods'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as TermsOfUseRouteImport } from './routes/terms-of-use'
+import { Route as ModsModIdRouteImport } from './routes/mods.$modId'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CookiesRoute = CookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DisclaimerRoute = DisclaimerRouteImport.update({
+  id: '/disclaimer',
+  path: '/disclaimer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImpressumRoute = ImpressumRouteImport.update({
+  id: '/impressum',
+  path: '/impressum',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -30,6 +52,11 @@ const LoginRoute = LoginRouteImport.update({
 const ModsRoute = ModsRouteImport.update({
   id: '/mods',
   path: '/mods',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsRoute = ProjectsRouteImport.update({
@@ -47,6 +74,21 @@ const SignupRoute = SignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsOfUseRoute = TermsOfUseRouteImport.update({
+  id: '/terms-of-use',
+  path: '/terms-of-use',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModsModIdRoute = ModsModIdRouteImport.update({
+  id: '/$modId',
+  path: '/$modId',
+  getParentRoute: () => ModsRoute,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -55,69 +97,117 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cookies': typeof CookiesRoute
+  '/disclaimer': typeof DisclaimerRoute
+  '/impressum': typeof ImpressumRoute
   '/login': typeof LoginRoute
-  '/mods': typeof ModsRoute
+  '/mods': typeof ModsRouteWithChildren
+  '/privacy': typeof PrivacyRoute
   '/projects': typeof ProjectsRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
+  '/terms-of-use': typeof TermsOfUseRoute
+  '/mods/$modId': typeof ModsModIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cookies': typeof CookiesRoute
+  '/disclaimer': typeof DisclaimerRoute
+  '/impressum': typeof ImpressumRoute
   '/login': typeof LoginRoute
-  '/mods': typeof ModsRoute
+  '/mods': typeof ModsRouteWithChildren
+  '/privacy': typeof PrivacyRoute
   '/projects': typeof ProjectsRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
+  '/terms-of-use': typeof TermsOfUseRoute
+  '/mods/$modId': typeof ModsModIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cookies': typeof CookiesRoute
+  '/disclaimer': typeof DisclaimerRoute
+  '/impressum': typeof ImpressumRoute
   '/login': typeof LoginRoute
-  '/mods': typeof ModsRoute
+  '/mods': typeof ModsRouteWithChildren
+  '/privacy': typeof PrivacyRoute
   '/projects': typeof ProjectsRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
+  '/terms-of-use': typeof TermsOfUseRoute
+  '/mods/$modId': typeof ModsModIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/cookies'
+    | '/disclaimer'
+    | '/impressum'
     | '/login'
     | '/mods'
+    | '/privacy'
     | '/projects'
     | '/settings'
     | '/signup'
+    | '/terms'
+    | '/terms-of-use'
+    | '/mods/$modId'
     | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/cookies'
+    | '/disclaimer'
+    | '/impressum'
     | '/login'
     | '/mods'
+    | '/privacy'
     | '/projects'
     | '/settings'
     | '/signup'
+    | '/terms'
+    | '/terms-of-use'
+    | '/mods/$modId'
     | '/api/auth/$'
   id:
     | '__root__'
     | '/'
+    | '/cookies'
+    | '/disclaimer'
+    | '/impressum'
     | '/login'
     | '/mods'
+    | '/privacy'
     | '/projects'
     | '/settings'
     | '/signup'
+    | '/terms'
+    | '/terms-of-use'
+    | '/mods/$modId'
     | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CookiesRoute: typeof CookiesRoute
+  DisclaimerRoute: typeof DisclaimerRoute
+  ImpressumRoute: typeof ImpressumRoute
   LoginRoute: typeof LoginRoute
-  ModsRoute: typeof ModsRoute
+  ModsRoute: typeof ModsRouteWithChildren
+  PrivacyRoute: typeof PrivacyRoute
   ProjectsRoute: typeof ProjectsRoute
   SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
+  TermsRoute: typeof TermsRoute
+  TermsOfUseRoute: typeof TermsOfUseRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -128,6 +218,27 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cookies': {
+      id: '/cookies'
+      path: '/cookies'
+      fullPath: '/cookies'
+      preLoaderRoute: typeof CookiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/disclaimer': {
+      id: '/disclaimer'
+      path: '/disclaimer'
+      fullPath: '/disclaimer'
+      preLoaderRoute: typeof DisclaimerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/impressum': {
+      id: '/impressum'
+      path: '/impressum'
+      fullPath: '/impressum'
+      preLoaderRoute: typeof ImpressumRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -142,6 +253,13 @@ declare module '@tanstack/react-router' {
       path: '/mods'
       fullPath: '/mods'
       preLoaderRoute: typeof ModsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/projects': {
@@ -165,6 +283,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms-of-use': {
+      id: '/terms-of-use'
+      path: '/terms-of-use'
+      fullPath: '/terms-of-use'
+      preLoaderRoute: typeof TermsOfUseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mods/$modId': {
+      id: '/mods/$modId'
+      path: '/$modId'
+      fullPath: '/mods/$modId'
+      preLoaderRoute: typeof ModsModIdRouteImport
+      parentRoute: typeof ModsRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -175,13 +314,29 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface ModsRouteChildren {
+  ModsModIdRoute: typeof ModsModIdRoute
+}
+
+const ModsRouteChildren: ModsRouteChildren = {
+  ModsModIdRoute: ModsModIdRoute,
+}
+
+const ModsRouteWithChildren = ModsRoute._addFileChildren(ModsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CookiesRoute: CookiesRoute,
+  DisclaimerRoute: DisclaimerRoute,
+  ImpressumRoute: ImpressumRoute,
   LoginRoute: LoginRoute,
-  ModsRoute: ModsRoute,
+  ModsRoute: ModsRouteWithChildren,
+  PrivacyRoute: PrivacyRoute,
   ProjectsRoute: ProjectsRoute,
   SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
+  TermsRoute: TermsRoute,
+  TermsOfUseRoute: TermsOfUseRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
