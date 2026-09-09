@@ -70,6 +70,7 @@ const ModsSearchBar = ({
     </label>
     <input
       id="mods-search"
+      name="query"
       type="search"
       value={query}
       onChange={(event) => onQueryChange(event.target.value)}
@@ -84,7 +85,7 @@ const ModsSearchBar = ({
         aria-label="Clear search"
         className="text-muted-foreground hover:text-foreground focus-visible:ring-ring absolute top-1/2 right-2 flex size-9 -translate-y-1/2 items-center justify-center rounded-lg focus-visible:ring-2 focus-visible:outline-none"
       >
-        <IconX size={16} />
+        <IconX size={16} aria-hidden="true" />
       </button>
     ) : null}
   </div>
@@ -118,6 +119,7 @@ const ModsFilters = ({
       </label>
       <select
         id="mods-category"
+        name="category"
         value={category}
         onChange={(event) => onCategoryChange(event.target.value)}
         className={`${selectClassName} w-full`}
@@ -137,6 +139,7 @@ const ModsFilters = ({
       </label>
       <select
         id="mods-game-version"
+        name="gameVersion"
         value={gameVersion}
         onChange={(event) => onGameVersionChange(event.target.value)}
         className={`${selectClassName} w-full`}
@@ -156,6 +159,7 @@ const ModsFilters = ({
       </label>
       <select
         id="mods-loader"
+        name="loader"
         value={loader}
         onChange={(event) => onLoaderChange(event.target.value)}
         className={`${selectClassName} w-full`}
@@ -175,6 +179,7 @@ const ModsFilters = ({
       </label>
       <select
         id="mods-sort"
+        name="sort"
         value={sort}
         onChange={(event) => onSortChange(event.target.value)}
         className={`${selectClassName} w-full`}

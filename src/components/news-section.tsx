@@ -9,14 +9,19 @@ interface NewsItem {
   title: string;
   excerpt: string;
   date: string;
-  dateLabel: string;
 }
+
+const dateFormatter = new Intl.DateTimeFormat("en-US", {
+  day: "numeric",
+  month: "short",
+  timeZone: "UTC",
+  year: "numeric",
+});
 
 const NEWS: NewsItem[] = [
   {
     category: "Announcement",
     date: "2026-08-28",
-    dateLabel: "Aug 28, 2026",
     excerpt:
       "A major update brings redesigned project pages, faster search, and a brand-new launcher integration.",
     title: "NexVaultX 2.0 is here",
@@ -24,7 +29,6 @@ const NEWS: NewsItem[] = [
   {
     category: "Community",
     date: "2026-08-14",
-    dateLabel: "Aug 14, 2026",
     excerpt:
       "Check out the incredible mods created during our month-long community mod jam — over 200 entries!",
     title: "Community Mod Jam winners announced",
@@ -32,7 +36,6 @@ const NEWS: NewsItem[] = [
   {
     category: "Development",
     date: "2026-07-30",
-    dateLabel: "Jul 30, 2026",
     excerpt:
       "A comprehensive guide for shader developers, covering the new pipeline and best practices.",
     title: "New shader API documentation",
@@ -88,7 +91,7 @@ const NewsSection = () => (
               <div
                 className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${CATEGORY_COLORS[item.category]}`}
               >
-                <IconSpeakerphone size={12} />
+                <IconSpeakerphone size={12} aria-hidden="true" />
                 {item.category}
               </div>
 
@@ -101,7 +104,7 @@ const NewsSection = () => (
                 dateTime={item.date}
                 className="text-muted-foreground text-xs"
               >
-                {item.dateLabel}
+                {dateFormatter.format(new Date(item.date))}
               </time>
             </article>
           </Reveal>

@@ -133,7 +133,7 @@ const Footer = () => (
 
       <div className="border-border mt-10 flex flex-col items-center justify-between gap-4 border-t pt-6 sm:flex-row">
         <p className="text-muted-foreground text-sm">
-          © 2026 NexVaultX. All rights reserved.
+          © {new Date().getFullYear()} NexVaultX. All rights reserved.
         </p>
         <div className="flex items-center gap-4">
           <a

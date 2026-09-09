@@ -1,6 +1,13 @@
 "use client";
 
-import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  redirect,
+  useNavigate,
+  useRouter,
+  useSearch,
+} from "@tanstack/react-router";
+import { z } from "zod";
 
 import { SettingsAccount } from "@/components/settings/settings-account";
 import { SettingsDangerZone } from "@/components/settings/settings-danger-zone";
@@ -11,10 +18,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { authClient } from "@/lib/auth-client";
 import { getSession } from "@/lib/auth.functions";
 
+const settingsSearchSchema = z.object({
+  tab: z
+    .enum(["profile", "account", "passkeys", "sessions", "danger"])
+    .optional(),
+});
+
 const SettingsPage = () => {
   const router = useRouter();
+  const navigate = useNavigate();
   // oxlint-disable-next-line no-use-before-define -- Route must be exported after the component for TanStack Router; SettingsPage only executes after Route is initialized
   const session = Route.useLoaderData();
+  const { tab = "profile" } = useSearch({ from: "/settings" });
 
   const handleSignOut = async () => {
     await authClient.signOut();
@@ -30,7 +45,17 @@ const SettingsPage = () => {
         Manage your account, sessions, and security.
       </p>
 
-      <Tabs defaultValue="profile" className="mt-8">
+      <Tabs
+        value={tab}
+        onValueChange={(value) =>
+          navigate({
+            to: "/settings",
+            search: { tab: value },
+            replace: true,
+          })
+        }
+        className="mt-8"
+      >
         <TabsList aria-label="Settings sections">
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="account">Account</TabsTrigger>
@@ -64,6 +89,7 @@ const SettingsPage = () => {
 };
 
 export const Route = createFileRoute("/settings")({
+  validateSearch: settingsSearchSchema,
   beforeLoad: async () => {
     const session = await getSession();
     if (!session) {

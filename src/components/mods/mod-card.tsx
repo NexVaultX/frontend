@@ -2,17 +2,12 @@ import { IconDownload, IconTag } from "@tabler/icons-react";
 
 import type { Mod } from "@/lib/mods-data";
 
-const formatDownloads = (count: number) => {
-  if (count >= 1_000_000) {
-    return `${(count / 1_000_000).toFixed(1)}M`;
-  }
+const downloadFormatter = new Intl.NumberFormat("en", {
+  maximumFractionDigits: 1,
+  notation: "compact",
+});
 
-  if (count >= 1000) {
-    return `${(count / 1000).toFixed(1)}K`;
-  }
-
-  return String(count);
-};
+const formatDownloads = (count: number) => downloadFormatter.format(count);
 
 const ModCard = ({ mod }: { mod: Mod }) => (
   <article className="group border-border bg-card focus-within:border-foreground/20 relative flex h-full flex-col rounded-2xl border p-5 transition-colors duration-300 focus-within:ring-1 motion-reduce:transition-none">
@@ -51,12 +46,12 @@ const ModCard = ({ mod }: { mod: Mod }) => (
     <div className="text-muted-foreground mt-auto flex items-center justify-between gap-4 pt-4 text-xs">
       <div className="flex items-center gap-4">
         <span className="inline-flex items-center gap-1.5">
-          <IconDownload size={14} />
+          <IconDownload size={14} aria-hidden="true" />
           {formatDownloads(mod.downloads)}
         </span>
 
         <span className="inline-flex items-center gap-1.5">
-          <IconTag size={14} />
+          <IconTag size={14} aria-hidden="true" />
           {mod.version}
         </span>
       </div>

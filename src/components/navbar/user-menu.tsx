@@ -50,6 +50,7 @@ const UserMenu = ({ user, onSignOut }: UserMenuProps) => {
         <IconChevronDown
           size={15}
           stroke={1.8}
+          aria-hidden="true"
           className="text-muted-foreground transition-transform duration-200 group-data-popup-open:rotate-180"
         />
       </Menu.Trigger>

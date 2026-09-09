@@ -95,7 +95,7 @@ const LoginPage = () => {
             label="Email"
             type="email"
             autoComplete="email"
-            placeholder="you@example.com"
+            placeholder="you@example.com…"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             error={fieldErrors.email}

@@ -15,6 +15,7 @@ const NavbarSearch = ({
     <IconSearch
       size={variant === "mobile" ? 18 : 17}
       stroke={1.8}
+      aria-hidden="true"
       className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
     />
     <input

@@ -8,7 +8,10 @@ interface SkeletonProps extends HTMLAttributes<HTMLDivElement> {
 const Skeleton = ({ className, ...props }: SkeletonProps) => (
   <div
     aria-hidden="true"
-    className={cn("bg-muted animate-pulse rounded-lg", className)}
+    className={cn(
+      "bg-muted animate-pulse rounded-lg motion-reduce:animate-none",
+      className
+    )}
     {...props}
   />
 );

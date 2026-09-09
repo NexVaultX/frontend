@@ -163,12 +163,12 @@ const ProjectCard = ({ project }: { project: Project }) => (
     <div className="mt-auto flex items-end justify-between gap-4 pt-5">
       <div className="text-muted-foreground flex items-center gap-5 text-xs">
         <span className="inline-flex items-center gap-1.5">
-          <IconDownload size={14} />
+          <IconDownload size={14} aria-hidden="true" />
           {project.downloads}
         </span>
 
         <span className="inline-flex items-center gap-1.5">
-          <IconHeart size={14} />
+          <IconHeart size={14} aria-hidden="true" />
           {project.follows}
         </span>
       </div>
