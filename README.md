@@ -82,6 +82,7 @@ NexVaultX platform but does not include the full infrastructure stack.
 | **Meilisearch**     | Content search engine                 |
 | **Vite**            | Development and build tooling         |
 | **Nitro**           | Production server runtime             |
+| **Unpic**           | Image optimization (CDN-backed images)|
 | **Vitest**          | Testing                               |
 | **Oxlint**          | Linting                               |
 | **Oxfmt**           | Formatting                            |
@@ -94,13 +95,14 @@ NexVaultX platform but does not include the full infrastructure stack.
 
 Before starting development, ensure you have:
 
-* **Node.js 22+**
+* **Node.js 24+**
 * **PNPM 11.3.0** (managed via `packageManager` in `package.json`)
 * **PostgreSQL** for local server-side database integration
 * Git
 
 > **Note:** The repository pins PNPM through the `packageManager` field, so
-> using the pinned version is recommended.
+> using the pinned version is recommended. Node.js 24 is also pinned in
+> [`mise.toml`](mise.toml) and used by the Dockerfile and CI.
 
 ---
 
@@ -142,47 +144,70 @@ NODE_ENV=development
 
 ### Start the Development Server
 
-The app and the ElysiaJS API server run side by side. Start both with:
+The app and the ElysiaJS API server run side by side. Start the complete
+development environment with:
 
 ```bash
-pnpm dev:all
+pnpm dev
 ```
 
 Or run them in separate terminals:
 
 ```bash
-pnpm dev        # web app on http://localhost:6001
+pnpm dev:web    # web app on http://localhost:6001
 pnpm dev:api    # API server on http://localhost:3002
 ```
 
 The development server runs on `http://localhost:6001` and the API server
 on `http://localhost:3002`.
 
+> `pnpm dev` delegates to `pnpm dev:all`, so the two commands can never
+> drift apart. `pnpm dev:web` starts only the Vite app.
+
 ---
 
 ## Available Commands
 
-| Command             | Description                              |
-| ------------------- | ---------------------------------------- |
-| `pnpm dev`          | Starts the development server (port 6001)|
-| `pnpm dev:api`      | Starts the ElysiaJS API server (watch)   |
-| `pnpm dev:all`      | Runs the app and API server together     |
-| `pnpm start:api`    | Starts the API server (no watch)         |
-| `pnpm send:webhook` | Sends a test mod webhook to the API      |
-| `pnpm build`        | Builds the production bundle             |
-| `pnpm preview`      | Previews the production build            |
-| `pnpm start`        | Starts the built Nitro server            |
-| `pnpm test`         | Runs the Vitest test suite               |
-| `pnpm test:coverage`| Runs the Vitest suite with coverage      |
-| `pnpm test:e2e`     | Builds and runs the Puppeteer E2E suite  |
-| `pnpm test:e2e:dev` | Runs the E2E suite without rebuilding    |
-| `pnpm typecheck`    | Runs the TypeScript type checker         |
-| `pnpm lint`         | Runs the Oxlint linter                   |
-| `pnpm lint:md`      | Runs markdownlint on Markdown files      |
-| `pnpm format`       | Runs the Oxfmt formatter                 |
-| `pnpm check`        | Runs the Ultracite checker               |
-| `pnpm fix`          | Applies Ultracite checks                 |
-| `pnpm prepare`      | Initializes Husky Git hooks              |
+| Command             | Description                                       |
+| ------------------- | ------------------------------------------------- |
+| `pnpm dev`          | Starts the complete dev environment (app + API)   |
+| `pnpm dev:web`      | Starts only the Vite app (port 6001)              |
+| `pnpm dev:api`      | Starts the ElysiaJS API server (watch)            |
+| `pnpm dev:all`      | Runs the app and API server together              |
+| `pnpm start:api`    | Starts the API server (no watch)                  |
+| `pnpm send:webhook` | Sends a test mod webhook to the API               |
+| `pnpm build`        | Builds the production bundle                      |
+| `pnpm preview`      | Previews the production build                     |
+| `pnpm start`        | Starts the built Nitro server                     |
+| `pnpm test`         | Runs the Vitest test suite                        |
+| `pnpm test:coverage`| Runs the Vitest suite with coverage               |
+| `pnpm test:e2e`     | Builds and runs the Puppeteer E2E suite           |
+| `pnpm test:e2e:dev` | Runs the E2E suite without rebuilding             |
+| `pnpm typecheck`    | Runs the TypeScript type checker                  |
+| `pnpm lint`         | Runs the Oxlint linter                            |
+| `pnpm lint:md`      | Runs markdownlint on Markdown files               |
+| `pnpm format`       | Runs the Oxfmt formatter                          |
+| `pnpm check`        | Runs the Ultracite checker                        |
+| `pnpm fix`          | Applies Ultracite checks                          |
+| `pnpm prepare`      | Initializes Husky Git hooks                       |
+
+---
+
+## Tooling
+
+### mise
+
+[`mise.toml`](mise.toml) pins the Node.js version (24). If you use mise:
+
+```bash
+mise install
+```
+
+### just
+
+A [`justfile`](justfile) wraps the common package scripts so you can run
+`just dev`, `just check`, `just test`, and so on instead of `pnpm <script>`.
+Run `just` with no arguments to list all recipes.
 
 ---
 
@@ -274,6 +299,31 @@ VITE_API_URL=http://localhost:3002
 
 See [docs/architecture/api.md](docs/architecture/api.md) for the full API
 reference.
+
+---
+
+## Legal Pages
+
+The following legal pages exist as **placeholders** and must be reviewed by
+a qualified professional before production:
+
+* `/impressum` — Impressum (German legal notice)
+* `/privacy` — Privacy Policy
+* `/cookies` — Cookie Policy
+* `/terms` — Terms of Service
+* `/terms-of-use` — Terms of Use
+* `/disclaimer` — Disclaimer
+
+The cookie consent banner is implemented in
+[`src/components/cookie-banner.tsx`](src/components/cookie-banner.tsx).
+
+---
+
+## Roadmap
+
+See [ROADMAP.md](ROADMAP.md) for the current focus, planned work, and
+completed milestones. Day-to-day work items are tracked in
+[TODO.md](TODO.md).
 
 ---
 
@@ -380,8 +430,9 @@ docker compose -f compose.yaml -f compose.dev.yaml up
 ```
 
 The development Compose configuration mounts the source tree and runs the
-Vite development server with hot reload. The container listens on port
-`6001` and is exposed on host port `1112`:
+complete development environment (Vite app + ElysiaJS API server) with hot
+reload. The container listens on port `6001` and is exposed on host port
+`1112`:
 
 ```text
 host :1112 → container :6001 (Vite dev server)
