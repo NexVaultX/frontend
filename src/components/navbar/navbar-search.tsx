@@ -12,7 +12,9 @@ const NavbarSearch = ({
   ref,
   ...props
 }: NavbarSearchProps) => (
-  <div className={cn("relative", variant === "mobile" && "mb-3")}>
+  <div
+    className={cn("relative overflow-hidden", variant === "mobile" && "mb-3")}
+  >
     <IconSearch
       size={variant === "mobile" ? 18 : 17}
       stroke={1.8}
