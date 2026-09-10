@@ -11,6 +11,7 @@ interface NavbarUser {
   name: string;
   email?: string | null;
   image?: string | null;
+  role?: string | null;
 }
 
 interface AuthButtonsProps {

@@ -1,15 +1,17 @@
 import type { ReactNode } from "react";
 
-import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+
+type ConfirmDialogVariant = "default" | "destructive";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -21,6 +23,7 @@ interface ConfirmDialogProps {
   pending?: boolean;
   error?: string | null;
   cancelLabel?: string;
+  variant?: ConfirmDialogVariant;
 }
 
 const ConfirmDialog = ({
@@ -33,13 +36,14 @@ const ConfirmDialog = ({
   pending = false,
   error = null,
   cancelLabel = "Cancel",
+  variant = "destructive",
 }: ConfirmDialogProps) => (
-  <Dialog open={open} onOpenChange={onOpenChange}>
-    <DialogContent showCloseButton={false}>
-      <DialogHeader>
-        <DialogTitle>{title}</DialogTitle>
-        <DialogDescription>{description}</DialogDescription>
-      </DialogHeader>
+  <AlertDialog open={open} onOpenChange={onOpenChange}>
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>{title}</AlertDialogTitle>
+        <AlertDialogDescription>{description}</AlertDialogDescription>
+      </AlertDialogHeader>
 
       {error && (
         <p className="text-destructive text-sm" role="alert">
@@ -47,7 +51,7 @@ const ConfirmDialog = ({
         </p>
       )}
 
-      <DialogFooter>
+      <AlertDialogFooter>
         <Button
           variant="outline"
           disabled={pending}
@@ -56,7 +60,7 @@ const ConfirmDialog = ({
           {cancelLabel}
         </Button>
         <Button
-          variant="destructive"
+          variant={variant}
           disabled={pending}
           onClick={() => {
             void onConfirm();
@@ -65,9 +69,9 @@ const ConfirmDialog = ({
           {pending && <Spinner label="Pending action" />}
           {pending ? "Processing…" : confirmLabel}
         </Button>
-      </DialogFooter>
-    </DialogContent>
-  </Dialog>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
 );
 
 export { ConfirmDialog };

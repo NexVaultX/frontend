@@ -1,6 +1,7 @@
 "use client";
 
 import { IconSearch, IconX } from "@tabler/icons-react";
+import { useDebouncedValue } from "@tanstack/react-pacer/debouncer";
 import { createFileRoute, useLoaderData } from "@tanstack/react-router";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 
@@ -266,6 +267,7 @@ const searchReducer = (
 const ModsPage = () => {
   const { initial, initialError } = useLoaderData({ from: "/mods" });
   const [query, setQuery] = useState("");
+  const [debouncedQuery] = useDebouncedValue(query, { wait: 300 });
   const [category, setCategory] = useState("");
   const [gameVersion, setGameVersion] = useState("");
   const [loader, setLoader] = useState("");
@@ -324,10 +326,10 @@ const ModsPage = () => {
       category,
       gameVersion,
       loader,
-      query,
+      query: debouncedQuery,
       sort,
     });
-  }, [category, gameVersion, loader, query, runSearch, sort]);
+  }, [category, debouncedQuery, gameVersion, loader, runSearch, sort]);
 
   useEffect(() => {
     const source = new EventSource(`${API_URL}/api/events`);

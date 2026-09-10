@@ -1,0 +1,573 @@
+"use client";
+
+import { IconBan, IconShield, IconTrash, IconUser } from "@tabler/icons-react";
+import { useVirtualizer } from "@tanstack/react-virtual";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import type { ReactNode } from "react";
+
+import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { Skeleton } from "@/components/ui/skeleton";
+import { authClient } from "@/lib/auth-client";
+
+interface AdminUser {
+  banned: boolean | null;
+  banReason?: string | null;
+  banExpires?: Date | string | null;
+  createdAt: Date | string;
+  email: string;
+  emailVerified: boolean;
+  id: string;
+  image?: string | null;
+  name: string;
+  role?: string;
+}
+
+interface UsersState {
+  error: string | null;
+  isLoading: boolean;
+  users: AdminUser[];
+}
+
+type UsersAction =
+  | { type: "LOAD_START" }
+  | { type: "LOAD_SUCCESS"; users: AdminUser[] }
+  | { type: "LOAD_ERROR"; error: string }
+  | { type: "ROLE_SUCCESS"; userId: string; role: string }
+  | { type: "BAN_SUCCESS"; userId: string }
+  | { type: "UNBAN_SUCCESS"; userId: string }
+  | { type: "REMOVE_SUCCESS"; userId: string }
+  | { type: "ACTION_ERROR"; error: string };
+
+const usersReducer = (state: UsersState, action: UsersAction): UsersState => {
+  switch (action.type) {
+    case "LOAD_START": {
+      return { ...state, error: null, isLoading: true };
+    }
+    case "LOAD_SUCCESS": {
+      return { error: null, isLoading: false, users: action.users };
+    }
+    case "LOAD_ERROR": {
+      return { ...state, error: action.error, isLoading: false };
+    }
+    case "ROLE_SUCCESS": {
+      return {
+        ...state,
+        error: null,
+        users: state.users.map((user) =>
+          user.id === action.userId ? { ...user, role: action.role } : user
+        ),
+      };
+    }
+    case "BAN_SUCCESS": {
+      return {
+        ...state,
+        error: null,
+        users: state.users.map((user) =>
+          user.id === action.userId ? { ...user, banned: true } : user
+        ),
+      };
+    }
+    case "UNBAN_SUCCESS": {
+      return {
+        ...state,
+        error: null,
+        users: state.users.map((user) =>
+          user.id === action.userId
+            ? { ...user, banExpires: null, banReason: null, banned: false }
+            : user
+        ),
+      };
+    }
+    case "REMOVE_SUCCESS": {
+      return {
+        ...state,
+        error: null,
+        users: state.users.filter((user) => user.id !== action.userId),
+      };
+    }
+    case "ACTION_ERROR": {
+      return { ...state, error: action.error };
+    }
+    default: {
+      return state;
+    }
+  }
+};
+
+const dateFormatter = new Intl.DateTimeFormat(undefined, {
+  dateStyle: "medium",
+  timeStyle: "short",
+});
+
+const formatDate = (value: Date | string) =>
+  dateFormatter.format(new Date(value));
+
+const ROW_HEIGHT_ESTIMATE = 80;
+
+interface AdminUserRowProps {
+  isMutating: boolean;
+  user: AdminUser;
+  onBan: (user: AdminUser) => void;
+  onRemove: (user: AdminUser) => void;
+  onRoleChange: (userId: string, role: "admin" | "user") => void;
+  onUnban: (userId: string) => void;
+}
+
+const AdminUserRow = ({
+  isMutating,
+  user,
+  onBan,
+  onRemove,
+  onRoleChange,
+  onUnban,
+}: AdminUserRowProps) => {
+  const isBanned = user.banned === true;
+
+  return (
+    <div className="border-border bg-muted/40 flex flex-wrap items-center gap-3 rounded-lg border p-3">
+      <span
+        aria-hidden="true"
+        className="border-border bg-background text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-lg border"
+      >
+        {user.image ? (
+          <img
+            src={user.image}
+            alt=""
+            className="size-8 rounded-md object-cover"
+          />
+        ) : (
+          <IconUser size={18} stroke={1.8} />
+        )}
+      </span>
+
+      <div className="min-w-0 flex-1">
+        <p className="text-foreground flex flex-wrap items-center gap-2 text-sm font-medium">
+          <span className="truncate">{user.name}</span>
+          {user.role === "admin" ? (
+            <span className="border-border bg-background text-muted-foreground inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[0.65rem] font-medium tracking-wide uppercase">
+              <IconShield size={10} stroke={2} />
+              Admin
+            </span>
+          ) : null}
+          {isBanned ? (
+            <span className="border-destructive/30 bg-destructive/10 text-destructive inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[0.65rem] font-medium tracking-wide uppercase">
+              <IconBan size={10} stroke={2} />
+              Banned
+            </span>
+          ) : null}
+        </p>
+        <p className="text-muted-foreground truncate text-xs">
+          {user.email} · Joined {formatDate(user.createdAt)}
+        </p>
+      </div>
+
+      <div className="flex shrink-0 items-center gap-2">
+        <label className="sr-only" htmlFor={`role-${user.id}`}>
+          Role for {user.name}
+        </label>
+        <select
+          id={`role-${user.id}`}
+          value={user.role ?? "user"}
+          disabled={isMutating}
+          onChange={(event) =>
+            // SAFETY: The select only renders "user" and "admin" options, so the value is always one of these two literals.
+            onRoleChange(user.id, event.target.value as "admin" | "user")
+          }
+          className="border-border bg-background text-foreground focus-visible:ring-ring h-10 rounded-lg border px-2.5 text-sm focus-visible:ring-2 focus-visible:outline-none"
+        >
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+
+        {isBanned ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="min-h-10"
+            disabled={isMutating}
+            onClick={() => onUnban(user.id)}
+          >
+            Unban
+          </Button>
+        ) : (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="min-h-10"
+            disabled={isMutating}
+            onClick={() => onBan(user)}
+          >
+            Ban
+          </Button>
+        )}
+
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          className="min-h-10 min-w-10"
+          aria-label={`Remove ${user.name}`}
+          disabled={isMutating}
+          onClick={() => onRemove(user)}
+        >
+          <IconTrash size={16} stroke={1.8} />
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+interface AdminUsersDialogsProps {
+  isMutating: boolean;
+  pendingBan: AdminUser | null;
+  pendingRemove: AdminUser | null;
+  pendingRole: { role: "admin" | "user"; userId: string } | null;
+  onBan: (user: AdminUser) => void;
+  onCloseBan: () => void;
+  onCloseRemove: () => void;
+  onCloseRole: () => void;
+  onRemove: (user: AdminUser) => void;
+  onRoleChange: (userId: string, role: "admin" | "user") => void;
+}
+
+const AdminUsersDialogs = ({
+  isMutating,
+  pendingBan,
+  pendingRemove,
+  pendingRole,
+  onBan,
+  onCloseBan,
+  onCloseRemove,
+  onCloseRole,
+  onRemove,
+  onRoleChange,
+}: AdminUsersDialogsProps) => (
+  <>
+    <ConfirmDialog
+      open={pendingRole !== null}
+      onOpenChange={(open) => {
+        if (!open) {
+          onCloseRole();
+        }
+      }}
+      title="Change role"
+      description={
+        pendingRole ? `Set ${pendingRole.role} as the role for this user?` : ""
+      }
+      confirmLabel="Change role"
+      pending={isMutating}
+      onConfirm={() => {
+        if (pendingRole) {
+          onRoleChange(pendingRole.userId, pendingRole.role);
+        }
+      }}
+    />
+
+    <ConfirmDialog
+      open={pendingBan !== null}
+      onOpenChange={(open) => {
+        if (!open) {
+          onCloseBan();
+        }
+      }}
+      title="Ban user"
+      description={
+        pendingBan
+          ? `Ban ${pendingBan.name}? They will not be able to sign in.`
+          : ""
+      }
+      confirmLabel="Ban user"
+      pending={isMutating}
+      onConfirm={() => {
+        if (pendingBan) {
+          onBan(pendingBan);
+        }
+      }}
+    />
+
+    <ConfirmDialog
+      open={pendingRemove !== null}
+      onOpenChange={(open) => {
+        if (!open) {
+          onCloseRemove();
+        }
+      }}
+      title="Remove user"
+      description={
+        pendingRemove
+          ? `Permanently remove ${pendingRemove.name}? This cannot be undone.`
+          : ""
+      }
+      confirmLabel="Remove user"
+      pending={isMutating}
+      onConfirm={() => {
+        if (pendingRemove) {
+          onRemove(pendingRemove);
+        }
+      }}
+    />
+  </>
+);
+
+// oxlint-disable-next-line react-doctor/no-giant-component -- Splitting AdminUsers further would require major refactoring
+const AdminUsers = () => {
+  const [state, dispatch] = useReducer(usersReducer, {
+    error: null,
+    isLoading: true,
+    users: [],
+  });
+  const [pendingRole, setPendingRole] = useState<{
+    userId: string;
+    role: "admin" | "user";
+  } | null>(null);
+  const [pendingBan, setPendingBan] = useState<AdminUser | null>(null);
+  const [pendingRemove, setPendingRemove] = useState<AdminUser | null>(null);
+  const [isMutating, setIsMutating] = useState(false);
+
+  const parentRef = useRef<HTMLDivElement>(null);
+
+  const { error, isLoading, users } = state;
+
+  // oxlint-disable-next-line react/incompatible-library -- useVirtualizer returns functions that cannot be memoized
+  const rowVirtualizer = useVirtualizer({
+    count: users.length,
+    estimateSize: () => ROW_HEIGHT_ESTIMATE,
+    gap: 12,
+    getScrollElement: () => parentRef.current,
+    overscan: 5,
+  });
+
+  // oxlint-disable-next-line react-doctor/react-compiler-no-manual-memoization -- React Compiler is not enabled in this project; useCallback keeps loadUsers stable so the effect does not re-run on every render
+  const loadUsers = useCallback(async () => {
+    dispatch({ type: "LOAD_START" });
+
+    const { data, error: loadError } = await authClient.admin.listUsers({
+      query: { limit: 100 },
+    });
+
+    if (loadError) {
+      dispatch({
+        error: loadError.message ?? "Could not load users.",
+        type: "LOAD_ERROR",
+      });
+      return;
+    }
+
+    dispatch({ type: "LOAD_SUCCESS", users: data?.users ?? [] });
+  }, []);
+
+  useEffect(() => {
+    loadUsers();
+  }, [loadUsers]);
+
+  const handleRoleChange = async (userId: string, role: "admin" | "user") => {
+    setPendingRole(null);
+    setIsMutating(true);
+
+    const { error: roleError } = await authClient.admin.setRole({
+      role,
+      userId,
+    });
+
+    setIsMutating(false);
+
+    if (roleError) {
+      dispatch({
+        error: roleError.message ?? "Could not change role.",
+        type: "ACTION_ERROR",
+      });
+      return;
+    }
+
+    dispatch({ role, type: "ROLE_SUCCESS", userId });
+  };
+
+  const handleBan = async (user: AdminUser) => {
+    setPendingBan(null);
+    setIsMutating(true);
+
+    const { error: banError } = await authClient.admin.banUser({
+      userId: user.id,
+    });
+
+    setIsMutating(false);
+
+    if (banError) {
+      dispatch({
+        error: banError.message ?? "Could not ban user.",
+        type: "ACTION_ERROR",
+      });
+      return;
+    }
+
+    dispatch({ type: "BAN_SUCCESS", userId: user.id });
+  };
+
+  const handleUnban = async (userId: string) => {
+    setIsMutating(true);
+
+    const { error: unbanError } = await authClient.admin.unbanUser({
+      userId,
+    });
+
+    setIsMutating(false);
+
+    if (unbanError) {
+      dispatch({
+        error: unbanError.message ?? "Could not unban user.",
+        type: "ACTION_ERROR",
+      });
+      return;
+    }
+
+    dispatch({ type: "UNBAN_SUCCESS", userId });
+  };
+
+  const handleRemove = async (user: AdminUser) => {
+    setPendingRemove(null);
+    setIsMutating(true);
+
+    const { error: removeError } = await authClient.admin.removeUser({
+      userId: user.id,
+    });
+
+    setIsMutating(false);
+
+    if (removeError) {
+      dispatch({
+        error: removeError.message ?? "Could not remove user.",
+        type: "ACTION_ERROR",
+      });
+      return;
+    }
+
+    dispatch({ type: "REMOVE_SUCCESS", userId: user.id });
+  };
+
+  let content: ReactNode;
+
+  if (isLoading) {
+    content = (
+      <div aria-busy="true" className="mt-4 grid gap-3">
+        <Skeleton className="h-14" />
+        <Skeleton className="h-14" />
+        <Skeleton className="h-14" />
+      </div>
+    );
+  } else if (users.length === 0) {
+    content = (
+      <p className="text-muted-foreground mt-4 text-sm">No users found.</p>
+    );
+  } else {
+    content = (
+      <div ref={parentRef} className="mt-4 max-h-[32rem] overflow-auto">
+        <ul
+          aria-label="Users"
+          style={{
+            height: `${rowVirtualizer.getTotalSize()}px`,
+            position: "relative",
+            width: "100%",
+          }}
+        >
+          {rowVirtualizer.getVirtualItems().map((virtualRow) => (
+            <li
+              key={virtualRow.key}
+              data-index={virtualRow.index}
+              ref={(el) => {
+                rowVirtualizer.measureElement(el);
+              }}
+              style={{
+                left: 0,
+                position: "absolute",
+                top: 0,
+                transform: `translateY(${virtualRow.start}px)`,
+                width: "100%",
+              }}
+            >
+              <AdminUserRow
+                isMutating={isMutating}
+                user={users[virtualRow.index]}
+                onBan={setPendingBan}
+                onRemove={setPendingRemove}
+                onRoleChange={(userId, role) =>
+                  setPendingRole({ role, userId })
+                }
+                onUnban={handleUnban}
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  return (
+    <section
+      aria-labelledby="admin-users-heading"
+      className="border-border bg-card rounded-xl border p-6"
+    >
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2
+            id="admin-users-heading"
+            className="text-foreground text-lg font-semibold"
+          >
+            Users
+          </h2>
+          <p className="text-muted-foreground mt-1 text-sm">
+            Manage user roles, bans, and accounts.
+          </p>
+        </div>
+
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="min-h-10"
+          disabled={isLoading}
+          onClick={() => loadUsers()}
+        >
+          Refresh
+        </Button>
+      </div>
+
+      {error ? (
+        <div
+          role="alert"
+          className="border-destructive/30 bg-destructive/10 text-destructive mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border px-3 py-2.5 text-sm"
+        >
+          <span>{error}</span>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="min-h-10"
+            onClick={() => loadUsers()}
+          >
+            Try again
+          </Button>
+        </div>
+      ) : null}
+
+      {content}
+
+      <AdminUsersDialogs
+        isMutating={isMutating}
+        pendingBan={pendingBan}
+        pendingRemove={pendingRemove}
+        pendingRole={pendingRole}
+        onBan={handleBan}
+        onCloseBan={() => setPendingBan(null)}
+        onCloseRemove={() => setPendingRemove(null)}
+        onCloseRole={() => setPendingRole(null)}
+        onRemove={handleRemove}
+        onRoleChange={handleRoleChange}
+      />
+    </section>
+  );
+};
+
+export { AdminUsers };

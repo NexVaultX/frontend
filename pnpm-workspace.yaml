@@ -9,3 +9,7 @@ allowBuilds:
   unrs-resolver: true
   msw: false
   puppeteer: true
+
+minimumReleaseAgeExclude:
+  - "@tanstack/charts@0.18.0"
+  - "@tanstack/react-charts@0.18.0"

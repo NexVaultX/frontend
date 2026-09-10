@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 
 import { Elysia } from "elysia";
-import { z } from "zod";
+import { object, picklist, safeParse, string } from "valibot";
 
 import "../env";
 import { events } from "../lib/events";
@@ -9,11 +9,11 @@ import { events } from "../lib/events";
 const WEBHOOK_SECRET =
   process.env.WEBHOOK_SECRET ?? "dev-webhook-secret-change-me";
 
-const modEventSchema = z.object({
-  event: z.enum(["mod.created", "mod.updated", "mod.deleted"]),
-  data: z.object({
-    id: z.string(),
-    name: z.string(),
+const modEventSchema = object({
+  event: picklist(["mod.created", "mod.updated", "mod.deleted"]),
+  data: object({
+    id: string(),
+    name: string(),
   }),
 });
 
@@ -47,12 +47,12 @@ export const webhooksRoute = new Elysia().post(
       return new Response("Invalid JSON body", { status: 400 });
     }
 
-    const parsed = modEventSchema.safeParse(body);
+    const parsed = safeParse(modEventSchema, body);
     if (!parsed.success) {
       return new Response("Invalid webhook payload", { status: 400 });
     }
 
-    events.broadcast(parsed.data);
+    events.broadcast(parsed.output);
     return { ok: true };
   }
 );

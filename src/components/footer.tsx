@@ -6,12 +6,8 @@ import {
 } from "@tabler/icons-react";
 
 const PROJECT_LINKS = [
+  { href: "/projects", label: "Projects" },
   { href: "/mods", label: "Mods" },
-  { href: "/resource-packs", label: "Resource Packs" },
-  { href: "/modpacks", label: "Modpacks" },
-  { href: "/shaders", label: "Shaders" },
-  { href: "/plugins", label: "Plugins" },
-  { href: "/servers", label: "Servers" },
 ] as const;
 
 const RESOURCE_LINKS = [

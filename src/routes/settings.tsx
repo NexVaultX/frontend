@@ -7,9 +7,8 @@ import {
   useRouter,
   useSearch,
 } from "@tanstack/react-router";
-import { z } from "zod";
+import { object, optional, parse, picklist } from "valibot";
 
-import { SettingsAccount } from "@/components/settings/settings-account";
 import { SettingsDangerZone } from "@/components/settings/settings-danger-zone";
 import { SettingsPasskeys } from "@/components/settings/settings-passkeys";
 import { SettingsProfile } from "@/components/settings/settings-profile";
@@ -18,10 +17,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { authClient } from "@/lib/auth-client";
 import { getSession } from "@/lib/auth.functions";
 
-const settingsSearchSchema = z.object({
-  tab: z
-    .enum(["profile", "account", "passkeys", "sessions", "danger"])
-    .optional(),
+const settingsSearchSchema = object({
+  tab: optional(picklist(["profile", "passkeys", "sessions", "danger"])),
 });
 
 const SettingsPage = () => {
@@ -32,7 +29,26 @@ const SettingsPage = () => {
   const { tab = "profile" } = useSearch({ from: "/settings" });
 
   const handleSignOut = async () => {
-    await authClient.signOut();
+    let signOutError: string | null = null;
+
+    try {
+      const { error } = await authClient.signOut();
+      if (error) {
+        signOutError = error.message ?? "Could not sign out.";
+      }
+    } catch {
+      signOutError = "Could not sign out.";
+    }
+
+    if (signOutError) {
+      // Fall back to a hard navigation so the session state is re-read from
+      // the cookie even if the client-side session store is stale.
+      window.location.assign("/");
+      return;
+    }
+
+    authClient.$store.notify("$sessionSignal");
+    router.invalidate();
     router.navigate({ to: "/" });
   };
 
@@ -58,7 +74,6 @@ const SettingsPage = () => {
       >
         <TabsList aria-label="Settings sections">
           <TabsTrigger value="profile">Profile</TabsTrigger>
-          <TabsTrigger value="account">Account</TabsTrigger>
           <TabsTrigger value="passkeys">Passkeys</TabsTrigger>
           <TabsTrigger value="sessions">Sessions</TabsTrigger>
           <TabsTrigger value="danger">Danger Zone</TabsTrigger>
@@ -66,10 +81,6 @@ const SettingsPage = () => {
 
         <TabsContent value="profile">
           {session?.user ? <SettingsProfile user={session.user} /> : null}
-        </TabsContent>
-
-        <TabsContent value="account">
-          <SettingsAccount />
         </TabsContent>
 
         <TabsContent value="passkeys">
@@ -89,7 +100,8 @@ const SettingsPage = () => {
 };
 
 export const Route = createFileRoute("/settings")({
-  validateSearch: settingsSearchSchema,
+  validateSearch: (search: Record<string, string | undefined>) =>
+    parse(settingsSearchSchema, search),
   beforeLoad: async () => {
     const session = await getSession();
     if (!session) {

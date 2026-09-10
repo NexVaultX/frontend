@@ -5,11 +5,6 @@ import { cn } from "@/lib/utils";
 const CONTENT_LINKS = [
   { href: "/projects", label: "Projects" },
   { href: "/mods", label: "Mods" },
-  { href: "/resource-packs", label: "Resource Packs" },
-  { href: "/modpacks", label: "Modpacks" },
-  { href: "/shaders", label: "Shaders" },
-  { href: "/plugins", label: "Plugins" },
-  { href: "/servers", label: "Servers" },
 ] as const;
 
 const linkClassName =
@@ -30,47 +25,31 @@ const NavbarLinks = () => {
       className="hidden items-center gap-1 lg:flex"
     >
       {CONTENT_LINKS.map((link) => {
-        const isActive =
-          link.href === "/mods" || link.href === "/projects"
-            ? !!matchRoute({ to: link.href })
-            : false;
-
-        if (link.href === "/mods" || link.href === "/projects") {
-          return (
-            <Link
-              key={link.href}
-              to={link.href}
-              preload="intent"
-              activeProps={{
-                "aria-current": "page",
-                className: cn(linkClassName, "text-foreground"),
-              }}
-              className={linkClassName}
-            >
-              {link.label}
-
-              <span
-                aria-hidden="true"
-                className={cn(
-                  activeIndicatorClassName,
-                  isActive
-                    ? "scale-x-100 opacity-100"
-                    : inactiveIndicatorClassName
-                )}
-              />
-            </Link>
-          );
-        }
+        const isActive = !!matchRoute({ to: link.href });
 
         return (
-          <a key={link.href} href={link.href} className={linkClassName}>
+          <Link
+            key={link.href}
+            to={link.href}
+            preload="intent"
+            activeProps={{
+              "aria-current": "page",
+              className: cn(linkClassName, "text-foreground"),
+            }}
+            className={linkClassName}
+          >
             {link.label}
 
             <span
               aria-hidden="true"
-              className="bg-foreground absolute inset-x-3 -bottom-0.5 h-px origin-left scale-x-[0.01] opacity-0 transition-[transform,opacity] duration-200 group-hover:scale-x-100 group-hover:opacity-100"
+              className={cn(
+                activeIndicatorClassName,
+                isActive
+                  ? "scale-x-100 opacity-100"
+                  : inactiveIndicatorClassName
+              )}
             />
-          </a>
+          </Link>
         );
       })}
     </nav>

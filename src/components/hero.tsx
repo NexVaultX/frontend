@@ -5,6 +5,7 @@ import { Link } from "@tanstack/react-router";
 import { m, useReducedMotion } from "motion/react";
 
 import { Logo } from "@/components/logo";
+import { ChromaticTextReveal } from "@/components/motion/chromatic-text-reveal";
 import { Button } from "@/components/ui/button";
 import { EASE_OUT } from "@/lib/ease";
 
@@ -24,8 +25,7 @@ const Hero = () => {
         </div>
 
         <h1 className="text-foreground mb-5 text-4xl font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-          Discover the best <span className="text-primary">Minecraft</span>{" "}
-          projects
+          Discover the best <ChromaticTextReveal /> projects
         </h1>
 
         <p className="text-muted-foreground mx-auto mb-8 max-w-2xl text-lg leading-8">

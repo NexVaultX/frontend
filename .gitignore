@@ -15,3 +15,6 @@ coverage/
 
 # typescript
 *.tsbuildinfo
+
+# other
+a

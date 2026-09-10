@@ -6,6 +6,7 @@ import {
   IconPlus,
   IconTrash,
 } from "@tabler/icons-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import type { FormEvent } from "react";
 
@@ -13,20 +14,26 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
+import { listPasskeys } from "@/lib/auth.functions";
 
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
   dateStyle: "medium",
 });
 
-const formatDate = (value: Date) => dateFormatter.format(value);
+const formatDate = (value: Date | string) =>
+  dateFormatter.format(new Date(value));
 
 const SettingsPasskeys = () => {
+  const queryClient = useQueryClient();
   const {
     data: passkeys,
     error: listError,
     isPending,
     refetch,
-  } = authClient.useListPasskeys();
+  } = useQuery({
+    queryFn: listPasskeys,
+    queryKey: ["passkeys"],
+  });
   const [name, setName] = useState("");
   const [isAdding, setIsAdding] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -49,7 +56,7 @@ const SettingsPasskeys = () => {
     }
 
     setName("");
-    refetch();
+    queryClient.invalidateQueries({ queryKey: ["passkeys"] });
   };
 
   const handleRemove = async (id: string) => {
@@ -68,7 +75,7 @@ const SettingsPasskeys = () => {
       return;
     }
 
-    refetch();
+    queryClient.invalidateQueries({ queryKey: ["passkeys"] });
   };
 
   return (
@@ -93,9 +100,18 @@ const SettingsPasskeys = () => {
       {listError ? (
         <div
           role="alert"
-          className="border-destructive/30 bg-destructive/10 text-destructive mt-4 rounded-lg border px-3 py-2.5 text-sm"
+          className="border-destructive/30 bg-destructive/10 text-destructive mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border px-3 py-2.5 text-sm"
         >
-          {listError.message ?? "Could not load passkeys."}
+          <span>{listError.message ?? "Could not load passkeys."}</span>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="min-h-10"
+            onClick={() => refetch()}
+          >
+            Try again
+          </Button>
         </div>
       ) : null}
 
@@ -157,7 +173,7 @@ const SettingsPasskeys = () => {
       ) : null}
 
       {!isPending && passkeys && passkeys.length > 0 ? (
-        <ul aria-busy={isPending} className="mt-4 grid gap-3">
+        <ul className="mt-4 grid gap-3">
           {passkeys.map((passkey) => {
             const isSynced = passkey.deviceType === "multiDevice";
             const DeviceIcon = isSynced ? IconFingerprint : IconDeviceMobile;

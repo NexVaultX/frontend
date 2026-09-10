@@ -1,5 +1,6 @@
 "use client";
 
+import { useForm, useStore } from "@tanstack/react-form";
 import {
   Link,
   createFileRoute,
@@ -7,51 +8,49 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { useState } from "react";
-import type { FormEvent } from "react";
+import { check, nonEmpty, pipe, regex, string } from "valibot";
 
 import { FormField } from "@/components/form-field";
 import { GoogleSignInButton } from "@/components/google-sign-in-button";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
-import { validateLoginInput } from "@/lib/auth-validation";
 import { getSession } from "@/lib/auth.functions";
 
-interface FieldErrors {
-  email?: string;
-  password?: string;
-}
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/u;
+
+const emailSchema = pipe(
+  string(),
+  check((value) => value.trim().length > 0, "Email is required."),
+  regex(EMAIL_PATTERN, "Enter a valid email address.")
+);
+
+const passwordSchema = pipe(string(), nonEmpty("Password is required."));
 
 const LoginPage = () => {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setFormError(null);
+  const form = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    onSubmit: async ({ value }) => {
+      setFormError(null);
+      const { error } = await authClient.signIn.email(value);
+      if (error) {
+        setFormError(error.message ?? "Invalid email or password.");
+        return;
+      }
+      router.navigate({ to: "/" });
+    },
+    onSubmitInvalid: () => {
+      setFormError(null);
+    },
+  });
 
-    const errors = validateLoginInput(email, password);
-
-    setFieldErrors(errors);
-    if (errors.email || errors.password) {
-      return;
-    }
-
-    setIsSubmitting(true);
-    const { error } = await authClient.signIn.email({ email, password });
-    setIsSubmitting(false);
-
-    if (error) {
-      setFormError(error.message ?? "Invalid email or password.");
-      return;
-    }
-
-    router.navigate({ to: "/" });
-  };
+  const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
 
   return (
     <div className="flex min-h-svh items-center justify-center px-4 py-12">
@@ -85,33 +84,59 @@ const LoginPage = () => {
         </div>
 
         <form
-          onSubmit={handleSubmit}
+          onSubmit={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            void form.handleSubmit();
+          }}
           noValidate
           aria-busy={isSubmitting}
           className="mt-6 grid gap-4"
         >
-          <FormField
-            id="email"
-            label="Email"
-            type="email"
-            autoComplete="email"
-            placeholder="you@example.com…"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            error={fieldErrors.email}
-            required
-          />
+          <form.Field
+            name="email"
+            validators={{
+              onChange: emailSchema,
+              onSubmit: emailSchema,
+            }}
+          >
+            {(field) => (
+              <FormField
+                id="email"
+                label="Email"
+                type="email"
+                autoComplete="email"
+                placeholder="you@example.com…"
+                value={field.state.value}
+                onChange={(event) => field.handleChange(event.target.value)}
+                onBlur={field.handleBlur}
+                error={field.state.meta.errors[0]?.message}
+                required
+              />
+            )}
+          </form.Field>
 
-          <FormField
-            id="password"
-            label="Password"
-            type="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            error={fieldErrors.password}
-            required
-          />
+          <form.Field
+            name="password"
+            validators={{
+              onChange: passwordSchema,
+              onSubmit: passwordSchema,
+            }}
+          >
+            {(field) => (
+              <FormField
+                id="password"
+                label="Password"
+                type="password"
+                autoComplete="current-password"
+                value={field.state.value}
+                onChange={(event) => field.handleChange(event.target.value)}
+                onBlur={field.handleBlur}
+                error={field.state.meta.errors[0]?.message}
+                required
+              />
+            )}
+          </form.Field>
 
           <Button
             type="submit"

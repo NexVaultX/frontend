@@ -2,8 +2,8 @@
 // beui.dev/components/motion/theme-toggle
 
 import { useTheme } from "@lonik/themer";
+import { IconMoon, IconSun } from "@tabler/icons-react";
 import { useHydrated } from "@tanstack/react-router";
-import { Moon, Sun } from "lucide-react";
 import { useReducedMotion } from "motion/react";
 import { useEffect } from "react";
 import type { ComponentPropsWithoutRef } from "react";
@@ -203,9 +203,9 @@ const ThemeToggle = ({
       {mounted ? (
         <IconSwap value={isDark ? "dark" : "light"} className={iconClassName}>
           {isDark ? (
-            <Sun className={iconClassName} />
+            <IconSun className={iconClassName} />
           ) : (
-            <Moon className={iconClassName} />
+            <IconMoon className={iconClassName} />
           )}
         </IconSwap>
       ) : (

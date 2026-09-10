@@ -1,7 +1,12 @@
 "use client";
 
 import { Menu } from "@base-ui/react/menu";
-import { IconChevronDown, IconLogout, IconSettings } from "@tabler/icons-react";
+import {
+  IconChevronDown,
+  IconLogout,
+  IconSettings,
+  IconShield,
+} from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
@@ -11,6 +16,7 @@ interface UserMenuProps {
     name: string;
     email?: string | null;
     image?: string | null;
+    role?: string | null;
   };
   onSignOut: () => void;
 }
@@ -81,6 +87,16 @@ const UserMenu = ({ user, onSignOut }: UserMenuProps) => {
               <IconSettings size={16} stroke={1.8} />
               Settings
             </Menu.Item>
+
+            {user.role === "admin" ? (
+              <Menu.Item
+                render={<Link to="/admin" />}
+                className="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring data-highlighted:bg-muted data-highlighted:text-foreground flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
+              >
+                <IconShield size={16} stroke={1.8} />
+                Admin Panel
+              </Menu.Item>
+            ) : null}
 
             <div className="border-border/70 my-1 border-t" />
 

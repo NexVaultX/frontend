@@ -74,39 +74,21 @@ const NavbarMobileMenu = ({
             Content
           </p>
 
-          {CONTENT_LINKS.map((link) => {
-            if (link.href === "/mods" || link.href === "/projects") {
-              return (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  preload="intent"
-                  activeProps={{
-                    "aria-current": "page",
-                    className: cn(
-                      mobileLinkClassName,
-                      "bg-muted text-foreground"
-                    ),
-                  }}
-                  onClick={onClose}
-                  className={mobileLinkClassName}
-                >
-                  {link.label}
-                </Link>
-              );
-            }
-
-            return (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={onClose}
-                className={mobileLinkClassName}
-              >
-                {link.label}
-              </a>
-            );
-          })}
+          {CONTENT_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              to={link.href}
+              preload="intent"
+              activeProps={{
+                "aria-current": "page",
+                className: cn(mobileLinkClassName, "bg-muted text-foreground"),
+              }}
+              onClick={onClose}
+              className={mobileLinkClassName}
+            >
+              {link.label}
+            </Link>
+          ))}
         </nav>
 
         <AuthButtons

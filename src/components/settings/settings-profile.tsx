@@ -1,12 +1,12 @@
 "use client";
 
+import { useForm, useStore } from "@tanstack/react-form";
 import { useState } from "react";
-import type { FormEvent } from "react";
+import { check, maxLength, minLength, pipe, regex, string } from "valibot";
 
 import { FormField } from "@/components/form-field";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
-import { validateProfileInput } from "@/lib/auth-validation";
 
 interface SettingsProfileProps {
   user: {
@@ -16,47 +16,56 @@ interface SettingsProfileProps {
   };
 }
 
-interface FieldErrors {
-  name?: string;
-  username?: string;
-}
+const USERNAME_PATTERN = /^[a-zA-Z0-9_.]+$/u;
+const MIN_USERNAME_LENGTH = 3;
+const MAX_USERNAME_LENGTH = 30;
+
+const nameSchema = pipe(
+  string(),
+  check((value) => value.trim().length > 0, "Name is required.")
+);
+
+const usernameSchema = pipe(
+  string(),
+  check((value) => value.trim().length > 0, "Username is required."),
+  minLength(MIN_USERNAME_LENGTH, "Username must be 3-30 characters."),
+  maxLength(MAX_USERNAME_LENGTH, "Username must be 3-30 characters."),
+  regex(USERNAME_PATTERN, "Use letters, numbers, underscores, or periods.")
+);
 
 const SettingsProfile = ({ user }: SettingsProfileProps) => {
-  // oxlint-disable-next-line react-doctor/no-derived-useState -- Form fields are intentionally initialized from the session user and become the source of truth (controlled inputs); the session prop must not re-sync the form while the user is editing.
-  const [name, setName] = useState(user.name);
-  const [username, setUsername] = useState(user.username ?? "");
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setFormError(null);
-    setSuccess(false);
+  // Fields are initialized from the session user and become the source of
+  // truth; TanStack Form only re-syncs defaultValues while the form is
+  // untouched, so the session prop never overwrites in-progress edits.
+  const form = useForm({
+    defaultValues: {
+      name: user.name,
+      username: user.username ?? "",
+    },
+    onSubmit: async ({ value }) => {
+      setFormError(null);
+      setSuccess(false);
+      const { error } = await authClient.updateUser({
+        displayUsername: value.username.trim(),
+        name: value.name.trim(),
+        username: value.username.trim(),
+      });
+      if (error) {
+        setFormError(error.message ?? "Could not update your profile.");
+        return;
+      }
+      setSuccess(true);
+    },
+    onSubmitInvalid: () => {
+      setFormError(null);
+      setSuccess(false);
+    },
+  });
 
-    const errors = validateProfileInput(name, username);
-
-    setFieldErrors(errors);
-    if (errors.name || errors.username) {
-      return;
-    }
-
-    setIsSubmitting(true);
-    const { error } = await authClient.updateUser({
-      displayUsername: username.trim(),
-      name: name.trim(),
-      username: username.trim(),
-    });
-    setIsSubmitting(false);
-
-    if (error) {
-      setFormError(error.message ?? "Could not update your profile.");
-      return;
-    }
-
-    setSuccess(true);
-  };
+  const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
 
   return (
     <section
@@ -88,29 +97,60 @@ const SettingsProfile = ({ user }: SettingsProfileProps) => {
         </output>
       ) : null}
 
-      <form onSubmit={handleSubmit} noValidate className="mt-4 grid gap-4">
-        <FormField
-          id="profile-name"
-          label="Display name"
-          type="text"
-          autoComplete="name"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          error={fieldErrors.name}
-          required
-        />
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          void form.handleSubmit();
+        }}
+        noValidate
+        aria-busy={isSubmitting}
+        className="mt-4 grid gap-4"
+      >
+        <form.Field
+          name="name"
+          validators={{
+            onChange: nameSchema,
+            onSubmit: nameSchema,
+          }}
+        >
+          {(field) => (
+            <FormField
+              id="profile-name"
+              label="Display name"
+              type="text"
+              autoComplete="name"
+              value={field.state.value}
+              onChange={(event) => field.handleChange(event.target.value)}
+              onBlur={field.handleBlur}
+              error={field.state.meta.errors[0]?.message}
+              required
+            />
+          )}
+        </form.Field>
 
-        <FormField
-          id="profile-username"
-          label="Username"
-          type="text"
-          autoComplete="username"
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
-          error={fieldErrors.username}
-          helperText="3-30 characters. Letters, numbers, underscores, and periods."
-          required
-        />
+        <form.Field
+          name="username"
+          validators={{
+            onChange: usernameSchema,
+            onSubmit: usernameSchema,
+          }}
+        >
+          {(field) => (
+            <FormField
+              id="profile-username"
+              label="Username"
+              type="text"
+              autoComplete="username"
+              value={field.state.value}
+              onChange={(event) => field.handleChange(event.target.value)}
+              onBlur={field.handleBlur}
+              error={field.state.meta.errors[0]?.message}
+              helperText="3-30 characters. Letters, numbers, underscores, and periods."
+              required
+            />
+          )}
+        </form.Field>
 
         <div className="grid gap-2">
           <span className="text-foreground text-sm font-medium">Email</span>

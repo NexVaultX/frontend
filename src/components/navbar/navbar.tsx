@@ -1,8 +1,9 @@
 "use client";
 
 import { IconMenu2, IconX } from "@tabler/icons-react";
+import { useHotkey } from "@tanstack/react-hotkeys";
 import { useRouter } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { ThemeToggle } from "@/components/motion/theme-toggle";
 import { AuthButtons } from "@/components/navbar/auth-buttons";
@@ -16,11 +17,47 @@ import { authClient } from "@/lib/auth-client";
 const Navbar = () => {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [signOutError, setSignOutError] = useState<string | null>(null);
   const { data: session, isPending } = authClient.useSession();
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const focusSearch = () => {
+    searchInputRef.current?.focus();
+  };
+
+  const blurSearch = () => {
+    searchInputRef.current?.blur();
+  };
+
+  useHotkey("Mod+K", focusSearch);
+  useHotkey("Escape", blurSearch);
+
+  const handleSearchKeyDown = (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === "Escape") {
+      blurSearch();
+    }
+  };
 
   const handleSignOut = async () => {
-    await authClient.signOut();
+    setSignOutError(null);
+
+    try {
+      const { error } = await authClient.signOut();
+      if (error) {
+        setSignOutError(error.message ?? "Could not sign out.");
+        return;
+      }
+    } catch {
+      setSignOutError("Could not sign out.");
+      return;
+    }
+
     setMenuOpen(false);
+    // Force the session hook to refetch so the UI reflects the signed-out state
+    authClient.$store.notify("$sessionSignal");
+    router.invalidate();
     router.navigate({ to: "/" });
   };
 
@@ -33,7 +70,12 @@ const Navbar = () => {
 
         {/* Desktop actions */}
         <div className="ml-auto hidden items-center gap-2 lg:flex">
-          <NavbarSearch variant="desktop" className="hidden xl:block" />
+          <NavbarSearch
+            ref={searchInputRef}
+            variant="desktop"
+            onKeyDown={handleSearchKeyDown}
+            className="hidden xl:block"
+          />
           <ThemeToggle variant="circle" start="center" />
           <AuthButtons
             variant="desktop"
@@ -72,6 +114,15 @@ const Navbar = () => {
         session={session}
         onSignOut={handleSignOut}
       />
+
+      {signOutError ? (
+        <div
+          role="alert"
+          className="border-destructive/30 bg-destructive/10 text-destructive px-4 py-2 text-center text-sm"
+        >
+          {signOutError}
+        </div>
+      ) : null}
     </header>
   );
 };
