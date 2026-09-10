@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  AnimatePresence,
-  LazyMotion,
-  domAnimation,
-  m,
-  useReducedMotion,
-} from "motion/react";
+import { AnimatePresence, m, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 
 import { SPRING_SWAP } from "@/lib/ease";
@@ -59,20 +53,18 @@ const ChromaticTextReveal = () => {
         className="text-primary"
         style={CHROMATIC_SHADOW}
       >
-        <LazyMotion features={domAnimation}>
-          <AnimatePresence mode="wait" initial={false}>
-            <m.span
-              key={word}
-              initial={reduce ? false : HIDDEN}
-              animate={VISIBLE}
-              exit={reduce ? undefined : EXIT_FADE}
-              transition={SPRING_SWAP}
-              className="inline-block"
-            >
-              {word}
-            </m.span>
-          </AnimatePresence>
-        </LazyMotion>
+        <AnimatePresence mode="wait" initial={false}>
+          <m.span
+            key={word}
+            initial={reduce ? false : HIDDEN}
+            animate={VISIBLE}
+            exit={reduce ? undefined : EXIT_FADE}
+            transition={SPRING_SWAP}
+            className="inline-block"
+          >
+            {word}
+          </m.span>
+        </AnimatePresence>
       </span>
       <span className="sr-only" aria-live="polite">
         {word}

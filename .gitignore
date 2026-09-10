@@ -1,20 +1,53 @@
+# dependencies
 node_modules
-.DS_Store
+.pnp
+.pnp.js
+
+# build output
 dist
 dist-ssr
-*.local
-.env*
-.tanstack
-.wrangler
 .output
 .vinxi
+.tanstack
+.wrangler
 __unconfig*
-todos.json
-.tmp/
+
+# environment
+.env
+.env.*
+!.env.example
+
+# logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# cache
+.cache
+.turbo
+.eslintcache
+.vite
+
+# IDE
+.idea
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# testing
 coverage/
 
 # typescript
 *.tsbuildinfo
 
-# other
-a
+# misc
+*.local
+todos.json
+.tmp/
