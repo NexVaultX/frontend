@@ -19,7 +19,12 @@ export default defineConfig({
     antiSlop,
     jsPlugins,
   ],
-  ignorePatterns: ["**/.opencode/**", "e2e/**", ...(core.ignorePatterns ?? [])],
+  ignorePatterns: [
+    "**/.agents/**",
+    "**/.opencode/**",
+    "e2e/**",
+    ...(core.ignorePatterns ?? []),
+  ],
   jsPlugins: jsPlugins.jsPlugins,
   settings: jsPluginSettings,
 });

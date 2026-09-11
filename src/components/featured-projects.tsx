@@ -70,6 +70,11 @@ const PROJECTS: Project[] = [
   },
 ];
 
+const carouselProjects = [...PROJECTS, ...PROJECTS].map((project, index) => ({
+  carouselKey: `${project.name}-${index}`,
+  project,
+}));
+
 const MarqueeTrack = ({ children }: { children: ReactNode }) => (
   <div className="overflow-hidden">
     <div className="animate-marquee flex w-max gap-4">{children}</div>
@@ -130,67 +135,60 @@ const ProjectCard = ({ project }: { project: Project }) => (
   </article>
 );
 
-const FeaturedProjects = () => {
-  const carouselProjects = [...PROJECTS, ...PROJECTS].map((project, index) => ({
-    carouselKey: `${project.name}-${index}`,
-    project,
-  }));
+const FeaturedProjects = () => (
+  <section
+    id="featured-projects"
+    aria-labelledby="featured-projects-heading"
+    className="overflow-hidden px-4 py-12 sm:px-6 sm:py-14 lg:px-8"
+  >
+    <div className="mx-auto max-w-7xl">
+      <Reveal className="mb-7 flex items-end justify-between gap-4">
+        <div>
+          <p className="text-muted-foreground mb-2 text-sm font-medium">
+            Community favorites
+          </p>
 
-  return (
-    <section
-      id="featured-projects"
-      aria-labelledby="featured-projects-heading"
-      className="overflow-hidden px-4 py-12 sm:px-6 sm:py-14 lg:px-8"
-    >
-      <div className="mx-auto max-w-7xl">
-        <Reveal className="mb-7 flex items-end justify-between gap-4">
-          <div>
-            <p className="text-muted-foreground mb-2 text-sm font-medium">
-              Community favorites
-            </p>
-
-            <h2
-              id="featured-projects-heading"
-              className="text-foreground text-2xl font-bold tracking-tight sm:text-3xl"
-            >
-              Featured Projects
-            </h2>
-
-            <p className="text-muted-foreground mt-2 text-sm sm:text-base">
-              Popular projects worth checking out.
-            </p>
-          </div>
-
-          <a
-            href="/projects"
-            className="text-muted-foreground hover:text-foreground focus-visible:ring-ring group hidden min-h-11 shrink-0 items-center gap-1 rounded-md text-sm font-medium transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none sm:inline-flex"
+          <h2
+            id="featured-projects-heading"
+            className="text-foreground text-2xl font-bold tracking-tight sm:text-3xl"
           >
-            View all
-            <IconArrowRight
-              size={16}
-              className="transition-transform duration-200 group-hover:translate-x-0.5"
-            />
-          </a>
-        </Reveal>
+            Featured Projects
+          </h2>
 
-        <MarqueeTrack>
-          {carouselProjects.map(({ project, carouselKey }) => (
-            <ProjectCard key={carouselKey} project={project} />
-          ))}
-        </MarqueeTrack>
-
-        <div className="mt-4 flex justify-center sm:hidden">
-          <a
-            href="/projects"
-            className="text-muted-foreground hover:text-foreground focus-visible:ring-ring inline-flex min-h-10 items-center gap-1 rounded-lg px-3 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
-          >
-            View all projects
-            <IconArrowRight size={15} />
-          </a>
+          <p className="text-muted-foreground mt-2 text-sm sm:text-base">
+            Popular projects worth checking out.
+          </p>
         </div>
+
+        <a
+          href="/projects"
+          className="text-muted-foreground hover:text-foreground focus-visible:ring-ring group hidden min-h-11 shrink-0 items-center gap-1 rounded-md text-sm font-medium transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none sm:inline-flex"
+        >
+          View all
+          <IconArrowRight
+            size={16}
+            className="transition-transform duration-200 group-hover:translate-x-0.5"
+          />
+        </a>
+      </Reveal>
+
+      <MarqueeTrack>
+        {carouselProjects.map(({ project, carouselKey }) => (
+          <ProjectCard key={carouselKey} project={project} />
+        ))}
+      </MarqueeTrack>
+
+      <div className="mt-4 flex justify-center sm:hidden">
+        <a
+          href="/projects"
+          className="text-muted-foreground hover:text-foreground focus-visible:ring-ring inline-flex min-h-10 items-center gap-1 rounded-lg px-3 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
+        >
+          View all projects
+          <IconArrowRight size={15} />
+        </a>
       </div>
-    </section>
-  );
-};
+    </div>
+  </section>
+);
 
 export { FeaturedProjects };

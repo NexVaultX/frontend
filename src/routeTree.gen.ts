@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as BlogRouteImport } from './routes/blog'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as ImpressumRouteImport } from './routes/impressum'
@@ -22,6 +23,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TermsOfUseRouteImport } from './routes/terms-of-use'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ModsModIdRouteImport } from './routes/mods.$modId'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
@@ -33,6 +35,11 @@ const IndexRoute = IndexRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CookiesRoute = CookiesRouteImport.update({
@@ -90,6 +97,11 @@ const TermsOfUseRoute = TermsOfUseRouteImport.update({
   path: '/terms-of-use',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => BlogRoute,
+} as any)
 const ModsModIdRoute = ModsModIdRouteImport.update({
   id: '/$modId',
   path: '/$modId',
@@ -104,6 +116,7 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/blog': typeof BlogRouteWithChildren
   '/cookies': typeof CookiesRoute
   '/disclaimer': typeof DisclaimerRoute
   '/impressum': typeof ImpressumRoute
@@ -115,12 +128,14 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
   '/terms-of-use': typeof TermsOfUseRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/mods/$modId': typeof ModsModIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/blog': typeof BlogRouteWithChildren
   '/cookies': typeof CookiesRoute
   '/disclaimer': typeof DisclaimerRoute
   '/impressum': typeof ImpressumRoute
@@ -132,6 +147,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
   '/terms-of-use': typeof TermsOfUseRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/mods/$modId': typeof ModsModIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
@@ -139,6 +155,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/blog': typeof BlogRouteWithChildren
   '/cookies': typeof CookiesRoute
   '/disclaimer': typeof DisclaimerRoute
   '/impressum': typeof ImpressumRoute
@@ -150,6 +167,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
   '/terms-of-use': typeof TermsOfUseRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/mods/$modId': typeof ModsModIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
@@ -158,6 +176,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/blog'
     | '/cookies'
     | '/disclaimer'
     | '/impressum'
@@ -169,12 +188,14 @@ export interface FileRouteTypes {
     | '/signup'
     | '/terms'
     | '/terms-of-use'
+    | '/blog/$slug'
     | '/mods/$modId'
     | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/admin'
+    | '/blog'
     | '/cookies'
     | '/disclaimer'
     | '/impressum'
@@ -186,12 +207,14 @@ export interface FileRouteTypes {
     | '/signup'
     | '/terms'
     | '/terms-of-use'
+    | '/blog/$slug'
     | '/mods/$modId'
     | '/api/auth/$'
   id:
     | '__root__'
     | '/'
     | '/admin'
+    | '/blog'
     | '/cookies'
     | '/disclaimer'
     | '/impressum'
@@ -203,6 +226,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/terms'
     | '/terms-of-use'
+    | '/blog/$slug'
     | '/mods/$modId'
     | '/api/auth/$'
   fileRoutesById: FileRoutesById
@@ -210,6 +234,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  BlogRoute: typeof BlogRouteWithChildren
   CookiesRoute: typeof CookiesRoute
   DisclaimerRoute: typeof DisclaimerRoute
   ImpressumRoute: typeof ImpressumRoute
@@ -238,6 +263,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cookies': {
@@ -317,6 +349,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsOfUseRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof BlogRoute
+    }
     '/mods/$modId': {
       id: '/mods/$modId'
       path: '/$modId'
@@ -334,6 +373,16 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface BlogRouteChildren {
+  BlogSlugRoute: typeof BlogSlugRoute
+}
+
+const BlogRouteChildren: BlogRouteChildren = {
+  BlogSlugRoute: BlogSlugRoute,
+}
+
+const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
+
 interface ModsRouteChildren {
   ModsModIdRoute: typeof ModsModIdRoute
 }
@@ -347,6 +396,7 @@ const ModsRouteWithChildren = ModsRoute._addFileChildren(ModsRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  BlogRoute: BlogRouteWithChildren,
   CookiesRoute: CookiesRoute,
   DisclaimerRoute: DisclaimerRoute,
   ImpressumRoute: ImpressumRoute,

@@ -1,0 +1,203 @@
+"use client";
+
+import { useForm, useStore } from "@tanstack/react-form";
+import { useRef } from "react";
+
+import { FormField } from "@/components/form-field";
+import { FormTextarea } from "@/components/form-textarea";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Spinner } from "@/components/ui/spinner";
+import {
+  postContentSchema,
+  postSlugSchema,
+  postTitleSchema,
+  slugify,
+} from "@/lib/posts";
+import type { Post, PostInput } from "@/lib/posts";
+import { createPost, updatePost } from "@/lib/posts.functions";
+
+interface PostFormDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  post: Post | null;
+  onSaved: (post: Post) => void;
+  onError: (error: string) => void;
+}
+
+const PostFormDialog = ({
+  open,
+  onOpenChange,
+  post,
+  onSaved,
+  onError,
+}: PostFormDialogProps) => {
+  const slugTouchedRef = useRef(false);
+
+  const form = useForm({
+    defaultValues: {
+      content: post?.content ?? "",
+      excerpt: post?.excerpt ?? "",
+      published: post?.published ?? false,
+      slug: post?.slug ?? "",
+      title: post?.title ?? "",
+    },
+    onSubmit: async ({ value }) => {
+      const input: PostInput = {
+        content: value.content,
+        excerpt: value.excerpt || undefined,
+        published: value.published,
+        slug: value.slug,
+        title: value.title,
+      };
+
+      try {
+        const saved = post
+          ? await updatePost({ data: { ...input, id: post.id } })
+          : await createPost({ data: input });
+        onSaved(saved);
+        onOpenChange(false);
+      } catch (error) {
+        onError(
+          error instanceof Error ? error.message : "Could not save the post."
+        );
+      }
+    },
+  });
+
+  const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
+  const submitLabel = post ? "Save changes" : "Create post";
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>{post ? "Edit post" : "New post"}</DialogTitle>
+          <DialogDescription>
+            {post
+              ? "Update the post details below."
+              : "Create a new blog post."}
+          </DialogDescription>
+        </DialogHeader>
+
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            void form.handleSubmit();
+          }}
+          className="grid gap-4"
+        >
+          <form.Field name="title" validators={{ onChange: postTitleSchema }}>
+            {({ state, handleChange, handleBlur }) => (
+              <FormField
+                id="post-title"
+                label="Title"
+                value={state.value}
+                onChange={(event) => {
+                  handleChange(event.target.value);
+                  if (!slugTouchedRef.current) {
+                    form.setFieldValue("slug", slugify(event.target.value));
+                  }
+                }}
+                onBlur={handleBlur}
+                error={state.meta.errors[0]?.message}
+              />
+            )}
+          </form.Field>
+
+          <form.Field name="slug" validators={{ onChange: postSlugSchema }}>
+            {({ state, handleChange, handleBlur }) => (
+              <FormField
+                id="post-slug"
+                label="Slug"
+                value={state.value}
+                onChange={(event) => {
+                  slugTouchedRef.current = true;
+                  handleChange(event.target.value);
+                }}
+                onBlur={handleBlur}
+                error={state.meta.errors[0]?.message}
+              />
+            )}
+          </form.Field>
+
+          <form.Field name="excerpt">
+            {({ state, handleChange, handleBlur }) => (
+              <FormTextarea
+                id="post-excerpt"
+                label="Excerpt"
+                rows={2}
+                value={state.value}
+                onChange={(event) => handleChange(event.target.value)}
+                onBlur={handleBlur}
+              />
+            )}
+          </form.Field>
+
+          <form.Field
+            name="content"
+            validators={{ onChange: postContentSchema }}
+          >
+            {({ state, handleChange, handleBlur }) => (
+              <FormTextarea
+                id="post-content"
+                label="Content (Markdown)"
+                rows={8}
+                value={state.value}
+                onChange={(event) => handleChange(event.target.value)}
+                onBlur={handleBlur}
+                error={state.meta.errors[0]?.message}
+                className="font-mono text-xs"
+              />
+            )}
+          </form.Field>
+
+          <form.Field name="published">
+            {({ state, handleChange }) => (
+              <label className="flex items-center gap-2 text-sm font-medium">
+                <input
+                  type="checkbox"
+                  checked={state.value}
+                  onChange={(event) => handleChange(event.target.checked)}
+                  className="border-input bg-background focus-visible:ring-ring size-4 rounded border focus-visible:ring-2 focus-visible:outline-none"
+                />
+                Published
+              </label>
+            )}
+          </form.Field>
+
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={isSubmitting}
+              onClick={() => onOpenChange(false)}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <Spinner label="Saving post" />
+                  Saving…
+                </>
+              ) : (
+                submitLabel
+              )}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export { PostFormDialog };

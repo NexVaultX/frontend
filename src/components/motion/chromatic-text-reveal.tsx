@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+
 const CONTENT_TYPES = [
   "Minecraft",
   "Plugins",
@@ -48,11 +50,9 @@ const scheduleWordCycle = ({ onExit, onSwap }: WordCycleHandlers) => {
 const ChromaticTextReveal = () => {
   const [index, setIndex] = useState(0);
   const [isExiting, setIsExiting] = useState(false);
+  const reduce = usePrefersReducedMotion();
 
   useEffect(() => {
-    const reduce = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
     if (reduce) {
       return;
     }
@@ -64,7 +64,7 @@ const ChromaticTextReveal = () => {
         setIsExiting(false);
       },
     });
-  }, []);
+  }, [reduce]);
 
   const word = CONTENT_TYPES[index];
 

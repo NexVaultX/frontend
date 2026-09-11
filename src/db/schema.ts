@@ -118,9 +118,36 @@ export const passkeys = pgTable(
   ]
 );
 
+export const posts = pgTable(
+  "posts",
+  {
+    authorId: text("author_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    content: text("content").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    excerpt: text("excerpt"),
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    published: boolean("published").default(false).notNull(),
+    slug: text("slug").notNull().unique(),
+    title: text("title").notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("posts_authorId_idx").on(table.authorId),
+    index("posts_published_idx").on(table.published),
+  ]
+);
+
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
   passkeys: many(passkeys),
+  posts: many(posts),
   sessions: many(sessions),
 }));
 
@@ -141,6 +168,13 @@ export const accountsRelations = relations(accounts, ({ one }) => ({
 export const passkeysRelations = relations(passkeys, ({ one }) => ({
   user: one(users, {
     fields: [passkeys.userId],
+    references: [users.id],
+  }),
+}));
+
+export const postsRelations = relations(posts, ({ one }) => ({
+  author: one(users, {
+    fields: [posts.authorId],
     references: [users.id],
   }),
 }));

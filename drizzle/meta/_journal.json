@@ -29,6 +29,13 @@
       "when": 1789048618870,
       "tag": "0003_known_major_mapleleaf",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1789059568927,
+      "tag": "0004_add_posts",
+      "breakpoints": true
     }
   ]
 }

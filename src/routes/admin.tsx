@@ -8,13 +8,14 @@ import {
 } from "@tanstack/react-router";
 import { object, optional, parse, picklist } from "valibot";
 
+import { AdminPosts } from "@/components/admin/admin-posts";
 import { AdminSessions } from "@/components/admin/admin-sessions";
 import { AdminUsers } from "@/components/admin/admin-users";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { requireAdmin } from "@/lib/auth.functions";
 
 const adminSearchSchema = object({
-  tab: optional(picklist(["users", "sessions"])),
+  tab: optional(picklist(["posts", "sessions", "users"])),
 });
 
 const AdminPage = () => {
@@ -27,7 +28,7 @@ const AdminPage = () => {
         Admin Panel
       </h1>
       <p className="text-muted-foreground mt-1.5 text-sm sm:text-base">
-        Manage users and their sessions.
+        Manage users, sessions, and blog posts.
       </p>
 
       <Tabs
@@ -44,6 +45,7 @@ const AdminPage = () => {
         <TabsList aria-label="Admin sections">
           <TabsTrigger value="users">Users</TabsTrigger>
           <TabsTrigger value="sessions">Sessions</TabsTrigger>
+          <TabsTrigger value="posts">Posts</TabsTrigger>
         </TabsList>
 
         <TabsContent value="users">
@@ -52,6 +54,10 @@ const AdminPage = () => {
 
         <TabsContent value="sessions">
           <AdminSessions />
+        </TabsContent>
+
+        <TabsContent value="posts">
+          <AdminPosts />
         </TabsContent>
       </Tabs>
     </div>
