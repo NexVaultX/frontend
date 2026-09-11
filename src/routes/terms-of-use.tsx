@@ -5,12 +5,9 @@ import { LegalPage } from "@/components/legal/legal-page";
 const TermsOfUsePage = () => (
   <LegalPage
     title="Terms of Use"
-    updated="Placeholder — not yet finalized"
+    updated="September 11, 2026"
     intro={
       <>
-        <strong className="text-foreground">
-          This page is a placeholder and must be reviewed before production.
-        </strong>{" "}
         These Terms of Use set out the rules for using the NexVaultX platform as
         a user.
       </>
@@ -45,7 +42,12 @@ const TermsOfUsePage = () => (
         body: (
           <p>
             Content on the platform is provided by the community. NexVaultX does
-            not endorse and is not responsible for user-submitted content.
+            not endorse and is not responsible for user-submitted content. Users
+            are solely responsible for what they upload. If a user uploads
+            malicious software (malware) or other unlawful content without our
+            knowledge, and no one reports it, NexVaultX is not liable for it.
+            The user who uploaded the content, as well as users who were aware
+            of it but did not report it, bear responsibility for such content.
           </p>
         ),
       },
@@ -60,7 +62,12 @@ const TermsOfUsePage = () => (
       },
       {
         heading: "Contact",
-        body: <p>Questions about these Terms of Use can be sent to [Email].</p>,
+        body: (
+          <p>
+            Questions about these Terms of Use can be sent to
+            mateo.sauer161013@gmail.com.
+          </p>
+        ),
       },
     ]}
   />

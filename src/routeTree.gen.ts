@@ -14,11 +14,10 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
-import { Route as ImpressumRouteImport } from './routes/impressum'
+import { Route as LegalRouteImport } from './routes/legal'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ModsRouteImport } from './routes/mods'
 import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as TermsRouteImport } from './routes/terms'
@@ -52,9 +51,9 @@ const DisclaimerRoute = DisclaimerRouteImport.update({
   path: '/disclaimer',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ImpressumRoute = ImpressumRouteImport.update({
-  id: '/impressum',
-  path: '/impressum',
+const LegalRoute = LegalRouteImport.update({
+  id: '/legal',
+  path: '/legal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -70,11 +69,6 @@ const ModsRoute = ModsRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProjectsRoute = ProjectsRouteImport.update({
-  id: '/projects',
-  path: '/projects',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -119,11 +113,10 @@ export interface FileRoutesByFullPath {
   '/blog': typeof BlogRouteWithChildren
   '/cookies': typeof CookiesRoute
   '/disclaimer': typeof DisclaimerRoute
-  '/impressum': typeof ImpressumRoute
+  '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
   '/mods': typeof ModsRouteWithChildren
   '/privacy': typeof PrivacyRoute
-  '/projects': typeof ProjectsRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
@@ -138,11 +131,10 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogRouteWithChildren
   '/cookies': typeof CookiesRoute
   '/disclaimer': typeof DisclaimerRoute
-  '/impressum': typeof ImpressumRoute
+  '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
   '/mods': typeof ModsRouteWithChildren
   '/privacy': typeof PrivacyRoute
-  '/projects': typeof ProjectsRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
@@ -158,11 +150,10 @@ export interface FileRoutesById {
   '/blog': typeof BlogRouteWithChildren
   '/cookies': typeof CookiesRoute
   '/disclaimer': typeof DisclaimerRoute
-  '/impressum': typeof ImpressumRoute
+  '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
   '/mods': typeof ModsRouteWithChildren
   '/privacy': typeof PrivacyRoute
-  '/projects': typeof ProjectsRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
@@ -179,11 +170,10 @@ export interface FileRouteTypes {
     | '/blog'
     | '/cookies'
     | '/disclaimer'
-    | '/impressum'
+    | '/legal'
     | '/login'
     | '/mods'
     | '/privacy'
-    | '/projects'
     | '/settings'
     | '/signup'
     | '/terms'
@@ -198,11 +188,10 @@ export interface FileRouteTypes {
     | '/blog'
     | '/cookies'
     | '/disclaimer'
-    | '/impressum'
+    | '/legal'
     | '/login'
     | '/mods'
     | '/privacy'
-    | '/projects'
     | '/settings'
     | '/signup'
     | '/terms'
@@ -217,11 +206,10 @@ export interface FileRouteTypes {
     | '/blog'
     | '/cookies'
     | '/disclaimer'
-    | '/impressum'
+    | '/legal'
     | '/login'
     | '/mods'
     | '/privacy'
-    | '/projects'
     | '/settings'
     | '/signup'
     | '/terms'
@@ -237,11 +225,10 @@ export interface RootRouteChildren {
   BlogRoute: typeof BlogRouteWithChildren
   CookiesRoute: typeof CookiesRoute
   DisclaimerRoute: typeof DisclaimerRoute
-  ImpressumRoute: typeof ImpressumRoute
+  LegalRoute: typeof LegalRoute
   LoginRoute: typeof LoginRoute
   ModsRoute: typeof ModsRouteWithChildren
   PrivacyRoute: typeof PrivacyRoute
-  ProjectsRoute: typeof ProjectsRoute
   SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
   TermsRoute: typeof TermsRoute
@@ -286,11 +273,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DisclaimerRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/impressum': {
-      id: '/impressum'
-      path: '/impressum'
-      fullPath: '/impressum'
-      preLoaderRoute: typeof ImpressumRouteImport
+    '/legal': {
+      id: '/legal'
+      path: '/legal'
+      fullPath: '/legal'
+      preLoaderRoute: typeof LegalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -312,13 +299,6 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/projects': {
-      id: '/projects'
-      path: '/projects'
-      fullPath: '/projects'
-      preLoaderRoute: typeof ProjectsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -399,11 +379,10 @@ const rootRouteChildren: RootRouteChildren = {
   BlogRoute: BlogRouteWithChildren,
   CookiesRoute: CookiesRoute,
   DisclaimerRoute: DisclaimerRoute,
-  ImpressumRoute: ImpressumRoute,
+  LegalRoute: LegalRoute,
   LoginRoute: LoginRoute,
   ModsRoute: ModsRouteWithChildren,
   PrivacyRoute: PrivacyRoute,
-  ProjectsRoute: ProjectsRoute,
   SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
   TermsRoute: TermsRoute,

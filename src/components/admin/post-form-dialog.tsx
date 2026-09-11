@@ -1,11 +1,10 @@
-"use client";
-
 import { useForm, useStore } from "@tanstack/react-form";
 import { useRef } from "react";
 
 import { FormField } from "@/components/form-field";
 import { FormTextarea } from "@/components/form-textarea";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -77,7 +76,7 @@ const PostFormDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-xl">
         <DialogHeader>
           <DialogTitle>{post ? "Edit post" : "New post"}</DialogTitle>
           <DialogDescription>
@@ -125,6 +124,7 @@ const PostFormDialog = ({
                 }}
                 onBlur={handleBlur}
                 error={state.meta.errors[0]?.message}
+                helperText="Auto-generated from the title. You can edit it."
               />
             )}
           </form.Field>
@@ -138,6 +138,7 @@ const PostFormDialog = ({
                 value={state.value}
                 onChange={(event) => handleChange(event.target.value)}
                 onBlur={handleBlur}
+                helperText="Short summary shown on the blog listing."
               />
             )}
           </form.Field>
@@ -162,15 +163,25 @@ const PostFormDialog = ({
 
           <form.Field name="published">
             {({ state, handleChange }) => (
-              <label className="flex items-center gap-2 text-sm font-medium">
-                <input
-                  type="checkbox"
+              <div className="border-border bg-muted/40 flex items-start gap-3 rounded-lg border p-3">
+                <Checkbox
+                  id="post-published"
                   checked={state.value}
-                  onChange={(event) => handleChange(event.target.checked)}
-                  className="border-input bg-background focus-visible:ring-ring size-4 rounded border focus-visible:ring-2 focus-visible:outline-none"
+                  onCheckedChange={handleChange}
+                  className="mt-0.5"
                 />
-                Published
-              </label>
+                <div className="grid gap-0.5">
+                  <label
+                    htmlFor="post-published"
+                    className="text-foreground text-sm font-medium"
+                  >
+                    Published
+                  </label>
+                  <p className="text-muted-foreground text-sm">
+                    Make this post visible to visitors.
+                  </p>
+                </div>
+              </div>
             )}
           </form.Field>
 

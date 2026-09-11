@@ -15,6 +15,7 @@ import { CookieBanner } from "@/components/cookie-banner";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar/navbar";
 import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
 
@@ -45,6 +46,7 @@ const RootDocument = ({ children }: { children: ReactNode }) => (
         </HotkeysProvider>
       </ThemeProvider>
       <CookieBanner />
+      <Toaster richColors position="bottom-right" />
       <TanStackDevtools
         config={{
           position: "bottom-right",

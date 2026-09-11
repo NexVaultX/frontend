@@ -1,11 +1,9 @@
-"use client";
-
 import { IconX } from "@tabler/icons-react";
 import { Link, useMatchRoute } from "@tanstack/react-router";
 
 import { AuthButtons } from "@/components/navbar/auth-buttons";
 import type { NavbarUser } from "@/components/navbar/auth-buttons";
-import { CONTENT_LINKS } from "@/components/navbar/navbar-links";
+import { CONTENT_LINKS, PROJECT_ITEMS } from "@/components/navbar/navbar-links";
 import { NavbarSearch } from "@/components/navbar/navbar-search";
 import { Button } from "@/components/ui/button";
 import {
@@ -93,6 +91,44 @@ const NavbarMobileMenu = ({
                   )}
                 >
                   {link.label}
+                </Link>
+              );
+            })}
+
+            <p className="text-muted-foreground mt-4 mb-2 px-3 py-2 text-xs font-semibold tracking-wider uppercase">
+              Projects
+            </p>
+
+            {PROJECT_ITEMS.map((item) => {
+              // SAFETY: Only available items render a Link; unavailable routes are not registered yet.
+              const href = item.href as "/mods";
+              const isActive = !!matchRoute({ to: href });
+
+              if (!item.available) {
+                return (
+                  <span
+                    key={item.href}
+                    className="text-muted-foreground/70 flex min-h-11 items-center justify-between rounded-lg px-3 py-3 text-sm font-medium"
+                  >
+                    {item.label}
+                    <span className="text-xs">Soon</span>
+                  </span>
+                );
+              }
+
+              return (
+                <Link
+                  key={item.href}
+                  to={href}
+                  preload="intent"
+                  aria-current={isActive ? "page" : undefined}
+                  onClick={onClose}
+                  className={cn(
+                    mobileLinkClassName,
+                    isActive && "bg-muted text-foreground"
+                  )}
+                >
+                  {item.label}
                 </Link>
               );
             })}

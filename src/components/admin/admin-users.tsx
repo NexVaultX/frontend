@@ -1,12 +1,18 @@
-"use client";
-
 import { IconBan, IconShield, IconTrash, IconUser } from "@tabler/icons-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import type { ReactNode } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { authClient } from "@/lib/auth-client";
 
@@ -166,19 +172,22 @@ const AdminUserRow = ({
         <label className="sr-only" htmlFor={`role-${user.id}`}>
           Role for {user.name}
         </label>
-        <select
-          id={`role-${user.id}`}
+        <Select
           value={user.role ?? "user"}
-          disabled={isMutating}
-          onChange={(event) =>
+          onValueChange={(value) =>
             // SAFETY: The select only renders "user" and "admin" options, so the value is always one of these two literals.
-            onRoleChange(user.id, event.target.value as "admin" | "user")
+            onRoleChange(user.id, value as "admin" | "user")
           }
-          className="border-border bg-background text-foreground focus-visible:ring-ring h-10 rounded-lg border px-2.5 text-sm focus-visible:ring-2 focus-visible:outline-none"
+          disabled={isMutating}
         >
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
-        </select>
+          <SelectTrigger id={`role-${user.id}`} className="w-28">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="user">User</SelectItem>
+            <SelectItem value="admin">Admin</SelectItem>
+          </SelectContent>
+        </Select>
 
         {isBanned ? (
           <Button
@@ -360,6 +369,17 @@ const AdminUsers = () => {
   }, []);
 
   useEffect(() => {
+    if (error) {
+      toast.error(error, {
+        action: {
+          label: "Try again",
+          onClick: () => loadUsers(),
+        },
+      });
+    }
+  }, [error, loadUsers]);
+
+  useEffect(() => {
     loadUsers();
   }, [loadUsers]);
 
@@ -533,24 +553,6 @@ const AdminUsers = () => {
           Refresh
         </Button>
       </div>
-
-      {error ? (
-        <div
-          role="alert"
-          className="border-destructive/30 bg-destructive/10 text-destructive mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border px-3 py-2.5 text-sm"
-        >
-          <span>{error}</span>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="min-h-10"
-            onClick={() => loadUsers()}
-          >
-            Try again
-          </Button>
-        </div>
-      ) : null}
 
       {content}
 

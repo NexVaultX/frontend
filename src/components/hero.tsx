@@ -1,5 +1,3 @@
-"use client";
-
 import { IconArrowRight } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 
@@ -25,12 +23,12 @@ const Hero = () => (
 
       <div className="animate-hero-fade-in-delay flex items-center justify-center">
         <Button
-          render={<Link to="/projects" />}
+          render={<Link to="/mods" />}
           variant="default"
           size="lg"
           className="ease-smooth min-h-11 transition-transform duration-200 hover:-translate-y-0.5 active:scale-[0.98] motion-reduce:transform-none motion-reduce:transition-none"
         >
-          Browse Projects
+          Browse Mods
           <IconArrowRight size={16} />
         </Button>
       </div>

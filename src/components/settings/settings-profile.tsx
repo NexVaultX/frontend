@@ -1,5 +1,3 @@
-"use client";
-
 import { useForm, useStore } from "@tanstack/react-form";
 import { useState } from "react";
 import { check, maxLength, minLength, pipe, regex, string } from "valibot";

@@ -5,15 +5,9 @@ import { LegalPage } from "@/components/legal/legal-page";
 const TermsPage = () => (
   <LegalPage
     title="Terms of Service"
-    updated="Placeholder — not yet finalized"
+    updated="September 11, 2026"
     intro={
-      <>
-        <strong className="text-foreground">
-          This page is a placeholder and must be reviewed by a qualified
-          professional before production.
-        </strong>{" "}
-        These Terms of Service govern your use of the NexVaultX platform.
-      </>
+      <>These Terms of Service govern your use of the NexVaultX platform.</>
     }
     sections={[
       {
@@ -97,8 +91,8 @@ const TermsPage = () => (
         heading: "Governing Law",
         body: (
           <p>
-            These Terms are governed by the laws of [Jurisdiction], without
-            regard to conflict-of-law principles.
+            These Terms are governed by the laws of the Federal Republic of
+            Germany, without regard to conflict-of-law principles.
           </p>
         ),
       },

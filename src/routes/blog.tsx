@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useLoaderData } from "@tanstack/react-router";
 
+import { PageHeader } from "@/components/page-header";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { PostSummary } from "@/lib/posts";
 import { listPosts } from "@/lib/posts.functions";
@@ -42,14 +43,10 @@ const BlogPage = () => {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6 sm:py-14">
-      <header>
-        <h1 className="text-foreground text-3xl font-bold tracking-tight sm:text-4xl">
-          Blog
-        </h1>
-        <p className="text-muted-foreground mt-2 text-sm sm:text-base">
-          News, updates, and guides from the NexVaultX team.
-        </p>
-      </header>
+      <PageHeader
+        title="Blog"
+        description="News, updates, and guides from the NexVaultX team."
+      />
 
       {posts.length === 0 ? (
         <div className="border-border bg-muted/40 mt-8 rounded-xl border p-6 text-center">

@@ -5,13 +5,9 @@ import { LegalPage } from "@/components/legal/legal-page";
 const PrivacyPage = () => (
   <LegalPage
     title="Privacy Policy"
-    updated="Placeholder — not yet finalized"
+    updated="September 11, 2026"
     intro={
       <>
-        <strong className="text-foreground">
-          This page is a placeholder and must be reviewed by a qualified
-          professional before production.
-        </strong>{" "}
         This Privacy Policy explains how NexVaultX handles personal data when
         you use the platform.
       </>
@@ -21,8 +17,9 @@ const PrivacyPage = () => (
         heading: "Data Controller",
         body: (
           <p>
-            The data controller is [Name], [Address], [Email]. For any
-            privacy-related request, contact [Email].
+            The data controller is Matéo Sauer, Dorfgasse 20, 99735 Kleinfurra,
+            Germany. For any privacy-related request, contact
+            mateo.sauer161013@gmail.com.
           </p>
         ),
       },
@@ -87,7 +84,7 @@ const PrivacyPage = () => (
             Depending on your jurisdiction (including the GDPR in the EU/EEA),
             you may have the right to access, rectify, erase, restrict, or port
             your personal data, and to object to processing. To exercise these
-            rights, contact [Email].
+            rights, contact mateo.sauer161013@gmail.com.
           </p>
         ),
       },

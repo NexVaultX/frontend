@@ -1,11 +1,17 @@
-"use client";
-
 import { IconDeviceDesktop, IconDeviceMobile } from "@tabler/icons-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import type { ReactNode } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { authClient } from "@/lib/auth-client";
 
@@ -202,6 +208,17 @@ const AdminSessions = () => {
   }, []);
 
   useEffect(() => {
+    if (error) {
+      toast.error(error, {
+        action: {
+          label: "Try again",
+          onClick: () => loadSessions(selectedUserId),
+        },
+      });
+    }
+  }, [error, loadSessions, selectedUserId]);
+
+  useEffect(() => {
     if (selectedUserId) {
       loadSessions(selectedUserId);
     }
@@ -339,41 +356,32 @@ const AdminSessions = () => {
         >
           User
         </label>
-        <select
-          id="admin-session-user"
+        <Select
           value={selectedUserId}
-          onChange={(event) => setSelectedUserId(event.target.value)}
-          className="border-border bg-background text-foreground focus-visible:ring-ring h-10 w-full max-w-sm rounded-lg border px-2.5 text-sm focus-visible:ring-2 focus-visible:outline-none"
+          onValueChange={(value) => {
+            if (value) {
+              setSelectedUserId(value);
+            }
+          }}
         >
-          {usersState.users.length === 0 ? (
-            <option value="">Loading users…</option>
-          ) : (
-            usersState.users.map((user) => (
-              <option key={user.id} value={user.id}>
-                {user.name} ({user.email})
-              </option>
-            ))
-          )}
-        </select>
+          <SelectTrigger id="admin-session-user" className="w-full max-w-sm">
+            <SelectValue placeholder="Select a user…" />
+          </SelectTrigger>
+          <SelectContent>
+            {usersState.users.length === 0 ? (
+              <SelectItem value="" disabled>
+                Loading users…
+              </SelectItem>
+            ) : (
+              usersState.users.map((user) => (
+                <SelectItem key={user.id} value={user.id}>
+                  {user.name} ({user.email})
+                </SelectItem>
+              ))
+            )}
+          </SelectContent>
+        </Select>
       </div>
-
-      {error ? (
-        <div
-          role="alert"
-          className="border-destructive/30 bg-destructive/10 text-destructive mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border px-3 py-2.5 text-sm"
-        >
-          <span>{error}</span>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="min-h-10"
-            onClick={() => loadSessions(selectedUserId)}
-          >
-            Try again
-          </Button>
-        </div>
-      ) : null}
 
       {content}
     </section>

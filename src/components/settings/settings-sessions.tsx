@@ -1,5 +1,3 @@
-"use client";
-
 import { IconDeviceDesktop, IconDeviceMobile } from "@tabler/icons-react";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import type { ReactNode } from "react";

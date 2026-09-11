@@ -1,5 +1,3 @@
-"use client";
-
 import { useSyncExternalStore } from "react";
 
 import { Button } from "@/components/ui/button";

@@ -1,9 +1,8 @@
-"use client";
-
 import { IconMenu2, IconX } from "@tabler/icons-react";
 import { useHotkey } from "@tanstack/react-hotkeys";
 import { useRouter } from "@tanstack/react-router";
 import { useRef, useState } from "react";
+import { toast } from "sonner";
 
 import { ThemeToggle } from "@/components/motion/theme-toggle";
 import { AuthButtons } from "@/components/navbar/auth-buttons";
@@ -17,7 +16,6 @@ import { authClient } from "@/lib/auth-client";
 const Navbar = () => {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [signOutError, setSignOutError] = useState<string | null>(null);
   const { data: session, isPending } = authClient.useSession();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -41,16 +39,24 @@ const Navbar = () => {
   };
 
   const handleSignOut = async () => {
-    setSignOutError(null);
-
     try {
       const { error } = await authClient.signOut();
       if (error) {
-        setSignOutError(error.message ?? "Could not sign out.");
+        toast.error(error.message ?? "Could not sign out.", {
+          action: {
+            label: "Try again",
+            onClick: () => handleSignOut(),
+          },
+        });
         return;
       }
     } catch {
-      setSignOutError("Could not sign out.");
+      toast.error("Could not sign out.", {
+        action: {
+          label: "Try again",
+          onClick: () => handleSignOut(),
+        },
+      });
       return;
     }
 
@@ -114,15 +120,6 @@ const Navbar = () => {
         session={session}
         onSignOut={handleSignOut}
       />
-
-      {signOutError ? (
-        <div
-          role="alert"
-          className="border-destructive/30 bg-destructive/10 text-destructive px-4 py-2 text-center text-sm"
-        >
-          {signOutError}
-        </div>
-      ) : null}
     </header>
   );
 };

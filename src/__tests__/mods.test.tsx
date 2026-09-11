@@ -60,6 +60,19 @@ if (!ModsPage) {
   throw new Error("ModsPage component not found");
 }
 
+// Base UI Select renders a button trigger, so tests must open the popup and
+// click the option instead of firing a change event on a native <select>.
+// A pointerDown must precede the click so Base UI's mouse-selection guard
+// accepts the selection.
+const selectCategory = async (value: string) => {
+  fireEvent.click(screen.getByLabelText("Category"));
+  const option = await screen.findByText(
+    value.charAt(0).toUpperCase() + value.slice(1)
+  );
+  fireEvent.pointerDown(option);
+  fireEvent.click(option);
+};
+
 interface LiveModEvent {
   event: "mod.created" | "mod.updated" | "mod.deleted";
   data: { id: string; name: string };
@@ -118,6 +131,8 @@ const responseFixture = (hits: Mod[]): ModSearchResponse => ({
   // oxlint-disable-next-line sonarjs/no-undefined-assignment -- Test fixture mirrors the server response shape
   facetDistribution: undefined,
   hits,
+  page: 1,
+  pageSize: 12,
   query: "",
 });
 
@@ -166,9 +181,7 @@ describe("ModsPage", () => {
 
     render(<ModsPage />);
 
-    fireEvent.change(screen.getByLabelText("Category"), {
-      target: { value: "performance" },
-    });
+    await selectCategory("performance");
 
     const busyRegion = await screen.findByLabelText("Search mods");
     expect(busyRegion).toBeTruthy();
@@ -187,9 +200,7 @@ describe("ModsPage", () => {
 
     render(<ModsPage />);
 
-    fireEvent.change(screen.getByLabelText("Category"), {
-      target: { value: "performance" },
-    });
+    await selectCategory("performance");
 
     await waitFor(() => {
       expect(screen.getByText("No mods found")).toBeTruthy();
@@ -207,9 +218,7 @@ describe("ModsPage", () => {
 
     render(<ModsPage />);
 
-    fireEvent.change(screen.getByLabelText("Category"), {
-      target: { value: "performance" },
-    });
+    await selectCategory("performance");
 
     await waitFor(() => {
       expect(screen.getByRole("alert")).toHaveTextContent("Search failed");
@@ -229,9 +238,7 @@ describe("ModsPage", () => {
 
     render(<ModsPage />);
 
-    fireEvent.change(screen.getByLabelText("Category"), {
-      target: { value: "performance" },
-    });
+    await selectCategory("performance");
 
     await waitFor(() => {
       expect(screen.getByRole("alert")).toHaveTextContent(
@@ -288,9 +295,7 @@ describe("ModsPage", () => {
 
     render(<ModsPage />);
 
-    fireEvent.change(screen.getByLabelText("Category"), {
-      target: { value: "performance" },
-    });
+    await selectCategory("performance");
 
     await waitFor(() => {
       expect(screen.getByTestId("mod-card-sodium")).toBeTruthy();

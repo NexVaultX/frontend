@@ -24,6 +24,13 @@ await index.updateSettings({
   filterableAttributes: ["category", "gameVersions", "loaders"],
   searchableAttributes: ["name", "description", "author", "tags", "category"],
   sortableAttributes: ["downloads", "updatedAt", "name"],
+  typoTolerance: {
+    enabled: true,
+    minWordSizeForTypos: {
+      oneTypo: 1,
+      twoTypos: 3,
+    },
+  },
 });
 
 const task = await index.addDocuments(MODS);

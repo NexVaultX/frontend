@@ -6,8 +6,12 @@ import {
 } from "@tabler/icons-react";
 
 const PROJECT_LINKS = [
-  { href: "/projects", label: "Projects" },
   { href: "/mods", label: "Mods" },
+  { href: "/modpacks", label: "Modpacks" },
+  { href: "/plugins", label: "Plugins" },
+  { href: "/resource-packs", label: "Resource Packs" },
+  { href: "/shaders", label: "Shaders" },
+  { href: "/servers", label: "Servers" },
 ] as const;
 
 const RESOURCE_LINKS = [
@@ -128,8 +132,8 @@ const Footer = () => (
           © {new Date().getFullYear()} NexVaultX. All rights reserved.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:justify-end">
-          <a href="/impressum" className={LINK_CLASS}>
-            Impressum
+          <a href="/legal" className={LINK_CLASS}>
+            Legal Notes
           </a>
           <a href="/privacy" className={LINK_CLASS}>
             Privacy

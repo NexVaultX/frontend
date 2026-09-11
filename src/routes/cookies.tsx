@@ -5,12 +5,9 @@ import { LegalPage } from "@/components/legal/legal-page";
 const CookiesPage = () => (
   <LegalPage
     title="Cookie Policy"
-    updated="Placeholder — not yet finalized"
+    updated="September 11, 2026"
     intro={
       <>
-        <strong className="text-foreground">
-          This page is a placeholder and must be reviewed before production.
-        </strong>{" "}
         This Cookie Policy explains how NexVaultX uses cookies and similar
         technologies.
       </>

@@ -1,11 +1,25 @@
-"use client";
-
-import { IconSearch, IconX } from "@tabler/icons-react";
+import {
+  IconChevronLeft,
+  IconChevronRight,
+  IconSearch,
+  IconX,
+} from "@tabler/icons-react";
 import { useDebouncedValue } from "@tanstack/react-pacer/debouncer";
 import { createFileRoute, useLoaderData } from "@tanstack/react-router";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 
+import { EmptyState } from "@/components/empty-state";
+import { ErrorState } from "@/components/error-state";
 import { ModCard } from "@/components/mods/mod-card";
+import { PageHeader } from "@/components/page-header";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { modsCache } from "@/lib/mods-cache";
 import {
@@ -15,7 +29,6 @@ import {
 } from "@/lib/mods-data";
 import { searchMods } from "@/lib/mods.functions";
 import type { ModSearchParams, ModSearchResponse } from "@/lib/mods.functions";
-import { cn } from "@/lib/utils";
 
 const DEFAULT_SORT = "downloads:desc";
 
@@ -46,9 +59,6 @@ const SORT_OPTIONS = [
   { label: "Recently updated", value: "updatedAt:desc" },
   { label: "Name (A–Z)", value: "name:asc" },
 ] as const;
-
-const selectClassName =
-  "border-input bg-background text-foreground focus-visible:ring-ring min-h-11 rounded-lg border px-3 text-sm focus-visible:ring-2 focus-visible:outline-none";
 
 const toErrorMessage = (cause: unknown) => {
   if (!(cause instanceof Error)) {
@@ -115,10 +125,10 @@ interface ModsFiltersProps {
   category: string;
   gameVersion: string;
   loader: string;
-  onCategoryChange: (value: string) => void;
-  onGameVersionChange: (value: string) => void;
-  onLoaderChange: (value: string) => void;
-  onSortChange: (value: string) => void;
+  onCategoryChange: (value: string | null) => void;
+  onGameVersionChange: (value: string | null) => void;
+  onLoaderChange: (value: string | null) => void;
+  onSortChange: (value: string | null) => void;
   sort: string;
 }
 
@@ -137,79 +147,75 @@ const ModsFilters = ({
       <label className="sr-only" htmlFor="mods-category">
         Category
       </label>
-      <select
-        id="mods-category"
-        name="category"
-        value={category}
-        onChange={(event) => onCategoryChange(event.target.value)}
-        className={cn(selectClassName, "w-full")}
-      >
-        <option value="">All categories</option>
-        {MOD_CATEGORIES.map((value) => (
-          <option key={value} value={value}>
-            {value.charAt(0).toUpperCase() + value.slice(1)}
-          </option>
-        ))}
-      </select>
+      <Select value={category} onValueChange={onCategoryChange}>
+        <SelectTrigger id="mods-category" className="w-full">
+          <SelectValue placeholder="All categories" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="">All categories</SelectItem>
+          {MOD_CATEGORIES.map((value) => (
+            <SelectItem key={value} value={value}>
+              {value.charAt(0).toUpperCase() + value.slice(1)}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
 
     <div>
       <label className="sr-only" htmlFor="mods-game-version">
         Game version
       </label>
-      <select
-        id="mods-game-version"
-        name="gameVersion"
-        value={gameVersion}
-        onChange={(event) => onGameVersionChange(event.target.value)}
-        className={cn(selectClassName, "w-full")}
-      >
-        <option value="">All versions</option>
-        {MOD_GAME_VERSIONS.map((value) => (
-          <option key={value} value={value}>
-            Minecraft {value}
-          </option>
-        ))}
-      </select>
+      <Select value={gameVersion} onValueChange={onGameVersionChange}>
+        <SelectTrigger id="mods-game-version" className="w-full">
+          <SelectValue placeholder="All versions" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="">All versions</SelectItem>
+          {MOD_GAME_VERSIONS.map((value) => (
+            <SelectItem key={value} value={value}>
+              Minecraft {value}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
 
     <div>
       <label className="sr-only" htmlFor="mods-loader">
         Loader
       </label>
-      <select
-        id="mods-loader"
-        name="loader"
-        value={loader}
-        onChange={(event) => onLoaderChange(event.target.value)}
-        className={cn(selectClassName, "w-full")}
-      >
-        <option value="">All loaders</option>
-        {MOD_LOADERS.map((value) => (
-          <option key={value} value={value}>
-            {value.charAt(0).toUpperCase() + value.slice(1)}
-          </option>
-        ))}
-      </select>
+      <Select value={loader} onValueChange={onLoaderChange}>
+        <SelectTrigger id="mods-loader" className="w-full">
+          <SelectValue placeholder="All loaders" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="">All loaders</SelectItem>
+          {MOD_LOADERS.map((value) => (
+            <SelectItem key={value} value={value}>
+              {value.charAt(0).toUpperCase() + value.slice(1)}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
 
     <div>
       <label className="sr-only" htmlFor="mods-sort">
         Sort by
       </label>
-      <select
-        id="mods-sort"
-        name="sort"
-        value={sort}
-        onChange={(event) => onSortChange(event.target.value)}
-        className={cn(selectClassName, "w-full")}
-      >
-        {SORT_OPTIONS.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+      <Select value={sort} onValueChange={onSortChange}>
+        <SelectTrigger id="mods-sort" className="w-full">
+          <SelectValue placeholder="Sort by" />
+        </SelectTrigger>
+        <SelectContent>
+          {SORT_OPTIONS.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   </div>
 );
@@ -264,6 +270,132 @@ const searchReducer = (
   }
 };
 
+interface ModsPaginationProps {
+  currentPage: number;
+  isSearching: boolean;
+  onPageChange: (page: number) => void;
+  totalPages: number;
+}
+
+const ModsPagination = ({
+  currentPage,
+  isSearching,
+  onPageChange,
+  totalPages,
+}: ModsPaginationProps) => {
+  if (totalPages <= 1) {
+    return null;
+  }
+
+  return (
+    <nav
+      aria-label="Mod list pagination"
+      className="mt-8 flex items-center justify-center gap-2"
+    >
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        className="min-h-11"
+        disabled={currentPage <= 1 || isSearching}
+        onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+      >
+        <IconChevronLeft size={16} aria-hidden="true" />
+        Previous
+      </Button>
+
+      <span className="text-muted-foreground min-w-24 text-center text-sm">
+        Page {currentPage} of {totalPages}
+      </span>
+
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        className="min-h-11"
+        disabled={currentPage >= totalPages || isSearching}
+        onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+      >
+        Next
+        <IconChevronRight size={16} aria-hidden="true" />
+      </Button>
+    </nav>
+  );
+};
+
+interface LiveEventBannerProps {
+  event: LiveModEvent;
+  onRefresh: () => void;
+}
+
+const LiveEventBanner = ({ event, onRefresh }: LiveEventBannerProps) => (
+  <output className="border-primary/30 bg-primary/5 text-foreground mt-8 flex flex-wrap items-center justify-between gap-3 rounded-xl border px-4 py-3 text-sm">
+    <span>
+      {LIVE_EVENT_LABELS[event.event]}: {event.data.name}
+    </span>
+    <button
+      type="button"
+      onClick={onRefresh}
+      className="text-primary focus-visible:ring-ring min-h-10 rounded-lg px-3 text-sm font-medium hover:underline focus-visible:ring-2 focus-visible:outline-none"
+    >
+      Refresh results
+    </button>
+  </output>
+);
+
+const ModsSkeletons = () => (
+  <div
+    aria-busy="true"
+    className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+  >
+    {Array.from({ length: 6 }, (_, index) => (
+      <Skeleton key={index} className="h-52 rounded-2xl" />
+    ))}
+  </div>
+);
+
+interface ModsResultsProps {
+  currentPage: number;
+  isSearching: boolean;
+  onPageChange: (page: number) => void;
+  result: ModSearchResponse;
+  totalPages: number;
+}
+
+const ModsResults = ({
+  currentPage,
+  isSearching,
+  onPageChange,
+  result,
+  totalPages,
+}: ModsResultsProps) => (
+  <>
+    <p className="text-muted-foreground mt-8 text-sm" aria-live="polite">
+      {result.estimatedTotalHits}{" "}
+      {result.estimatedTotalHits === 1 ? "mod" : "mods"} found
+    </p>
+
+    <ul
+      aria-busy={isSearching}
+      className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+    >
+      {result.hits.map((mod) => (
+        <li key={mod.id}>
+          <ModCard mod={mod} />
+        </li>
+      ))}
+    </ul>
+
+    <ModsPagination
+      currentPage={currentPage}
+      isSearching={isSearching}
+      onPageChange={onPageChange}
+      totalPages={totalPages}
+    />
+  </>
+);
+
+// oxlint-disable-next-line eslint/complexity -- ModsPage conditionally renders search, filters, skeleton, empty, results, and pagination states; extracting further would fragment the page logic
 const ModsPage = () => {
   const { initial, initialError } = useLoaderData({ from: "/mods" });
   const [query, setQuery] = useState("");
@@ -272,6 +404,7 @@ const ModsPage = () => {
   const [gameVersion, setGameVersion] = useState("");
   const [loader, setLoader] = useState("");
   const [sort, setSort] = useState(DEFAULT_SORT);
+  const [page, setPage] = useState(1);
   const [liveEvent, setLiveEvent] = useState<LiveModEvent | null>(null);
   const [state, dispatch] = useReducer(searchReducer, {
     result: initial,
@@ -326,10 +459,11 @@ const ModsPage = () => {
       category,
       gameVersion,
       loader,
+      page,
       query: debouncedQuery,
       sort,
     });
-  }, [category, debouncedQuery, gameVersion, loader, runSearch, sort]);
+  }, [category, debouncedQuery, gameVersion, loader, page, runSearch, sort]);
 
   useEffect(() => {
     const source = new EventSource(`${API_URL}/api/events`);
@@ -362,12 +496,20 @@ const ModsPage = () => {
     !isSearching && !error && result && result.hits.length === 0;
   const showResults =
     !isSearching && !error && result && result.hits.length > 0;
+  // If the loader returned no data and no error (e.g. first paint before the
+  // client search resolves), keep skeletons visible instead of a blank page.
+  const showInitialSkeletons = !isSearching && !error && !result;
+
+  const totalPages = result
+    ? Math.max(1, Math.ceil(result.estimatedTotalHits / result.pageSize))
+    : 1;
 
   const clearFilters = () => {
     setQuery("");
     setCategory("");
     setGameVersion("");
     setLoader("");
+    setPage(1);
     dispatch({ type: "SEARCH_START" });
   };
 
@@ -377,6 +519,7 @@ const ModsPage = () => {
       category,
       gameVersion,
       loader,
+      page,
       query,
       sort,
     });
@@ -384,21 +527,23 @@ const ModsPage = () => {
 
   const refreshFromLiveEvent = () => {
     setLiveEvent(null);
-    modsCache.delete({ category, gameVersion, loader, query, sort });
-    runSearch({ category, gameVersion, loader, query, sort });
+    modsCache.delete({ category, gameVersion, loader, page, query, sort });
+    runSearch({ category, gameVersion, loader, page, query, sort });
   };
+
+  const changeFilter =
+    (setter: (value: string) => void) => (value: string | null) => {
+      setter(value ?? "");
+      setPage(1);
+      dispatch({ type: "SEARCH_START" });
+    };
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
-      <header className="max-w-2xl">
-        <h1 className="text-foreground text-3xl font-bold tracking-tight sm:text-4xl">
-          Mods
-        </h1>
-        <p className="text-muted-foreground mt-2 text-sm sm:text-base">
-          Discover performance, technology, adventure, and more — search
-          thousands of Minecraft mods.
-        </p>
-      </header>
+      <PageHeader
+        title="Mods"
+        description="Discover performance, technology, adventure, and more — search thousands of Minecraft mods."
+      />
 
       <ModsSearchBar query={query} onQueryChange={setQuery} />
 
@@ -406,103 +551,47 @@ const ModsPage = () => {
         category={category}
         gameVersion={gameVersion}
         loader={loader}
-        onCategoryChange={(value) => {
-          setCategory(value);
-          dispatch({ type: "SEARCH_START" });
-        }}
-        onGameVersionChange={(value) => {
-          setGameVersion(value);
-          dispatch({ type: "SEARCH_START" });
-        }}
-        onLoaderChange={(value) => {
-          setLoader(value);
-          dispatch({ type: "SEARCH_START" });
-        }}
-        onSortChange={(value) => {
-          setSort(value);
-          dispatch({ type: "SEARCH_START" });
-        }}
+        onCategoryChange={changeFilter(setCategory)}
+        onGameVersionChange={changeFilter(setGameVersion)}
+        onLoaderChange={changeFilter(setLoader)}
+        onSortChange={changeFilter(setSort)}
         sort={sort}
       />
 
-      {error ? (
-        <div
-          role="alert"
-          className="border-destructive/30 bg-destructive/10 text-destructive mt-8 flex flex-wrap items-center justify-between gap-3 rounded-xl border px-4 py-3 text-sm"
-        >
-          <span>{error}</span>
-          <button
-            type="button"
-            onClick={retry}
-            className="border-destructive/30 text-destructive hover:bg-destructive/20 focus-visible:ring-ring min-h-11 rounded-lg border px-3 text-sm font-medium focus-visible:ring-2 focus-visible:outline-none"
-          >
-            Try again
-          </button>
-        </div>
-      ) : null}
+      {error ? <ErrorState message={error} onRetry={retry} /> : null}
 
       {liveEvent ? (
-        <output className="border-primary/30 bg-primary/5 text-foreground mt-8 flex flex-wrap items-center justify-between gap-3 rounded-xl border px-4 py-3 text-sm">
-          <span>
-            {LIVE_EVENT_LABELS[liveEvent.event]}: {liveEvent.data.name}
-          </span>
-          <button
-            type="button"
-            onClick={refreshFromLiveEvent}
-            className="text-primary focus-visible:ring-ring min-h-10 rounded-lg px-3 text-sm font-medium hover:underline focus-visible:ring-2 focus-visible:outline-none"
-          >
-            Refresh results
-          </button>
-        </output>
+        <LiveEventBanner event={liveEvent} onRefresh={refreshFromLiveEvent} />
       ) : null}
 
-      {showSkeletons ? (
-        <div
-          aria-busy="true"
-          className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-        >
-          {Array.from({ length: 6 }, (_, index) => (
-            <Skeleton key={index} className="h-52 rounded-2xl" />
-          ))}
-        </div>
-      ) : null}
+      {showSkeletons || showInitialSkeletons ? <ModsSkeletons /> : null}
 
       {showEmpty ? (
-        <div className="mt-16 flex flex-col items-center text-center">
-          <p className="text-foreground text-lg font-semibold">No mods found</p>
-          <p className="text-muted-foreground mt-1 text-sm">
-            Try a different search or clear your filters.
-          </p>
-          {hasFilters ? (
-            <button
-              type="button"
-              onClick={clearFilters}
-              className="text-primary focus-visible:ring-ring mt-4 min-h-10 rounded-lg px-3 text-sm font-medium hover:underline focus-visible:ring-2 focus-visible:outline-none"
-            >
-              Clear filters
-            </button>
-          ) : null}
-        </div>
+        <EmptyState
+          title="No mods found"
+          description="Try a different search or clear your filters."
+          action={
+            hasFilters ? (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="text-primary focus-visible:ring-ring mt-4 min-h-10 rounded-lg px-3 text-sm font-medium hover:underline focus-visible:ring-2 focus-visible:outline-none"
+              >
+                Clear filters
+              </button>
+            ) : null
+          }
+        />
       ) : null}
 
       {showResults ? (
-        <>
-          <p className="text-muted-foreground mt-8 text-sm" aria-live="polite">
-            {result.estimatedTotalHits}{" "}
-            {result.estimatedTotalHits === 1 ? "mod" : "mods"} found
-          </p>
-
-          <ul
-            aria-busy={isSearching}
-            className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-          >
-            {result.hits.map((mod) => (
-              <li key={mod.id}>
-                <ModCard mod={mod} />
-              </li>
-            ))}
-          </ul>
-        </>
+        <ModsResults
+          currentPage={page}
+          isSearching={isSearching}
+          onPageChange={setPage}
+          result={result}
+          totalPages={totalPages}
+        />
       ) : null}
     </div>
   );

@@ -8,6 +8,8 @@ const responseFixture = (query: string): ModSearchResponse => ({
   // oxlint-disable-next-line sonarjs/no-undefined-assignment -- Test fixture mirrors the server response shape
   facetDistribution: undefined,
   hits: [],
+  page: 1,
+  pageSize: 12,
   query,
 });
 

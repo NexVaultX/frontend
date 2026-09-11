@@ -14,11 +14,11 @@ for the longer-term plan.
 * [ ] Create `/mods/$modId` mod detail page
 * [ ] Update web-design-guidelines SKILL.md (skeletons + empty states)
 * [ ] Use `cn` more across the application
-* [ ] Write TODO.md
 * [ ] Verification: typecheck, check, test, build, lint:md
 
 ## Completed
 
+* [x] Write TODO.md
 * [x] Navbar polish (active states, user menu, mobile)
 * [x] Dev commands: `pnpm dev` / `dev:all` / `dev:web`
 * [x] Create ROADMAP.md

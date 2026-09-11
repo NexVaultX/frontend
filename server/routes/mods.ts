@@ -5,6 +5,7 @@ import { getSearchClient, MODS_INDEX } from "../lib/meilisearch";
 
 const DEFAULT_SORT = "downloads:desc";
 const SORTS = [DEFAULT_SORT, "updatedAt:desc", "name:asc"] as const;
+const PAGE_SIZE = 12;
 
 const quote = (value: string) => `"${value}"`;
 
@@ -37,12 +38,16 @@ export const modsRoute = new Elysia().get(
       ? (query.sort ?? DEFAULT_SORT)
       : DEFAULT_SORT;
 
+    const page = Math.max(1, query.page ?? 1);
+    const offset = (page - 1) * PAGE_SIZE;
+
     const result = await getSearchClient()
       .index(MODS_INDEX)
       .search<Mod>(query.q ?? "", {
         facets: ["category", "gameVersions", "loaders"],
         filter: buildFilter(query),
-        limit: 24,
+        limit: PAGE_SIZE,
+        offset,
         sort: [sort],
       });
 
@@ -50,6 +55,8 @@ export const modsRoute = new Elysia().get(
       estimatedTotalHits: result.estimatedTotalHits,
       facetDistribution: result.facetDistribution,
       hits: result.hits,
+      page,
+      pageSize: PAGE_SIZE,
       query: result.query,
     };
   },
@@ -60,6 +67,7 @@ export const modsRoute = new Elysia().get(
       gameVersion: t.Optional(t.String()),
       loader: t.Optional(t.String()),
       sort: t.Optional(t.String()),
+      page: t.Optional(t.Number()),
     }),
   }
 );

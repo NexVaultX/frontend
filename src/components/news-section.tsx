@@ -1,6 +1,7 @@
 import { IconArrowUpRight, IconSpeakerphone } from "@tabler/icons-react";
 
 import { Reveal } from "@/components/reveal";
+import { cn } from "@/lib/utils";
 
 type NewsCategory = "Announcement" | "Community" | "Development";
 
@@ -89,7 +90,10 @@ const NewsSection = () => (
               </a>
 
               <div
-                className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${CATEGORY_COLORS[item.category]}`}
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium",
+                  CATEGORY_COLORS[item.category]
+                )}
               >
                 <IconSpeakerphone size={12} aria-hidden="true" />
                 {item.category}

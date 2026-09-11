@@ -1,8 +1,7 @@
-"use client";
-
 import { useEffect, useState } from "react";
 
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+import { cn } from "@/lib/utils";
 
 const CONTENT_TYPES = [
   "Minecraft",
@@ -77,9 +76,10 @@ const ChromaticTextReveal = () => {
       >
         <span
           key={word}
-          className={`inline-block ${
+          className={cn(
+            "inline-block",
             isExiting ? "animate-word-exit" : "animate-word-enter"
-          }`}
+          )}
         >
           {word}
         </span>

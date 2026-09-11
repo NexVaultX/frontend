@@ -1,5 +1,3 @@
-"use client";
-
 import {
   createFileRoute,
   redirect,

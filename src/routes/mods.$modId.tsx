@@ -1,6 +1,7 @@
 import { IconArrowLeft, IconDownload, IconTag } from "@tabler/icons-react";
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 
+import { StatCard } from "@/components/stat-card";
 import { MODS } from "@/lib/mods-data";
 
 const downloadFormatter = new Intl.NumberFormat("en", {
@@ -68,43 +69,29 @@ const ModDetailPage = () => {
       </p>
 
       <dl className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="border-border bg-card rounded-xl border p-4">
-          <dt className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-            Downloads
-          </dt>
-          <dd className="text-foreground mt-1 flex items-center gap-1.5 text-lg font-semibold">
-            <IconDownload size={16} aria-hidden="true" />
-            {formatDownloads(mod.downloads)}
-          </dd>
-        </div>
+        <StatCard
+          label="Downloads"
+          value={
+            <>
+              <IconDownload size={16} aria-hidden="true" />
+              {formatDownloads(mod.downloads)}
+            </>
+          }
+        />
 
-        <div className="border-border bg-card rounded-xl border p-4">
-          <dt className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-            Version
-          </dt>
-          <dd className="text-foreground mt-1 flex items-center gap-1.5 text-lg font-semibold">
-            <IconTag size={16} aria-hidden="true" />
-            {mod.version}
-          </dd>
-        </div>
+        <StatCard
+          label="Version"
+          value={
+            <>
+              <IconTag size={16} aria-hidden="true" />
+              {mod.version}
+            </>
+          }
+        />
 
-        <div className="border-border bg-card rounded-xl border p-4">
-          <dt className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-            Updated
-          </dt>
-          <dd className="text-foreground mt-1 text-lg font-semibold">
-            {mod.updatedAt}
-          </dd>
-        </div>
+        <StatCard label="Updated" value={mod.updatedAt} />
 
-        <div className="border-border bg-card rounded-xl border p-4">
-          <dt className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-            Loaders
-          </dt>
-          <dd className="text-foreground mt-1 text-lg font-semibold">
-            {mod.loaders.join(", ")}
-          </dd>
-        </div>
+        <StatCard label="Loaders" value={mod.loaders.join(", ")} />
       </dl>
 
       <section aria-labelledby="game-versions-heading" className="mt-8">

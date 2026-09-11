@@ -1,8 +1,7 @@
-"use client";
-
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import type { ReactNode } from "react";
+import { toast } from "sonner";
 
 import { PostFormDialog } from "@/components/admin/post-form-dialog";
 import { Button } from "@/components/ui/button";
@@ -90,11 +89,11 @@ const PostRow = ({ isMutating, post, onDelete, onEdit }: PostRowProps) => (
       <p className="text-foreground flex flex-wrap items-center gap-2 text-sm font-medium">
         <span className="truncate">{post.title}</span>
         {post.published ? (
-          <span className="border-border bg-background text-muted-foreground inline-flex items-center rounded-full border px-2 py-0.5 text-[0.65rem] font-medium tracking-wide uppercase">
+          <span className="bg-primary/10 text-primary inline-flex items-center rounded-full px-2 py-0.5 text-[0.65rem] font-medium tracking-wide uppercase">
             Published
           </span>
         ) : (
-          <span className="border-destructive/30 bg-destructive/10 text-destructive inline-flex items-center rounded-full border px-2 py-0.5 text-[0.65rem] font-medium tracking-wide uppercase">
+          <span className="bg-muted text-muted-foreground inline-flex items-center rounded-full px-2 py-0.5 text-[0.65rem] font-medium tracking-wide uppercase">
             Draft
           </span>
         )}
@@ -153,15 +152,30 @@ const AdminPosts = () => {
       const rows = await listPosts({ data: { includeUnpublished: true } });
       dispatch({ posts: rows, type: "LOAD_SUCCESS" });
     } catch (loadError) {
+      const message =
+        loadError instanceof Error
+          ? loadError.message
+          : "Could not load posts.";
+
       dispatch({
-        error:
-          loadError instanceof Error
-            ? loadError.message
-            : "Could not load posts.",
+        error: message.includes("Failed query")
+          ? "Posts table not found. Run the database migration first."
+          : message,
         type: "LOAD_ERROR",
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error, {
+        action: {
+          label: "Try again",
+          onClick: () => loadPosts(),
+        },
+      });
+    }
+  }, [error, loadPosts]);
 
   useEffect(() => {
     loadPosts();
@@ -297,24 +311,6 @@ const AdminPosts = () => {
           </Button>
         </div>
       </div>
-
-      {error ? (
-        <div
-          role="alert"
-          className="border-destructive/30 bg-destructive/10 text-destructive mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border px-3 py-2.5 text-sm"
-        >
-          <span>{error}</span>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="min-h-10"
-            onClick={() => loadPosts()}
-          >
-            Try again
-          </Button>
-        </div>
-      ) : null}
 
       {content}
 

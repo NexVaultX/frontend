@@ -5,15 +5,8 @@ import { LegalPage } from "@/components/legal/legal-page";
 const DisclaimerPage = () => (
   <LegalPage
     title="Disclaimer"
-    updated="Placeholder — not yet finalized"
-    intro={
-      <>
-        <strong className="text-foreground">
-          This page is a placeholder and must be reviewed before production.
-        </strong>{" "}
-        This disclaimer governs your use of the NexVaultX platform.
-      </>
-    }
+    updated="September 11, 2026"
+    intro={<>This disclaimer governs your use of the NexVaultX platform.</>}
     sections={[
       {
         heading: "No Warranty",

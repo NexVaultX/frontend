@@ -1,5 +1,3 @@
-"use client";
-
 import { IconArrowRight, IconDownload, IconHeart } from "@tabler/icons-react";
 import type { ReactNode } from "react";
 
@@ -161,7 +159,7 @@ const FeaturedProjects = () => (
         </div>
 
         <a
-          href="/projects"
+          href="/mods"
           className="text-muted-foreground hover:text-foreground focus-visible:ring-ring group hidden min-h-11 shrink-0 items-center gap-1 rounded-md text-sm font-medium transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none sm:inline-flex"
         >
           View all
@@ -180,10 +178,10 @@ const FeaturedProjects = () => (
 
       <div className="mt-4 flex justify-center sm:hidden">
         <a
-          href="/projects"
+          href="/mods"
           className="text-muted-foreground hover:text-foreground focus-visible:ring-ring inline-flex min-h-10 items-center gap-1 rounded-lg px-3 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
         >
-          View all projects
+          View all mods
           <IconArrowRight size={15} />
         </a>
       </div>

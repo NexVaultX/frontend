@@ -19,6 +19,7 @@ export interface ModSearchParams {
   category?: string;
   gameVersion?: string;
   loader?: string;
+  page?: number;
   query: string;
   sort: string;
 }
@@ -27,6 +28,8 @@ export interface ModSearchResponse {
   estimatedTotalHits: number;
   facetDistribution: Record<string, Record<string, number>> | undefined;
   hits: Mod[];
+  page: number;
+  pageSize: number;
   query: string;
 }
 
@@ -46,6 +49,9 @@ export const searchMods = createServerFn({ method: "GET" })
     }
     if (data.loader && LOADERS.has(data.loader)) {
       params.set("loader", data.loader);
+    }
+    if (data.page && data.page > 1) {
+      params.set("page", String(data.page));
     }
     // SAFETY: SORTS is a readonly tuple of strings; widening to readonly
     // string[] is safe for the membership check below.
