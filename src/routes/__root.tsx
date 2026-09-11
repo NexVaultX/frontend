@@ -9,7 +9,6 @@ import {
   createRootRoute,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { LazyMotion, domAnimation } from "motion/react";
 import type { ReactNode } from "react";
 
 import { CookieBanner } from "@/components/cookie-banner";
@@ -25,29 +24,27 @@ const RootDocument = ({ children }: { children: ReactNode }) => (
       <HeadContent />
     </head>
     <body>
-      <LazyMotion features={domAnimation}>
-        <ThemeProvider storageKey="nexvaultx-theme" defaultTheme="system">
-          <HotkeysProvider
-            defaultOptions={{
-              hotkey: {
-                preventDefault: true,
-                ignoreInputs: false,
-              },
-            }}
+      <ThemeProvider storageKey="nexvaultx-theme" defaultTheme="system">
+        <HotkeysProvider
+          defaultOptions={{
+            hotkey: {
+              preventDefault: true,
+              ignoreInputs: false,
+            },
+          }}
+        >
+          <a
+            href="#main-content"
+            className="focus:ring-ring focus:bg-background sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-lg focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:ring-2 focus:outline-none"
           >
-            <a
-              href="#main-content"
-              className="focus:ring-ring focus:bg-background sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-lg focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:ring-2 focus:outline-none"
-            >
-              Skip to content
-            </a>
-            <Navbar />
-            <main id="main-content">{children}</main>
-            <Footer />
-          </HotkeysProvider>
-        </ThemeProvider>
-        <CookieBanner />
-      </LazyMotion>
+            Skip to content
+          </a>
+          <Navbar />
+          <main id="main-content">{children}</main>
+          <Footer />
+        </HotkeysProvider>
+      </ThemeProvider>
+      <CookieBanner />
       <TanStackDevtools
         config={{
           position: "bottom-right",

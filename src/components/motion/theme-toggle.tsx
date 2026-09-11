@@ -4,12 +4,12 @@
 import { useTheme } from "@lonik/themer";
 import { IconMoon, IconSun } from "@tabler/icons-react";
 import { useHydrated } from "@tanstack/react-router";
-import { useReducedMotion } from "motion/react";
 import { useEffect } from "react";
 import type { ComponentPropsWithoutRef } from "react";
 
 import { IconSwap } from "@/components/motion/icon-swap";
 import { Button } from "@/components/ui/button";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { EASE_OUT_CSS } from "@/lib/ease";
 import { cn } from "@/lib/utils";
 
@@ -124,7 +124,7 @@ const useThemeToggle = ({
   start = "bottom-up",
 }: { variant?: ThemeVariant; start?: RectStart } = {}) => {
   const { setTheme, resolvedTheme } = useTheme();
-  const reduce = useReducedMotion() ?? false;
+  const reduce = usePrefersReducedMotion();
   const mounted = useHydrated();
 
   useEffect(() => {

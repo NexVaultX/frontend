@@ -1,13 +1,6 @@
 "use client";
 
 import { IconArrowRight, IconDownload, IconHeart } from "@tabler/icons-react";
-import {
-  m,
-  useAnimationFrame,
-  useMotionValue,
-  useReducedMotion,
-} from "motion/react";
-import { useRef } from "react";
 import type { ReactNode } from "react";
 
 import { Reveal } from "@/components/reveal";
@@ -77,58 +70,11 @@ const PROJECTS: Project[] = [
   },
 ];
 
-const MarqueeTrack = ({ children }: { children: ReactNode }) => {
-  const x = useMotionValue(0);
-  const paused = useRef(false);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
-
-  useAnimationFrame((_, delta) => {
-    if (reduced || paused.current) {
-      return;
-    }
-
-    const track = trackRef.current;
-    if (!track) {
-      return;
-    }
-
-    const half = track.scrollWidth / 2;
-    const current = x.get();
-
-    if (Math.abs(current) >= half) {
-      x.set(0);
-    } else {
-      x.set(current - 60 * (delta / 1000));
-    }
-  });
-
-  return (
-    <div
-      className="overflow-hidden"
-      onMouseEnter={() => {
-        paused.current = true;
-      }}
-      onMouseLeave={() => {
-        paused.current = false;
-      }}
-      onTouchStart={() => {
-        paused.current = true;
-      }}
-      onTouchEnd={() => {
-        paused.current = false;
-      }}
-    >
-      <m.div
-        ref={trackRef}
-        style={{ x }}
-        className="marquee-track flex w-max gap-4"
-      >
-        {children}
-      </m.div>
-    </div>
-  );
-};
+const MarqueeTrack = ({ children }: { children: ReactNode }) => (
+  <div className="overflow-hidden">
+    <div className="animate-marquee flex w-max gap-4">{children}</div>
+  </div>
+);
 
 const ProjectCard = ({ project }: { project: Project }) => (
   <article className="marquee-card group border-border bg-card focus-within:border-foreground/20 relative flex h-full min-h-[240px] w-[calc(100vw-48px)] shrink-0 flex-col overflow-hidden rounded-2xl border p-6 transition-colors duration-300 focus-within:ring-1 motion-reduce:transition-none sm:w-[360px]">

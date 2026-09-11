@@ -1,11 +1,11 @@
 "use client";
 
-import { AnimatePresence, m, useReducedMotion } from "motion/react";
+import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
-const SWAP_TRANSITION = { duration: 0.2, ease: "easeInOut" } as const;
+const EXIT_DURATION_MS = 200;
 
 interface IconSwapProps {
   value: string;
@@ -13,8 +13,35 @@ interface IconSwapProps {
   className?: string;
 }
 
+interface DisplayedIcon {
+  children: ReactNode;
+  value: string;
+}
+
 const IconSwap = ({ value, children, className }: IconSwapProps) => {
-  const reduce = useReducedMotion();
+  const [displayed, setDisplayed] = useState<DisplayedIcon>({
+    children,
+    value,
+  });
+  const [isExiting, setIsExiting] = useState(false);
+
+  // Adjust state during render: when the incoming value changes, mark the
+  // current icon as exiting so it can crossfade with the incoming one.
+  if (value !== displayed.value && !isExiting) {
+    setIsExiting(true);
+  }
+
+  useEffect(() => {
+    if (!isExiting) {
+      return;
+    }
+
+    const id = setTimeout(() => {
+      setDisplayed({ children, value });
+      setIsExiting(false);
+    }, EXIT_DURATION_MS);
+    return () => clearTimeout(id);
+  }, [isExiting, value, children]);
 
   return (
     <span
@@ -23,26 +50,21 @@ const IconSwap = ({ value, children, className }: IconSwapProps) => {
         className
       )}
     >
-      <AnimatePresence mode="popLayout" initial={false}>
-        <m.span
-          key={value}
+      {isExiting ? (
+        <span
           aria-hidden
-          initial={reduce ? false : { opacity: 0, scale: 0.25 }}
-          animate={
-            reduce
-              ? { opacity: 1, scale: 1 }
-              : { opacity: 1, scale: 1, transition: SWAP_TRANSITION }
-          }
-          exit={
-            reduce
-              ? undefined
-              : { opacity: 0, scale: 0.25, transition: SWAP_TRANSITION }
-          }
-          className="col-start-1 row-start-1 inline-flex items-center justify-center"
+          className="animate-icon-exit col-start-1 row-start-1 inline-flex items-center justify-center"
         >
-          {children}
-        </m.span>
-      </AnimatePresence>
+          {displayed.children}
+        </span>
+      ) : null}
+      <span
+        key={value}
+        aria-hidden
+        className="animate-icon-enter col-start-1 row-start-1 inline-flex items-center justify-center"
+      >
+        {children}
+      </span>
     </span>
   );
 };

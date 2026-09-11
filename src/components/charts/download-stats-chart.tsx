@@ -5,8 +5,9 @@ import { scaleBand } from "@tanstack/charts/scales/band";
 import { scaleLinear } from "@tanstack/charts/scales/linear";
 import { tooltip } from "@tanstack/charts/tooltip";
 import { Chart } from "@tanstack/react-charts";
-import { useReducedMotion } from "motion/react";
 import { useMemo } from "react";
+
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
 interface DownloadStat {
   downloads: number;
@@ -56,7 +57,7 @@ const summarizeDownloads = ([
 const DownloadStatsChart = ({
   data = MOCK_DOWNLOAD_STATS,
 }: DownloadStatsChartProps) => {
-  const reduce = useReducedMotion() ?? false;
+  const reduce = usePrefersReducedMotion();
 
   // oxlint-disable-next-line react-doctor/react-compiler-no-manual-memoization -- React Compiler is not enabled in this project; the chart definition must be memoized so TanStack Charts rebuilds the scene only when data or motion preference changes
   const definition = useMemo(
