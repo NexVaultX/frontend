@@ -361,8 +361,10 @@ complement the a11y section above.
   animations
 * Hover states: subtle transitions (`transition-colors`,
   `hover:bg-muted/50`) — avoid dramatic scale/translate
-* Use `motion` (framer-motion `LazyMotion`) for scroll reveals and page
-  transitions, not CSS keyframes
+* Use CSS transitions with `EASE_OUT_CSS` from `src/lib/ease.ts` for scroll
+  reveals and page transitions, not CSS keyframes
+* Use `usePrefersReducedMotion()` from
+  `@/hooks/use-prefers-reduced-motion` for reduced-motion support
 * Focus states must be visible: `focus-visible:ring-3
   focus-visible:ring-ring/50`
 
@@ -397,3 +399,38 @@ pnpm dlx shadcn@latest add https://tweakcn.com/r/themes/{theme-name}.json --yes
 Replace `{theme-name}` with the theme identifier from the tweakcn.com URL.
 After applying, verify the theme doesn't break existing component styles
 and run `pnpm check` to ensure lint/format compliance.
+
+---
+
+## OpenCode Skills & Commands
+
+The `.opencode/` directory contains skills (loaded on demand) and commands
+(available as `/command-name`). Skills and commands are not linted by
+Oxlint (`**/.opencode/**` is in `ignorePatterns`).
+
+### Skills
+
+| Skill | Purpose | When to use |
+| --- | --- | --- |
+| `frontend-design` | Visual direction for web UI | New UI, aesthetics |
+| `apple-design` | Apple HIG review | iOS/macOS, Flutter/RN UI |
+| `frontend-skills` | Frontend dev workflow | Building code, routing, state |
+| `web-design-guidelines` | Web UI review | Reviewing UI for a11y |
+| `performance-guidelines` | Performance review | Debounce, throttle, images |
+| `context7` | Live library docs | Looking up library docs |
+| `task-management` | Task CLI for subtasks | Task breakdowns, dependencies |
+
+### Commands
+
+| Command | Description |
+| --- | --- |
+| `/commit` | Conventional Commits with lint + build validation |
+| `/test` | Run typecheck + lint + test pipeline |
+| `/clean` | Auto-fix lint, format, debug code, type issues |
+| `/optimize` | Analyze code for performance, security, issues |
+| `/web-design-guidelines` | Review UI against Web Interface Guidelines |
+| `/validate-repo` | Check `.opencode/` structure for consistency |
+| `/add-context` | Interactive wizard to add project patterns |
+| `/context` | Context system manager (harvest, extract, organize) |
+| `/analyze-patterns` | Analyze codebase for patterns |
+| `/worktrees` | Git worktree management |

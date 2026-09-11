@@ -95,8 +95,8 @@ below.
 - Use the Tailwind spacing scale (`gap-*`, `p-*`, `m-*`) — never arbitrary
   pixel values.
 - Use `font-heading` for display/headings, default font for body.
-- Use the project's motion utilities (`EASE_OUT`, `SPRING_*` from
-  `src/lib/ease.ts`) and `motion/react` — not CSS keyframes.
+- Use the project's motion utilities (`EASE_OUT_CSS` from `src/lib/ease.ts`)
+  with CSS transitions — not CSS keyframes.
 
 ---
 
@@ -263,13 +263,14 @@ below.
 - Keep animations under **400ms** for UI interactions.
 - Use `transform`/`opacity` only — never animate `width`/`height`/`top`/
   `left`.
-- Use `motion/react` (`LazyMotion` + `domAnimation`) for scroll reveals and
-  page transitions — not CSS keyframes.
+- Use CSS transitions with `EASE_OUT_CSS` for scroll reveals and page
+  transitions — not CSS keyframes. Use `usePrefersReducedMotion()` from
+  `@/hooks/use-prefers-reduced-motion` for reduced-motion support.
 - Use the project's easing constants from `src/lib/ease.ts` (`EASE_OUT`,
   `EASE_IN_OUT`, `EASE_DRAWER`) and spring configs (`SPRING_PRESS`,
   `SPRING_SWAP`, `SPRING_PANEL`, `SPRING_LAYOUT`).
-- Respect `prefers-reduced-motion` — disable or minimize all animations
-  (`useReducedMotion()` from `motion/react`).
+- Respect `prefers-reduced-motion` — use `usePrefersReducedMotion()` from
+  `@/hooks/use-prefers-reduced-motion` and disable or minimize all animations.
 - Don't create flashing content (WCAG 2.3.1 — no more than 3 flashes per
   second).
 

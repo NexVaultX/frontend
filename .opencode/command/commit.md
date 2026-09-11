@@ -16,7 +16,7 @@ When the user runs this command, execute the following workflow:
    - If the user provides `$ARGUMENTS` (a custom commit message or description), skip to step 3.
 
 2. **Run pre-commit validation**
-   - Execute `pnpm lint` and report any issues.
+   - Execute `pnpm check` and report any issues.
    - Execute `pnpm build` and ensure it succeeds.
    - If either command fails, ask the user whether to proceed anyway or fix the issues first.
 

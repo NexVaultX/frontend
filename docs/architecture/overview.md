@@ -10,12 +10,12 @@ ElysiaJS API server for search and real-time events.
 | ---------- | --------------------------------------- |
 | Framework  | TanStack Start (file-based routing)     |
 | UI         | React 19, Tailwind CSS v4, Base UI      |
-| Animation  | Motion (framer-motion)                  |
+| Animation  | CSS transitions (`EASE_OUT_CSS`)        |
 | Auth       | Better Auth                             |
 | Database   | PostgreSQL, Drizzle ORM                 |
 | Search     | Meilisearch                             |
 | API        | ElysiaJS (webhooks, SSE)                |
-| Validation | Zod                                     |
+| Validation | Valibot                                 |
 | Lint       | Ultracite (Oxlint + Oxfmt)              |
 
 ## Directory layout
