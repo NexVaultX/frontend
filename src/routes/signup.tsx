@@ -1,5 +1,4 @@
-"use client";
-
+import { useForm, useStore } from "@tanstack/react-form";
 import {
   Link,
   createFileRoute,
@@ -7,64 +6,69 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { useState } from "react";
-import type { FormEvent } from "react";
+import { check, minLength, nonEmpty, pipe, regex, string } from "valibot";
 
 import { FormField } from "@/components/form-field";
+import { GoogleSignInButton } from "@/components/google-sign-in-button";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
-import { validateSignupInput } from "@/lib/auth-validation";
 import { getSession } from "@/lib/auth.functions";
 
-interface FieldErrors {
-  name?: string;
-  email?: string;
-  password?: string;
-}
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/u;
+const MIN_PASSWORD_LENGTH = 8;
+
+const nameSchema = pipe(
+  string(),
+  check((value) => value.trim().length > 0, "Name is required.")
+);
+
+const emailSchema = pipe(
+  string(),
+  check((value) => value.trim().length > 0, "Email is required."),
+  regex(EMAIL_PATTERN, "Enter a valid email address.")
+);
+
+const passwordSchema = pipe(
+  string(),
+  nonEmpty("Password is required."),
+  minLength(MIN_PASSWORD_LENGTH, "Password must be at least 8 characters.")
+);
 
 const SignupPage = () => {
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setFormError(null);
+  const form = useForm({
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+    },
+    onSubmit: async ({ value }) => {
+      setFormError(null);
+      const { error } = await authClient.signUp.email(value);
+      if (error) {
+        setFormError(error.message ?? "Could not create your account.");
+        return;
+      }
+      router.navigate({ to: "/" });
+    },
+    onSubmitInvalid: () => {
+      setFormError(null);
+    },
+  });
 
-    const errors = validateSignupInput(name, email, password);
-
-    setFieldErrors(errors);
-    if (errors.name || errors.email || errors.password) {
-      return;
-    }
-
-    setIsSubmitting(true);
-    const { error } = await authClient.signUp.email({
-      name,
-      email,
-      password,
-    });
-    setIsSubmitting(false);
-
-    if (error) {
-      setFormError(error.message ?? "Could not create your account.");
-      return;
-    }
-
-    router.navigate({ to: "/" });
-  };
+  const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
 
   return (
-    <main className="flex min-h-svh items-center justify-center px-4 py-12">
+    <div className="flex min-h-svh items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm">
         <h1 className="text-foreground text-2xl font-semibold tracking-tight">
           Create your account
         </h1>
         <p className="text-muted-foreground mt-1.5 text-sm">
-          Join OpenVault to publish and discover Minecraft content.
+          Join NexVaultX to publish and discover Minecraft content.
         </p>
 
         {formError ? (
@@ -76,41 +80,95 @@ const SignupPage = () => {
           </div>
         ) : null}
 
-        <form onSubmit={handleSubmit} noValidate className="mt-6 grid gap-4">
-          <FormField
-            id="name"
-            label="Name"
-            type="text"
-            autoComplete="name"
-            placeholder="Your name"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            error={fieldErrors.name}
-            required
-          />
+        <div className="mt-6">
+          <GoogleSignInButton />
+        </div>
 
-          <FormField
-            id="email"
-            label="Email"
-            type="email"
-            autoComplete="email"
-            placeholder="you@example.com"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            error={fieldErrors.email}
-            required
-          />
+        <div className="mt-6 flex items-center gap-3">
+          <hr className="bg-border h-px flex-1 border-0" />
+          <span className="text-muted-foreground text-xs tracking-wide uppercase">
+            or
+          </span>
+          <hr className="bg-border h-px flex-1 border-0" />
+        </div>
 
-          <FormField
-            id="password"
-            label="Password"
-            type="password"
-            autoComplete="new-password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            error={fieldErrors.password}
-            required
-          />
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            void form.handleSubmit();
+          }}
+          noValidate
+          aria-busy={isSubmitting}
+          className="mt-6 grid gap-4"
+        >
+          <form.Field
+            name="name"
+            validators={{
+              onChange: nameSchema,
+              onSubmit: nameSchema,
+            }}
+          >
+            {(field) => (
+              <FormField
+                id="name"
+                label="Name"
+                type="text"
+                autoComplete="name"
+                placeholder="Your name"
+                value={field.state.value}
+                onChange={(event) => field.handleChange(event.target.value)}
+                onBlur={field.handleBlur}
+                error={field.state.meta.errors[0]?.message}
+                required
+              />
+            )}
+          </form.Field>
+
+          <form.Field
+            name="email"
+            validators={{
+              onChange: emailSchema,
+              onSubmit: emailSchema,
+            }}
+          >
+            {(field) => (
+              <FormField
+                id="email"
+                label="Email"
+                type="email"
+                autoComplete="email"
+                placeholder="you@example.com…"
+                value={field.state.value}
+                onChange={(event) => field.handleChange(event.target.value)}
+                onBlur={field.handleBlur}
+                error={field.state.meta.errors[0]?.message}
+                required
+              />
+            )}
+          </form.Field>
+
+          <form.Field
+            name="password"
+            validators={{
+              onChange: passwordSchema,
+              onSubmit: passwordSchema,
+            }}
+          >
+            {(field) => (
+              <FormField
+                id="password"
+                label="Password"
+                type="password"
+                autoComplete="new-password"
+                value={field.state.value}
+                onChange={(event) => field.handleChange(event.target.value)}
+                onBlur={field.handleBlur}
+                error={field.state.meta.errors[0]?.message}
+                required
+              />
+            )}
+          </form.Field>
 
           <Button
             type="submit"
@@ -119,18 +177,28 @@ const SignupPage = () => {
             className="mt-2 min-h-11 w-full"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Creating account…" : "Create Account"}
+            {isSubmitting ? (
+              <>
+                <Spinner className="mr-1.5" label="Creating account" />
+                Creating account…
+              </>
+            ) : (
+              "Create Account"
+            )}
           </Button>
         </form>
 
         <p className="text-muted-foreground mt-6 text-center text-sm">
           Already have an account?{" "}
-          <Link to="/login" className="text-primary hover:underline">
+          <Link
+            to="/login"
+            className="text-primary focus-visible:ring-ring rounded-sm hover:underline focus-visible:ring-2 focus-visible:outline-none"
+          >
             Sign in
           </Link>
         </p>
       </div>
-    </main>
+    </div>
   );
 };
 

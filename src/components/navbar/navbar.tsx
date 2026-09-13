@@ -1,8 +1,8 @@
-"use client";
-
 import { IconMenu2, IconX } from "@tabler/icons-react";
+import { useHotkey } from "@tanstack/react-hotkeys";
 import { useRouter } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
 
 import { ThemeToggle } from "@/components/motion/theme-toggle";
 import { AuthButtons } from "@/components/navbar/auth-buttons";
@@ -17,15 +17,58 @@ const Navbar = () => {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const { data: session, isPending } = authClient.useSession();
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const focusSearch = () => {
+    searchInputRef.current?.focus();
+  };
+
+  const blurSearch = () => {
+    searchInputRef.current?.blur();
+  };
+
+  useHotkey("Mod+K", focusSearch);
+  useHotkey("Escape", blurSearch);
+
+  const handleSearchKeyDown = (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === "Escape") {
+      blurSearch();
+    }
+  };
 
   const handleSignOut = async () => {
-    await authClient.signOut();
+    try {
+      const { error } = await authClient.signOut();
+      if (error) {
+        toast.error(error.message ?? "Could not sign out.", {
+          action: {
+            label: "Try again",
+            onClick: () => handleSignOut(),
+          },
+        });
+        return;
+      }
+    } catch {
+      toast.error("Could not sign out.", {
+        action: {
+          label: "Try again",
+          onClick: () => handleSignOut(),
+        },
+      });
+      return;
+    }
+
     setMenuOpen(false);
+    // Force the session hook to refetch so the UI reflects the signed-out state
+    authClient.$store.notify("$sessionSignal");
+    router.invalidate();
     router.navigate({ to: "/" });
   };
 
   return (
-    <header className="border-border/70 bg-background/85 sticky top-0 z-50 border-b backdrop-blur-xl">
+    <header className="border-border/70 bg-background sticky top-0 z-50 border-b">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6 lg:px-8">
         <NavbarLogo />
 
@@ -33,7 +76,12 @@ const Navbar = () => {
 
         {/* Desktop actions */}
         <div className="ml-auto hidden items-center gap-2 lg:flex">
-          <NavbarSearch variant="desktop" className="hidden xl:block" />
+          <NavbarSearch
+            ref={searchInputRef}
+            variant="desktop"
+            onKeyDown={handleSearchKeyDown}
+            className="hidden xl:block"
+          />
           <ThemeToggle variant="circle" start="center" />
           <AuthButtons
             variant="desktop"

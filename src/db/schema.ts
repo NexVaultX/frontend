@@ -2,6 +2,7 @@ import { relations } from "drizzle-orm";
 import {
   boolean,
   index,
+  integer,
   pgTable,
   text,
   timestamp,
@@ -9,6 +10,9 @@ import {
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
+  banExpires: timestamp("ban_expires"),
+  banReason: text("ban_reason"),
+  banned: boolean("banned").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   displayUsername: text("display_username"),
   email: text("email").notNull().unique(),
@@ -16,6 +20,7 @@ export const users = pgTable("users", {
   id: text("id").primaryKey(),
   image: text("image"),
   name: text("name").notNull(),
+  role: text("role").default("user").notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
     .$onUpdate(() => new Date())
@@ -29,6 +34,7 @@ export const sessions = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
     expiresAt: timestamp("expires_at").notNull(),
     id: text("id").primaryKey(),
+    impersonatedBy: text("impersonated_by"),
     ipAddress: text("ip_address"),
     token: text("token").notNull().unique(),
     updatedAt: timestamp("updated_at")
@@ -89,8 +95,59 @@ export const verifications = pgTable(
   (table) => [index("verifications_identifier_idx").on(table.identifier)]
 );
 
+export const passkeys = pgTable(
+  "passkeys",
+  {
+    aaguid: text("aaguid"),
+    backedUp: boolean("backed_up").notNull(),
+    counter: integer("counter").notNull(),
+    createdAt: timestamp("created_at"),
+    credentialID: text("credential_id").notNull(),
+    deviceType: text("device_type").notNull(),
+    id: text("id").primaryKey(),
+    name: text("name"),
+    publicKey: text("public_key").notNull(),
+    transports: text("transports"),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+  },
+  (table) => [
+    index("passkeys_userId_idx").on(table.userId),
+    index("passkeys_credentialID_idx").on(table.credentialID),
+  ]
+);
+
+export const posts = pgTable(
+  "posts",
+  {
+    authorId: text("author_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    content: text("content").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    excerpt: text("excerpt"),
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    published: boolean("published").default(false).notNull(),
+    slug: text("slug").notNull().unique(),
+    title: text("title").notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("posts_authorId_idx").on(table.authorId),
+    index("posts_published_idx").on(table.published),
+  ]
+);
+
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
+  passkeys: many(passkeys),
+  posts: many(posts),
   sessions: many(sessions),
 }));
 
@@ -104,6 +161,20 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
 export const accountsRelations = relations(accounts, ({ one }) => ({
   user: one(users, {
     fields: [accounts.userId],
+    references: [users.id],
+  }),
+}));
+
+export const passkeysRelations = relations(passkeys, ({ one }) => ({
+  user: one(users, {
+    fields: [passkeys.userId],
+    references: [users.id],
+  }),
+}));
+
+export const postsRelations = relations(posts, ({ one }) => ({
+  author: one(users, {
+    fields: [posts.authorId],
     references: [users.id],
   }),
 }));

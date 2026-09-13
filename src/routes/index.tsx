@@ -14,9 +14,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { FeatureSection } from "@/components/feature-section";
 import { FeaturedProjects } from "@/components/featured-projects";
-import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
-import { Navbar } from "@/components/navbar/navbar";
 import { NewsSection } from "@/components/news-section";
 
 const PLAYER_FEATURES = [
@@ -86,47 +84,30 @@ const BROWSE_FEATURES = [
 
 const HomePage = () => (
   <>
-    <Navbar />
-
-    <main>
-      {/* Hero */}
-      <Hero />
-
-      {/* Featured */}
-      <FeaturedProjects />
-
-      {/* Browse */}
-      <FeatureSection
-        id="browse"
-        headingId="browse-heading"
-        title="Explore Minecraft"
-        description="Discover projects made by the community for the way you play Minecraft."
-        features={BROWSE_FEATURES}
-      />
-
-      {/* Players */}
-      <FeatureSection
-        id="for-players"
-        headingId="for-players-heading"
-        title="Built for Players"
-        description="Everything you need to discover, manage, and enjoy Minecraft content."
-        features={PLAYER_FEATURES}
-      />
-
-      {/* Creators */}
-      <FeatureSection
-        id="for-creators"
-        headingId="for-creators-heading"
-        title="Built for Creators"
-        description="Simple and powerful tools for publishing and growing your Minecraft projects."
-        features={CREATOR_FEATURES}
-      />
-
-      {/* News */}
-      <NewsSection />
-    </main>
-
-    <Footer />
+    <Hero />
+    <FeaturedProjects />
+    <FeatureSection
+      id="browse"
+      headingId="browse-heading"
+      title="Explore Minecraft"
+      description="Discover projects made by the community for the way you play Minecraft."
+      features={BROWSE_FEATURES}
+    />
+    <FeatureSection
+      id="for-players"
+      headingId="for-players-heading"
+      title="Built for Players"
+      description="Everything you need to discover, manage, and enjoy Minecraft content."
+      features={PLAYER_FEATURES}
+    />
+    <FeatureSection
+      id="for-creators"
+      headingId="for-creators-heading"
+      title="Built for Creators"
+      description="Simple and powerful tools for publishing and growing your Minecraft projects."
+      features={CREATOR_FEATURES}
+    />
+    <NewsSection />
   </>
 );
 

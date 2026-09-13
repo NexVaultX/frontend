@@ -1,15 +1,15 @@
-"use client";
-
 import { Link } from "@tanstack/react-router";
 
 import { UserMenu } from "@/components/navbar/user-menu";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 interface NavbarUser {
   name: string;
   email?: string | null;
   image?: string | null;
+  role?: string | null;
 }
 
 interface AuthButtonsProps {
@@ -20,12 +20,8 @@ interface AuthButtonsProps {
 }
 
 const AuthSkeleton = ({ variant }: { variant: "desktop" | "mobile" }) => (
-  <div
-    aria-hidden="true"
-    className={cn(
-      "bg-muted animate-pulse rounded-lg",
-      variant === "desktop" ? "h-10 w-24" : "mt-3 h-11 w-full"
-    )}
+  <Skeleton
+    className={cn(variant === "desktop" ? "h-10 w-24" : "mt-3 h-11 w-full")}
   />
 );
 
@@ -53,7 +49,7 @@ const MobileUserCard = ({
     {user.image ? (
       <img
         src={user.image}
-        alt=""
+        alt={`${user.name}'s avatar`}
         className="size-9 rounded-full object-cover"
       />
     ) : (

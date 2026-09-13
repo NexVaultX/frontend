@@ -1,0 +1,58 @@
+name: nexvaultx
+
+services:
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-nexvaultx}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nexvaultx}
+      POSTGRES_DB: ${POSTGRES_DB:-nexvaultx}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-nexvaultx}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.35.1
+    environment:
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:?MEILI_MASTER_KEY is required}
+      MEILI_ENV: ${MEILI_ENV:-development}
+    ports:
+      - "${MEILI_PORT:-7700}:7700"
+    volumes:
+      - meili_data:/meili_data
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:7700/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://${POSTGRES_USER:-nexvaultx}:${POSTGRES_PASSWORD:-nexvaultx}@db:5432/${POSTGRES_DB:-nexvaultx}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?BETTER_AUTH_SECRET is required}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:3001}
+      MEILI_HOST: http://meilisearch:7700
+      MEILI_SEARCH_KEY: ${MEILI_SEARCH_KEY:?MEILI_SEARCH_KEY is required}
+    ports:
+      - "${PORT:-3001}:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      meilisearch:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  meili_data:
