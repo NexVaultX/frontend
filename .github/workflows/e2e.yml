@@ -44,13 +44,13 @@ jobs:
 
       - name: Wait for services
         run: |
-          for i in $(seq 1 30); do
+          for i in $(seq 1 60); do
             if docker compose -f docker-compose.yml exec -T db pg_isready -U nexvaultx > /dev/null 2>&1 && \
                curl -sf http://localhost:7700/health > /dev/null 2>&1; then
               echo "Services ready."
               exit 0
             fi
-            sleep 2
+            sleep 5
           done
           echo "Services did not become ready in time." >&2
           exit 1
