@@ -2,6 +2,7 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconSearch,
+  IconSearchOff,
   IconX,
 } from "@tabler/icons-react";
 import { useDebouncedValue } from "@tanstack/react-pacer/debouncer";
@@ -113,7 +114,7 @@ const ModsSearchBar = ({
         type="button"
         onClick={() => onQueryChange("")}
         aria-label="Clear search"
-        className="text-muted-foreground hover:text-foreground focus-visible:ring-ring absolute top-1/2 right-2 flex size-9 -translate-y-1/2 items-center justify-center rounded-lg focus-visible:ring-2 focus-visible:outline-none"
+        className="text-muted-foreground hover:text-foreground focus-visible:ring-ring absolute top-1/2 right-2 flex size-11 -translate-y-1/2 items-center justify-center rounded-lg focus-visible:ring-2 focus-visible:outline-none"
       >
         <IconX size={16} aria-hidden="true" />
       </button>
@@ -148,7 +149,7 @@ const ModsFilters = ({
         Category
       </label>
       <Select value={category} onValueChange={onCategoryChange}>
-        <SelectTrigger id="mods-category" className="w-full">
+        <SelectTrigger id="mods-category" className="min-h-11 w-full">
           <SelectValue placeholder="All categories" />
         </SelectTrigger>
         <SelectContent>
@@ -167,7 +168,7 @@ const ModsFilters = ({
         Game version
       </label>
       <Select value={gameVersion} onValueChange={onGameVersionChange}>
-        <SelectTrigger id="mods-game-version" className="w-full">
+        <SelectTrigger id="mods-game-version" className="min-h-11 w-full">
           <SelectValue placeholder="All versions" />
         </SelectTrigger>
         <SelectContent>
@@ -186,7 +187,7 @@ const ModsFilters = ({
         Loader
       </label>
       <Select value={loader} onValueChange={onLoaderChange}>
-        <SelectTrigger id="mods-loader" className="w-full">
+        <SelectTrigger id="mods-loader" className="min-h-11 w-full">
           <SelectValue placeholder="All loaders" />
         </SelectTrigger>
         <SelectContent>
@@ -205,7 +206,7 @@ const ModsFilters = ({
         Sort by
       </label>
       <Select value={sort} onValueChange={onSortChange}>
-        <SelectTrigger id="mods-sort" className="w-full">
+        <SelectTrigger id="mods-sort" className="min-h-11 w-full">
           <SelectValue placeholder="Sort by" />
         </SelectTrigger>
         <SelectContent>
@@ -336,7 +337,7 @@ const LiveEventBanner = ({ event, onRefresh }: LiveEventBannerProps) => (
     <button
       type="button"
       onClick={onRefresh}
-      className="text-primary focus-visible:ring-ring min-h-10 rounded-lg px-3 text-sm font-medium hover:underline focus-visible:ring-2 focus-visible:outline-none"
+      className="text-primary focus-visible:ring-ring min-h-11 rounded-lg px-3 text-sm font-medium hover:underline focus-visible:ring-2 focus-visible:outline-none"
     >
       Refresh results
     </button>
@@ -568,6 +569,7 @@ const ModsPage = () => {
 
       {showEmpty ? (
         <EmptyState
+          icon={<IconSearchOff size={24} aria-hidden="true" />}
           title="No mods found"
           description="Try a different search or clear your filters."
           action={
@@ -575,7 +577,7 @@ const ModsPage = () => {
               <button
                 type="button"
                 onClick={clearFilters}
-                className="text-primary focus-visible:ring-ring mt-4 min-h-10 rounded-lg px-3 text-sm font-medium hover:underline focus-visible:ring-2 focus-visible:outline-none"
+                className="text-primary focus-visible:ring-ring mt-4 min-h-11 rounded-lg px-3 text-sm font-medium hover:underline focus-visible:ring-2 focus-visible:outline-none"
               >
                 Clear filters
               </button>

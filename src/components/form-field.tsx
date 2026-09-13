@@ -14,6 +14,7 @@ const FormField = ({
   error,
   helperText,
   className,
+  name,
   ...inputProps
 }: FormFieldProps) => {
   const errorId = `${id}-error`;
@@ -30,6 +31,7 @@ const FormField = ({
 
       <input
         id={id}
+        name={name ?? id}
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy || undefined}
         className={cn(

@@ -1,4 +1,9 @@
-import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
+import {
+  IconEdit,
+  IconFileText,
+  IconPlus,
+  IconTrash,
+} from "@tabler/icons-react";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import type { ReactNode } from "react";
 import { toast } from "sonner";
@@ -89,11 +94,11 @@ const PostRow = ({ isMutating, post, onDelete, onEdit }: PostRowProps) => (
       <p className="text-foreground flex flex-wrap items-center gap-2 text-sm font-medium">
         <span className="truncate">{post.title}</span>
         {post.published ? (
-          <span className="bg-primary/10 text-primary inline-flex items-center rounded-full px-2 py-0.5 text-[0.65rem] font-medium tracking-wide uppercase">
+          <span className="bg-primary/10 text-primary inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium tracking-wide uppercase">
             Published
           </span>
         ) : (
-          <span className="bg-muted text-muted-foreground inline-flex items-center rounded-full px-2 py-0.5 text-[0.65rem] font-medium tracking-wide uppercase">
+          <span className="bg-muted text-muted-foreground inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium tracking-wide uppercase">
             Draft
           </span>
         )}
@@ -108,7 +113,7 @@ const PostRow = ({ isMutating, post, onDelete, onEdit }: PostRowProps) => (
         type="button"
         variant="outline"
         size="sm"
-        className="min-h-10"
+        className="min-h-11"
         disabled={isMutating}
         onClick={() => onEdit(post)}
       >
@@ -119,7 +124,7 @@ const PostRow = ({ isMutating, post, onDelete, onEdit }: PostRowProps) => (
         type="button"
         variant="ghost"
         size="icon-sm"
-        className="min-h-10 min-w-10"
+        className="min-h-11 min-w-11"
         aria-label={`Delete ${post.title}`}
         disabled={isMutating}
         onClick={() => onDelete(post)}
@@ -247,6 +252,9 @@ const AdminPosts = () => {
   } else if (posts.length === 0) {
     content = (
       <div className="border-border bg-muted/40 mt-4 rounded-lg border p-6 text-center">
+        <div className="border-border bg-background text-muted-foreground mx-auto mb-3 flex size-11 items-center justify-center rounded-xl border">
+          <IconFileText size={20} aria-hidden="true" />
+        </div>
         <p className="text-foreground text-sm font-medium">No posts yet</p>
         <p className="text-muted-foreground mt-1 text-sm">
           Create your first blog post to get started.
@@ -293,7 +301,7 @@ const AdminPosts = () => {
             type="button"
             variant="outline"
             size="sm"
-            className="min-h-10"
+            className="min-h-11"
             disabled={isLoading}
             onClick={() => loadPosts()}
           >
@@ -303,7 +311,7 @@ const AdminPosts = () => {
             type="button"
             variant="default"
             size="sm"
-            className="min-h-10"
+            className="min-h-11"
             onClick={openCreate}
           >
             <IconPlus size={16} stroke={1.8} />

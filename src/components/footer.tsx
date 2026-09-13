@@ -4,29 +4,36 @@ import {
   IconBrandGithub,
   IconLicense,
 } from "@tabler/icons-react";
+import { Link } from "@tanstack/react-router";
 
-const PROJECT_LINKS = [
-  { href: "/mods", label: "Mods" },
-  { href: "/modpacks", label: "Modpacks" },
-  { href: "/plugins", label: "Plugins" },
-  { href: "/resource-packs", label: "Resource Packs" },
-  { href: "/shaders", label: "Shaders" },
-  { href: "/servers", label: "Servers" },
-] as const;
+interface FooterLink {
+  available: boolean;
+  href: string;
+  label: string;
+}
 
-const RESOURCE_LINKS = [
-  { href: "/docs", label: "Documentation" },
-  { href: "/api", label: "API" },
-  { href: "/status", label: "Status" },
-  { href: "/changelog", label: "Changelog" },
-] as const;
+const PROJECT_LINKS: readonly FooterLink[] = [
+  { available: true, href: "/mods", label: "Mods" },
+  { available: false, href: "/modpacks", label: "Modpacks" },
+  { available: false, href: "/plugins", label: "Plugins" },
+  { available: false, href: "/resource-packs", label: "Resource Packs" },
+  { available: false, href: "/shaders", label: "Shaders" },
+  { available: false, href: "/servers", label: "Servers" },
+];
 
-const COMPANY_LINKS = [
-  { href: "/about", label: "About" },
-  { href: "/blog", label: "Blog" },
-  { href: "/contact", label: "Contact" },
-  { href: "/brand", label: "Brand" },
-] as const;
+const RESOURCE_LINKS: readonly FooterLink[] = [
+  { available: false, href: "/docs", label: "Documentation" },
+  { available: false, href: "/api", label: "API" },
+  { available: false, href: "/status", label: "Status" },
+  { available: false, href: "/changelog", label: "Changelog" },
+];
+
+const COMPANY_LINKS: readonly FooterLink[] = [
+  { available: false, href: "/about", label: "About" },
+  { available: true, href: "/blog", label: "Blog" },
+  { available: false, href: "/contact", label: "Contact" },
+  { available: false, href: "/brand", label: "Brand" },
+];
 
 const SOCIAL_LINKS = [
   {
@@ -44,21 +51,38 @@ const SOCIAL_LINKS = [
 const LINK_CLASS =
   "text-muted-foreground hover:text-primary focus-visible:ring-ring ease-smooth inline-flex min-h-11 items-center text-sm transition-colors duration-200 focus-visible:ring-2 focus-visible:outline-none motion-reduce:transition-none";
 
+const FooterLinkItem = ({ link }: { link: FooterLink }) => {
+  if (!link.available) {
+    return (
+      <span className="text-muted-foreground/70 inline-flex min-h-11 items-center gap-2 text-sm">
+        {link.label}
+        <span className="text-muted-foreground/50 text-xs">Soon</span>
+      </span>
+    );
+  }
+
+  return (
+    <Link to={link.href} preload="intent" className={LINK_CLASS}>
+      {link.label}
+    </Link>
+  );
+};
+
 const Footer = () => (
   <footer className="border-border bg-muted/30 border-t">
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-5">
         {/* Branding */}
         <div className="sm:col-span-2">
-          <a
-            href="/"
+          <Link
+            to="/"
             className="focus-visible:ring-ring inline-flex min-h-11 items-center gap-2 rounded-md focus-visible:ring-2 focus-visible:outline-none"
           >
             <IconBox size={24} className="text-primary" />
             <span className="text-lg font-semibold tracking-tight">
               NexVaultX
             </span>
-          </a>
+          </Link>
           <p className="text-muted-foreground mt-3 max-w-xs text-sm">
             The free, open-source platform for discovering, managing, and
             sharing Minecraft content.
@@ -89,9 +113,7 @@ const Footer = () => (
           <ul className="space-y-1">
             {PROJECT_LINKS.map((link) => (
               <li key={link.href}>
-                <a href={link.href} className={LINK_CLASS}>
-                  {link.label}
-                </a>
+                <FooterLinkItem link={link} />
               </li>
             ))}
           </ul>
@@ -103,9 +125,7 @@ const Footer = () => (
           <ul className="space-y-1">
             {RESOURCE_LINKS.map((link) => (
               <li key={link.href}>
-                <a href={link.href} className={LINK_CLASS}>
-                  {link.label}
-                </a>
+                <FooterLinkItem link={link} />
               </li>
             ))}
           </ul>
@@ -117,9 +137,7 @@ const Footer = () => (
           <ul className="space-y-1">
             {COMPANY_LINKS.map((link) => (
               <li key={link.href}>
-                <a href={link.href} className={LINK_CLASS}>
-                  {link.label}
-                </a>
+                <FooterLinkItem link={link} />
               </li>
             ))}
           </ul>
@@ -132,24 +150,24 @@ const Footer = () => (
           © {new Date().getFullYear()} NexVaultX. All rights reserved.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:justify-end">
-          <a href="/legal" className={LINK_CLASS}>
+          <Link to="/legal" className={LINK_CLASS}>
             Legal Notes
-          </a>
-          <a href="/privacy" className={LINK_CLASS}>
+          </Link>
+          <Link to="/privacy" className={LINK_CLASS}>
             Privacy
-          </a>
-          <a href="/cookies" className={LINK_CLASS}>
+          </Link>
+          <Link to="/cookies" className={LINK_CLASS}>
             Cookies
-          </a>
-          <a href="/terms" className={LINK_CLASS}>
+          </Link>
+          <Link to="/terms" className={LINK_CLASS}>
             Terms
-          </a>
-          <a href="/terms-of-use" className={LINK_CLASS}>
+          </Link>
+          <Link to="/terms-of-use" className={LINK_CLASS}>
             Terms of Use
-          </a>
-          <a href="/disclaimer" className={LINK_CLASS}>
+          </Link>
+          <Link to="/disclaimer" className={LINK_CLASS}>
             Disclaimer
-          </a>
+          </Link>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { IconArrowUpRight, IconSpeakerphone } from "@tabler/icons-react";
+import { Link } from "@tanstack/react-router";
 
 import { Reveal } from "@/components/reveal";
 import { cn } from "@/lib/utils";
@@ -68,26 +69,28 @@ const NewsSection = () => (
             Updates from the NexVaultX team and community.
           </p>
         </div>
-        <a
-          href="/news"
+        <Link
+          to="/blog"
+          preload="intent"
           className="text-muted-foreground hover:text-foreground focus-visible:ring-ring ease-smooth inline-flex min-h-11 shrink-0 items-center gap-1 rounded-md text-sm font-medium transition-colors duration-200 focus-visible:ring-2 focus-visible:outline-none motion-reduce:transition-none"
         >
           View all
           <IconArrowUpRight size={16} />
-        </a>
+        </Link>
       </Reveal>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {NEWS.map((item, index) => (
           <Reveal key={item.title} delay={index * 0.06}>
             <article className="group border-border bg-card ease-smooth relative h-full rounded-xl border p-6 transition-transform duration-300 hover:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none">
-              <a
-                href={`/news/${item.title.toLowerCase().replaceAll(" ", "-")}`}
+              <Link
+                to="/blog"
+                preload="intent"
                 className="focus-visible:ring-ring absolute inset-0 rounded-xl focus-visible:ring-2 focus-visible:outline-none"
                 aria-label={`Read: ${item.title}`}
               >
                 <span className="sr-only">Read: {item.title}</span>
-              </a>
+              </Link>
 
               <div
                 className={cn(

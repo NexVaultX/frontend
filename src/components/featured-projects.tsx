@@ -1,4 +1,5 @@
 import { IconArrowRight, IconDownload, IconHeart } from "@tabler/icons-react";
+import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
 import { Reveal } from "@/components/reveal";
@@ -81,13 +82,14 @@ const MarqueeTrack = ({ children }: { children: ReactNode }) => (
 
 const ProjectCard = ({ project }: { project: Project }) => (
   <article className="marquee-card group border-border bg-card focus-within:border-foreground/20 relative flex h-full min-h-[240px] w-[calc(100vw-48px)] shrink-0 flex-col overflow-hidden rounded-2xl border p-6 transition-colors duration-300 focus-within:ring-1 motion-reduce:transition-none sm:w-[360px]">
-    <a
-      href={`/project/${project.name.toLowerCase().replaceAll(" ", "-")}`}
+    <Link
+      to="/mods"
+      preload="intent"
       className="focus-visible:ring-ring absolute inset-0 z-10 rounded-2xl focus-visible:ring-2 focus-visible:outline-none"
       aria-label={`View ${project.name}`}
     >
       <span className="sr-only">View {project.name}</span>
-    </a>
+    </Link>
 
     <div className="flex items-start gap-4">
       <div className="border-border bg-primary/10 text-primary group-focus-within:bg-primary/15 flex size-14 shrink-0 items-center justify-center rounded-xl border text-xl font-bold transition-[transform,background-color,border-color] duration-300 group-focus-within:scale-105">
@@ -95,7 +97,7 @@ const ProjectCard = ({ project }: { project: Project }) => (
       </div>
 
       <div className="min-w-0 pt-0.5">
-        <span className="text-primary/80 border-primary/20 bg-primary/5 inline-flex items-center rounded-full border px-2 py-0.5 text-[0.65rem] font-medium tracking-wide uppercase">
+        <span className="text-primary/80 border-primary/20 bg-primary/5 inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium tracking-wide uppercase">
           {project.category}
         </span>
 
@@ -158,8 +160,9 @@ const FeaturedProjects = () => (
           </p>
         </div>
 
-        <a
-          href="/mods"
+        <Link
+          to="/mods"
+          preload="intent"
           className="text-muted-foreground hover:text-foreground focus-visible:ring-ring group hidden min-h-11 shrink-0 items-center gap-1 rounded-md text-sm font-medium transition-colors duration-150 focus-visible:ring-2 focus-visible:outline-none sm:inline-flex"
         >
           View all
@@ -167,7 +170,7 @@ const FeaturedProjects = () => (
             size={16}
             className="transition-transform duration-200 group-hover:translate-x-0.5"
           />
-        </a>
+        </Link>
       </Reveal>
 
       <MarqueeTrack>
@@ -177,13 +180,14 @@ const FeaturedProjects = () => (
       </MarqueeTrack>
 
       <div className="mt-4 flex justify-center sm:hidden">
-        <a
-          href="/mods"
-          className="text-muted-foreground hover:text-foreground focus-visible:ring-ring inline-flex min-h-10 items-center gap-1 rounded-lg px-3 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
+        <Link
+          to="/mods"
+          preload="intent"
+          className="text-muted-foreground hover:text-foreground focus-visible:ring-ring inline-flex min-h-11 items-center gap-1 rounded-lg px-3 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
         >
           View all mods
           <IconArrowRight size={15} />
-        </a>
+        </Link>
       </div>
     </div>
   </section>

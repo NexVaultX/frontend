@@ -54,6 +54,7 @@ const ConfirmDialog = ({
       <AlertDialogFooter>
         <Button
           variant="outline"
+          className="min-h-11"
           disabled={pending}
           onClick={() => onOpenChange(false)}
         >
@@ -61,6 +62,7 @@ const ConfirmDialog = ({
         </Button>
         <Button
           variant={variant}
+          className="min-h-11"
           disabled={pending}
           onClick={() => {
             void onConfirm();

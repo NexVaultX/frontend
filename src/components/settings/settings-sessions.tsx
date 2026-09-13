@@ -187,9 +187,17 @@ const SettingsSessions = ({ currentSessionToken }: SettingsSessionsProps) => {
     );
   } else if (sessions.length === 0) {
     content = (
-      <p className="text-muted-foreground mt-4 text-sm">
-        No active sessions found.
-      </p>
+      <div className="border-border bg-muted/40 mt-4 rounded-lg border p-6 text-center">
+        <div className="border-border bg-background text-muted-foreground mx-auto mb-3 flex size-11 items-center justify-center rounded-xl border">
+          <IconDeviceDesktop size={20} aria-hidden="true" />
+        </div>
+        <p className="text-foreground text-sm font-medium">
+          No active sessions
+        </p>
+        <p className="text-muted-foreground mt-1 text-sm">
+          Devices signed in to your account will appear here.
+        </p>
+      </div>
     );
   } else {
     content = (
@@ -219,7 +227,7 @@ const SettingsSessions = ({ currentSessionToken }: SettingsSessionsProps) => {
                     {browser} · {os}
                   </span>
                   {isCurrent ? (
-                    <span className="border-border bg-background text-muted-foreground rounded-full border px-2 py-0.5 text-[0.65rem] font-medium tracking-wide uppercase">
+                    <span className="border-border bg-background text-muted-foreground rounded-full border px-2 py-0.5 text-xs font-medium tracking-wide uppercase">
                       Current
                     </span>
                   ) : null}
@@ -235,7 +243,7 @@ const SettingsSessions = ({ currentSessionToken }: SettingsSessionsProps) => {
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="min-h-10 shrink-0"
+                  className="min-h-11 shrink-0"
                   onClick={() => handleRevoke(session.token)}
                 >
                   Revoke
@@ -271,7 +279,7 @@ const SettingsSessions = ({ currentSessionToken }: SettingsSessionsProps) => {
             type="button"
             variant="outline"
             size="sm"
-            className="min-h-10"
+            className="min-h-11"
             disabled={isRevokingOther}
             onClick={handleRevokeOthers}
           >
@@ -297,7 +305,7 @@ const SettingsSessions = ({ currentSessionToken }: SettingsSessionsProps) => {
             type="button"
             variant="outline"
             size="sm"
-            className="min-h-10"
+            className="min-h-11"
             onClick={() => loadSessions()}
           >
             Try again

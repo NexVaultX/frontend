@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { useSyncExternalStore } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -43,7 +44,13 @@ const CookieBanner = () => {
       <div className="border-border bg-background/95 animate-in fade-in slide-in-from-bottom-2 ease-smooth pointer-events-auto mx-auto max-w-3xl rounded-xl border p-4 duration-300 motion-reduce:animate-none sm:p-5">
         <p className="text-foreground text-sm leading-6">
           We use cookies to keep you signed in and remember your preferences. By
-          continuing, you agree to our use of cookies.
+          continuing, you agree to our use of cookies.{" "}
+          <Link
+            to="/cookies"
+            className="text-primary focus-visible:ring-ring rounded-sm hover:underline focus-visible:ring-2 focus-visible:outline-none"
+          >
+            Learn more
+          </Link>
         </p>
 
         <div className="mt-4 flex flex-wrap items-center gap-3">

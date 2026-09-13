@@ -1,4 +1,5 @@
 import { IconDownload, IconTag } from "@tabler/icons-react";
+import { Link } from "@tanstack/react-router";
 
 import type { Mod } from "@/lib/mods-data";
 
@@ -11,13 +12,15 @@ const formatDownloads = (count: number) => downloadFormatter.format(count);
 
 const ModCard = ({ mod }: { mod: Mod }) => (
   <article className="group border-border bg-card focus-within:border-foreground/20 relative flex h-full flex-col rounded-2xl border p-5 transition-colors duration-300 focus-within:ring-1 motion-reduce:transition-none">
-    <a
-      href={`/mods/${mod.id}`}
+    <Link
+      to="/mods/$modId"
+      params={{ modId: mod.id }}
+      preload="intent"
       aria-label={`View ${mod.name}`}
       className="focus-visible:ring-ring absolute inset-0 z-10 rounded-2xl focus-visible:ring-2 focus-visible:outline-none"
     >
       <span className="sr-only">View {mod.name}</span>
-    </a>
+    </Link>
 
     <div className="flex items-start gap-4">
       <div className="border-border bg-primary/10 text-primary flex size-12 shrink-0 items-center justify-center rounded-xl border text-lg font-bold">
@@ -25,7 +28,7 @@ const ModCard = ({ mod }: { mod: Mod }) => (
       </div>
 
       <div className="min-w-0 pt-0.5">
-        <span className="text-primary/80 border-primary/20 bg-primary/5 inline-flex items-center rounded-full border px-2 py-0.5 text-[0.65rem] font-medium tracking-wide uppercase">
+        <span className="text-primary/80 border-primary/20 bg-primary/5 inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium tracking-wide uppercase">
           {mod.category}
         </span>
 

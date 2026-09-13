@@ -24,13 +24,14 @@ const NavbarSearch = ({
     <input
       ref={ref}
       type="search"
+      name="search"
       aria-label="Search projects"
       placeholder="Search projects…"
       aria-keyshortcuts="Meta+k Control+k"
       {...props}
       className={cn(
         "border-border bg-muted/40 text-foreground placeholder:text-muted-foreground focus-visible:ring-ring focus:bg-background rounded-lg border pr-3 pl-9 text-sm transition-colors focus-visible:ring-2 focus-visible:outline-none",
-        variant === "desktop" ? "h-10 w-56" : "h-11 w-full pl-10",
+        variant === "desktop" ? "h-11 w-56" : "h-11 w-full pl-10",
         className
       )}
     />

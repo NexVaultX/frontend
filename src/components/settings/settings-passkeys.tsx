@@ -9,6 +9,7 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
@@ -36,6 +37,7 @@ const SettingsPasskeys = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [removingId, setRemovingId] = useState<string | null>(null);
+  const [pendingRemovalId, setPendingRemovalId] = useState<string | null>(null);
 
   const handleAdd = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -67,6 +69,7 @@ const SettingsPasskeys = () => {
     });
 
     setRemovingId(null);
+    setPendingRemovalId(null);
 
     if (error) {
       setActionError(error.message ?? "Could not remove passkey.");
@@ -105,7 +108,7 @@ const SettingsPasskeys = () => {
             type="button"
             variant="outline"
             size="sm"
-            className="min-h-10"
+            className="min-h-11"
             onClick={() => refetch()}
           >
             Try again
@@ -132,6 +135,7 @@ const SettingsPasskeys = () => {
         </label>
         <input
           id="passkey-name"
+          name="passkey-name"
           type="text"
           value={name}
           onChange={(event) => setName(event.target.value)}
@@ -165,9 +169,15 @@ const SettingsPasskeys = () => {
       ) : null}
 
       {!isPending && passkeys && passkeys.length === 0 ? (
-        <p className="text-muted-foreground mt-4 text-sm">
-          No passkeys yet. Add one to sign in without a password.
-        </p>
+        <div className="border-border bg-muted/40 mt-4 rounded-lg border p-6 text-center">
+          <div className="border-border bg-background text-muted-foreground mx-auto mb-3 flex size-11 items-center justify-center rounded-xl border">
+            <IconFingerprint size={20} aria-hidden="true" />
+          </div>
+          <p className="text-foreground text-sm font-medium">No passkeys yet</p>
+          <p className="text-muted-foreground mt-1 text-sm">
+            Add one to sign in without a password.
+          </p>
+        </div>
       ) : null}
 
       {!isPending && passkeys && passkeys.length > 0 ? (
@@ -202,9 +212,9 @@ const SettingsPasskeys = () => {
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="min-h-10 shrink-0"
+                  className="min-h-11 shrink-0"
                   disabled={removingId === passkey.id}
-                  onClick={() => handleRemove(passkey.id)}
+                  onClick={() => setPendingRemovalId(passkey.id)}
                 >
                   <IconTrash size={15} />
                   {removingId === passkey.id ? (
@@ -221,6 +231,24 @@ const SettingsPasskeys = () => {
           })}
         </ul>
       ) : null}
+
+      <ConfirmDialog
+        open={pendingRemovalId !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setPendingRemovalId(null);
+          }
+        }}
+        title="Remove passkey?"
+        description="You will no longer be able to sign in with this passkey. You can add a new one at any time."
+        confirmLabel="Remove"
+        pending={removingId !== null}
+        onConfirm={() => {
+          if (pendingRemovalId) {
+            return handleRemove(pendingRemovalId);
+          }
+        }}
+      />
     </section>
   );
 };

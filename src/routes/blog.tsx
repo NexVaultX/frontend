@@ -1,3 +1,4 @@
+import { IconFileText } from "@tabler/icons-react";
 import { createFileRoute, Link, useLoaderData } from "@tanstack/react-router";
 
 import { PageHeader } from "@/components/page-header";
@@ -50,6 +51,9 @@ const BlogPage = () => {
 
       {posts.length === 0 ? (
         <div className="border-border bg-muted/40 mt-8 rounded-xl border p-6 text-center">
+          <div className="border-border bg-background text-muted-foreground mx-auto mb-3 flex size-11 items-center justify-center rounded-xl border">
+            <IconFileText size={20} aria-hidden="true" />
+          </div>
           <p className="text-foreground text-sm font-medium">No posts yet</p>
           <p className="text-muted-foreground mt-1 text-sm">
             Check back soon for updates.

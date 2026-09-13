@@ -14,6 +14,7 @@ const FormTextarea = ({
   error,
   helperText,
   className,
+  name,
   ...textareaProps
 }: FormTextareaProps) => {
   const errorId = `${id}-error`;
@@ -30,6 +31,7 @@ const FormTextarea = ({
 
       <textarea
         id={id}
+        name={name ?? id}
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy || undefined}
         className={cn(

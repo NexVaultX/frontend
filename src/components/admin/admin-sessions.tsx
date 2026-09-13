@@ -1,4 +1,8 @@
-import { IconDeviceDesktop, IconDeviceMobile } from "@tabler/icons-react";
+import {
+  IconDeviceDesktop,
+  IconDeviceMobile,
+  IconUserSearch,
+} from "@tabler/icons-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import type { ReactNode } from "react";
@@ -244,9 +248,15 @@ const AdminSessions = () => {
 
   if (!selectedUserId) {
     content = (
-      <p className="text-muted-foreground mt-4 text-sm">
-        Select a user to view their sessions.
-      </p>
+      <div className="border-border bg-muted/40 mt-4 rounded-lg border p-6 text-center">
+        <div className="border-border bg-background text-muted-foreground mx-auto mb-3 flex size-11 items-center justify-center rounded-xl border">
+          <IconUserSearch size={20} aria-hidden="true" />
+        </div>
+        <p className="text-foreground text-sm font-medium">Select a user</p>
+        <p className="text-muted-foreground mt-1 text-sm">
+          Choose a user to view their active sessions.
+        </p>
+      </div>
     );
   } else if (isLoading) {
     content = (
@@ -257,9 +267,17 @@ const AdminSessions = () => {
     );
   } else if (sessions.length === 0) {
     content = (
-      <p className="text-muted-foreground mt-4 text-sm">
-        No active sessions for this user.
-      </p>
+      <div className="border-border bg-muted/40 mt-4 rounded-lg border p-6 text-center">
+        <div className="border-border bg-background text-muted-foreground mx-auto mb-3 flex size-11 items-center justify-center rounded-xl border">
+          <IconDeviceDesktop size={20} aria-hidden="true" />
+        </div>
+        <p className="text-foreground text-sm font-medium">
+          No active sessions
+        </p>
+        <p className="text-muted-foreground mt-1 text-sm">
+          This user has no active sessions right now.
+        </p>
+      </div>
     );
   } else {
     content = (
@@ -316,7 +334,7 @@ const AdminSessions = () => {
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="min-h-10 shrink-0"
+                    className="min-h-11 shrink-0"
                     onClick={() => handleRevoke(session.token)}
                   >
                     Revoke
@@ -364,7 +382,10 @@ const AdminSessions = () => {
             }
           }}
         >
-          <SelectTrigger id="admin-session-user" className="w-full max-w-sm">
+          <SelectTrigger
+            id="admin-session-user"
+            className="min-h-11 w-full max-w-sm"
+          >
             <SelectValue placeholder="Select a user…" />
           </SelectTrigger>
           <SelectContent>

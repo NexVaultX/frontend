@@ -1,4 +1,10 @@
-import { IconBan, IconShield, IconTrash, IconUser } from "@tabler/icons-react";
+import {
+  IconBan,
+  IconShield,
+  IconTrash,
+  IconUser,
+  IconUsers,
+} from "@tabler/icons-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import type { ReactNode } from "react";
@@ -151,13 +157,13 @@ const AdminUserRow = ({
         <p className="text-foreground flex flex-wrap items-center gap-2 text-sm font-medium">
           <span className="truncate">{user.name}</span>
           {user.role === "admin" ? (
-            <span className="border-border bg-background text-muted-foreground inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[0.65rem] font-medium tracking-wide uppercase">
+            <span className="border-border bg-background text-muted-foreground inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium tracking-wide uppercase">
               <IconShield size={10} stroke={2} />
               Admin
             </span>
           ) : null}
           {isBanned ? (
-            <span className="border-destructive/30 bg-destructive/10 text-destructive inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[0.65rem] font-medium tracking-wide uppercase">
+            <span className="border-destructive/30 bg-destructive/10 text-destructive inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium tracking-wide uppercase">
               <IconBan size={10} stroke={2} />
               Banned
             </span>
@@ -180,7 +186,7 @@ const AdminUserRow = ({
           }
           disabled={isMutating}
         >
-          <SelectTrigger id={`role-${user.id}`} className="w-28">
+          <SelectTrigger id={`role-${user.id}`} className="min-h-11 w-28">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -194,7 +200,7 @@ const AdminUserRow = ({
             type="button"
             variant="outline"
             size="sm"
-            className="min-h-10"
+            className="min-h-11"
             disabled={isMutating}
             onClick={() => onUnban(user.id)}
           >
@@ -205,7 +211,7 @@ const AdminUserRow = ({
             type="button"
             variant="outline"
             size="sm"
-            className="min-h-10"
+            className="min-h-11"
             disabled={isMutating}
             onClick={() => onBan(user)}
           >
@@ -217,7 +223,7 @@ const AdminUserRow = ({
           type="button"
           variant="ghost"
           size="icon-sm"
-          className="min-h-10 min-w-10"
+          className="min-h-11 min-w-11"
           aria-label={`Remove ${user.name}`}
           disabled={isMutating}
           onClick={() => onRemove(user)}
@@ -479,7 +485,15 @@ const AdminUsers = () => {
     );
   } else if (users.length === 0) {
     content = (
-      <p className="text-muted-foreground mt-4 text-sm">No users found.</p>
+      <div className="border-border bg-muted/40 mt-4 rounded-lg border p-6 text-center">
+        <div className="border-border bg-background text-muted-foreground mx-auto mb-3 flex size-11 items-center justify-center rounded-xl border">
+          <IconUsers size={20} aria-hidden="true" />
+        </div>
+        <p className="text-foreground text-sm font-medium">No users found</p>
+        <p className="text-muted-foreground mt-1 text-sm">
+          Users who sign in will appear here.
+        </p>
+      </div>
     );
   } else {
     content = (
@@ -546,7 +560,7 @@ const AdminUsers = () => {
           type="button"
           variant="outline"
           size="sm"
-          className="min-h-10"
+          className="min-h-11"
           disabled={isLoading}
           onClick={() => loadUsers()}
         >
