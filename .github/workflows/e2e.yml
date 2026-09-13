@@ -40,12 +40,12 @@ jobs:
         uses: ./.github/actions/setup-pnpm
 
       - name: Start services (Postgres + Meilisearch)
-        run: docker compose up -d db meilisearch
+        run: docker compose -f docker-compose.yml up -d db meilisearch
 
       - name: Wait for services
         run: |
           for i in $(seq 1 30); do
-            if docker compose exec -T db pg_isready -U nexvaultx > /dev/null 2>&1 && \
+            if docker compose -f docker-compose.yml exec -T db pg_isready -U nexvaultx > /dev/null 2>&1 && \
                curl -sf http://localhost:7700/health > /dev/null 2>&1; then
               echo "Services ready."
               exit 0
@@ -86,4 +86,4 @@ jobs:
         if: always()
         run: |
           if [ -n "$API_PID" ]; then kill "$API_PID" 2>/dev/null || true; fi
-          docker compose down -v
+          docker compose -f docker-compose.yml down -v
