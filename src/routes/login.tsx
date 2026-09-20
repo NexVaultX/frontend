@@ -9,6 +9,7 @@ import { useState } from "react";
 import { check, nonEmpty, pipe, regex, string } from "valibot";
 
 import { FormField } from "@/components/form-field";
+import { GitHubSignInButton } from "@/components/github-sign-in-button";
 import { GoogleSignInButton } from "@/components/google-sign-in-button";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -71,6 +72,7 @@ const LoginPage = () => {
 
         <div className="mt-6">
           <GoogleSignInButton />
+          <GitHubSignInButton />
         </div>
 
         <div className="mt-6 flex items-center gap-3">

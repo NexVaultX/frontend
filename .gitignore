@@ -51,3 +51,5 @@ coverage/
 *.local
 todos.json
 .tmp/
+
+.env.local
