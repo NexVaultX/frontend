@@ -29,11 +29,9 @@ dist-ssr
 __unconfig*
 *.tsbuildinfo
 
-# Agent / tooling config
-.opencode
-
 # Tests / coverage
 coverage
+.husky
 
 # Logs
 *.log
@@ -42,3 +40,5 @@ pnpm-debug.log*
 
 # Misc
 todos.json
+*.md
+LICENSE
