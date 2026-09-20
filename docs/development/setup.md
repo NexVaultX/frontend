@@ -39,11 +39,12 @@ Required variables:
 
 Optional variables:
 
-| Variable                | Description                    |
-| ----------------------- | ------------------------------ |
-| `GOOGLE_CLIENT_ID`      | Google OAuth client ID         |
-| `GOOGLE_CLIENT_SECRET`  | Google OAuth client secret     |
-| `MEILI_MASTER_KEY`      | Meilisearch admin key (seeding)|
+| Variable                    | Description                       |
+| --------------------------- | --------------------------------- |
+| `GOOGLE_CLIENT_ID`          | Google OAuth client ID            |
+| `GOOGLE_CLIENT_SECRET`      | Google OAuth client secret        |
+| `MEILI_MASTER_KEY`          | Meilisearch admin key (seeding)   |
+| `VITE_QUACKBACK_WIDGET_KEY` | Feedback widget key (optional)    |
 
 Generate secrets with:
 

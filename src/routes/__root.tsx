@@ -16,52 +16,57 @@ import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar/navbar";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
+import { useQuackbackWidget } from "@/hooks/use-quackback-widget";
 
 import appCss from "../styles.css?url";
 
-const RootDocument = ({ children }: { children: ReactNode }) => (
-  <html lang="en" suppressHydrationWarning>
-    <head>
-      <HeadContent />
-    </head>
-    <body>
-      <ThemeProvider storageKey="nexvaultx-theme" defaultTheme="system">
-        <HotkeysProvider
-          defaultOptions={{
-            hotkey: {
-              preventDefault: true,
-              ignoreInputs: false,
-            },
-          }}
-        >
-          <a
-            href="#main-content"
-            className="focus:ring-ring focus:bg-background sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-lg focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:ring-2 focus:outline-none"
+const RootDocument = ({ children }: { children: ReactNode }) => {
+  useQuackbackWidget();
+
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <HeadContent />
+      </head>
+      <body>
+        <ThemeProvider storageKey="nexvaultx-theme" defaultTheme="system">
+          <HotkeysProvider
+            defaultOptions={{
+              hotkey: {
+                preventDefault: true,
+                ignoreInputs: false,
+              },
+            }}
           >
-            Skip to content
-          </a>
-          <Navbar />
-          <main id="main-content">{children}</main>
-          <Footer />
-        </HotkeysProvider>
-      </ThemeProvider>
-      <CookieBanner />
-      <Toaster richColors position="bottom-right" />
-      <TanStackDevtools
-        config={{
-          position: "bottom-right",
-        }}
-        plugins={[
-          {
-            name: "Tanstack Router",
-            render: <TanStackRouterDevtoolsPanel />,
-          },
-        ]}
-      />
-      <Scripts />
-    </body>
-  </html>
-);
+            <a
+              href="#main-content"
+              className="focus:ring-ring focus:bg-background sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-lg focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:ring-2 focus:outline-none"
+            >
+              Skip to content
+            </a>
+            <Navbar />
+            <main id="main-content">{children}</main>
+            <Footer />
+          </HotkeysProvider>
+        </ThemeProvider>
+        <CookieBanner />
+        <Toaster richColors position="bottom-right" />
+        <TanStackDevtools
+          config={{
+            position: "bottom-right",
+          }}
+          plugins={[
+            {
+              name: "Tanstack Router",
+              render: <TanStackRouterDevtoolsPanel />,
+            },
+          ]}
+        />
+        <Scripts />
+      </body>
+    </html>
+  );
+};
 
 export const Route = createRootRoute({
   head: () => ({
