@@ -25,8 +25,6 @@ top of Oxlint and Oxfmt.
 | `pnpm typecheck`    | TypeScript type checking             |
 | `pnpm test`         | Run the Vitest suite                 |
 | `pnpm test:coverage`| Run the Vitest suite with coverage   |
-| `pnpm test:e2e`     | Build and run the Puppeteer E2E suite|
-| `pnpm test:e2e:dev` | Run the E2E suite without rebuilding |
 | `pnpm lint`         | Run Oxlint only                      |
 | `pnpm lint:md`      | Run markdownlint on Markdown files   |
 | `pnpm lint:md:fix`  | Auto-fix Markdown issues             |

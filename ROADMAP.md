@@ -51,7 +51,7 @@
 * Accessibility audit fixes (WCAG 2.2 AA baseline)
 * Sage Garden theme applied; gradients/shadows removed from components
 * Docker multi-stage build and Compose dev/prod overrides
-* CI pipeline (lint, typecheck, test, build, bundle check, docs, e2e)
+* CI pipeline (lint, typecheck, test, build, bundle check, docs)
 * esbuild dependency override to ^0.25.0 (Dependabot fix)
 * Actionable error message when the search service is unreachable
 * Agent skills: performance-guidelines, web-design-guidelines

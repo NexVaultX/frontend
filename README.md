@@ -181,8 +181,6 @@ on `http://localhost:3002`.
 | `pnpm start`        | Starts the built Nitro server                     |
 | `pnpm test`         | Runs the Vitest test suite                        |
 | `pnpm test:coverage`| Runs the Vitest suite with coverage               |
-| `pnpm test:e2e`     | Builds and runs the Puppeteer E2E suite           |
-| `pnpm test:e2e:dev` | Runs the E2E suite without rebuilding             |
 | `pnpm typecheck`    | Runs the TypeScript type checker                  |
 | `pnpm lint`         | Runs the Oxlint linter                            |
 | `pnpm lint:md`      | Runs markdownlint on Markdown files               |

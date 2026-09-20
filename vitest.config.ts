@@ -29,7 +29,7 @@ export default defineConfig({
       },
     },
     environment: "jsdom",
-    exclude: ["e2e/**", "node_modules/**", ".opencode/**"],
+    exclude: ["node_modules/**", ".opencode/**"],
     globals: true,
     include: ["src/**/*.{test,spec}.{ts,tsx}"],
     setupFiles: ["./src/test/setup.ts"],

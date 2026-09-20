@@ -8,7 +8,6 @@ allowBuilds:
   lightningcss: true
   unrs-resolver: true
   msw: false
-  puppeteer: true
 
 minimumReleaseAgeExclude:
   - "@tanstack/charts@0.18.0"
