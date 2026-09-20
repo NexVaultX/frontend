@@ -43,6 +43,10 @@ Optional variables:
 | --------------------------- | --------------------------------- |
 | `GOOGLE_CLIENT_ID`          | Google OAuth client ID            |
 | `GOOGLE_CLIENT_SECRET`      | Google OAuth client secret        |
+| `VITE_GOOGLE_CLIENT_ID`     | Google OAuth client ID (client)   |
+| `GITHUB_CLIENT_ID`          | GitHub OAuth client ID            |
+| `GITHUB_CLIENT_SECRET`      | GitHub OAuth client secret        |
+| `VITE_GITHUB_CLIENT_ID`     | GitHub OAuth client ID (client)   |
 | `MEILI_MASTER_KEY`          | Meilisearch admin key (seeding)   |
 | `VITE_QUACKBACK_WIDGET_KEY` | Feedback widget key (optional)    |
 

@@ -14,7 +14,14 @@ const GitHubIcon = () => (
   </svg>
 );
 
-const GitHubSignInButton = () => {
+// SAFETY: Vite exposes VITE_* vars as `any`; narrowing to string | undefined
+// matches the runtime value (string when set, undefined when absent).
+const GITHUB_CLIENT_ID =
+  (import.meta.env.VITE_GITHUB_CLIENT_ID as string | undefined) ?? "";
+
+const isConfigured = (key: string): boolean => key.trim().length > 0;
+
+const GitHubSignInButtonContent = () => {
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -54,6 +61,14 @@ const GitHubSignInButton = () => {
       ) : null}
     </div>
   );
+};
+
+const GitHubSignInButton = () => {
+  if (!isConfigured(GITHUB_CLIENT_ID)) {
+    return null;
+  }
+
+  return <GitHubSignInButtonContent />;
 };
 
 export { GitHubSignInButton };

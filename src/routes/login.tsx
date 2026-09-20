@@ -24,24 +24,50 @@ const emailSchema = pipe(
   regex(EMAIL_PATTERN, "Enter a valid email address.")
 );
 
+const usernameSchema = pipe(
+  string(),
+  check((value) => value.trim().length > 0, "Username is required."),
+  check((value) => value.length >= 3, "Username must be at least 3 characters.")
+);
+
 const passwordSchema = pipe(string(), nonEmpty("Password is required."));
+
+type LoginMode = "email" | "username";
 
 const LoginPage = () => {
   const router = useRouter();
   const [formError, setFormError] = useState<string | null>(null);
+  const [loginMode, setLoginMode] = useState<LoginMode>("email");
 
   const form = useForm({
     defaultValues: {
       email: "",
+      username: "",
       password: "",
     },
     onSubmit: async ({ value }) => {
       setFormError(null);
-      const { error } = await authClient.signIn.email(value);
-      if (error) {
-        setFormError(error.message ?? "Invalid email or password.");
-        return;
+
+      if (loginMode === "email") {
+        const { error } = await authClient.signIn.email({
+          email: value.email,
+          password: value.password,
+        });
+        if (error) {
+          setFormError(error.message ?? "Invalid email or password.");
+          return;
+        }
+      } else {
+        const { error } = await authClient.signIn.username({
+          username: value.username,
+          password: value.password,
+        });
+        if (error) {
+          setFormError(error.message ?? "Invalid username or password.");
+          return;
+        }
       }
+
       router.navigate({ to: "/" });
     },
     onSubmitInvalid: () => {
@@ -83,6 +109,32 @@ const LoginPage = () => {
           <hr className="bg-border h-px flex-1 border-0" />
         </div>
 
+        <fieldset className="mt-6" aria-label="Login method">
+          <legend className="sr-only">Login method</legend>
+          <div className="bg-muted flex rounded-lg p-1">
+            <Button
+              type="button"
+              variant={loginMode === "email" ? "default" : "ghost"}
+              size="sm"
+              className="min-h-10 flex-1"
+              onClick={() => setLoginMode("email")}
+              aria-pressed={loginMode === "email"}
+            >
+              Email
+            </Button>
+            <Button
+              type="button"
+              variant={loginMode === "username" ? "default" : "ghost"}
+              size="sm"
+              className="min-h-10 flex-1"
+              onClick={() => setLoginMode("username")}
+              aria-pressed={loginMode === "username"}
+            >
+              Username
+            </Button>
+          </div>
+        </fieldset>
+
         <form
           onSubmit={(event) => {
             event.preventDefault();
@@ -93,28 +145,53 @@ const LoginPage = () => {
           aria-busy={isSubmitting}
           className="mt-6 grid gap-4"
         >
-          <form.Field
-            name="email"
-            validators={{
-              onChange: emailSchema,
-              onSubmit: emailSchema,
-            }}
-          >
-            {(field) => (
-              <FormField
-                id="email"
-                label="Email"
-                type="email"
-                autoComplete="email"
-                placeholder="you@example.com…"
-                value={field.state.value}
-                onChange={(event) => field.handleChange(event.target.value)}
-                onBlur={field.handleBlur}
-                error={field.state.meta.errors[0]?.message}
-                required
-              />
-            )}
-          </form.Field>
+          {loginMode === "email" ? (
+            <form.Field
+              name="email"
+              validators={{
+                onChange: emailSchema,
+                onSubmit: emailSchema,
+              }}
+            >
+              {(field) => (
+                <FormField
+                  id="email"
+                  label="Email"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="you@example.com…"
+                  value={field.state.value}
+                  onChange={(event) => field.handleChange(event.target.value)}
+                  onBlur={field.handleBlur}
+                  error={field.state.meta.errors[0]?.message}
+                  required
+                />
+              )}
+            </form.Field>
+          ) : (
+            <form.Field
+              name="username"
+              validators={{
+                onChange: usernameSchema,
+                onSubmit: usernameSchema,
+              }}
+            >
+              {(field) => (
+                <FormField
+                  id="username"
+                  label="Username"
+                  type="text"
+                  autoComplete="username"
+                  placeholder="yourusername…"
+                  value={field.state.value}
+                  onChange={(event) => field.handleChange(event.target.value)}
+                  onBlur={field.handleBlur}
+                  error={field.state.meta.errors[0]?.message}
+                  required
+                />
+              )}
+            </form.Field>
+          )}
 
           <form.Field
             name="password"

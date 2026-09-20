@@ -25,7 +25,14 @@ const GoogleIcon = () => (
   </svg>
 );
 
-const GoogleSignInButton = () => {
+// SAFETY: Vite exposes VITE_* vars as `any`; narrowing to string | undefined
+// matches the runtime value (string when set, undefined when absent).
+const GOOGLE_CLIENT_ID =
+  (import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined) ?? "";
+
+const isConfigured = (key: string): boolean => key.trim().length > 0;
+
+const GoogleSignInButtonContent = () => {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -70,6 +77,14 @@ const GoogleSignInButton = () => {
       ) : null}
     </div>
   );
+};
+
+const GoogleSignInButton = () => {
+  if (!isConfigured(GOOGLE_CLIENT_ID)) {
+    return null;
+  }
+
+  return <GoogleSignInButtonContent />;
 };
 
 export { GoogleSignInButton };
