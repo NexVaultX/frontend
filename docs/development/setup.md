@@ -48,7 +48,6 @@ Optional variables:
 | `GITHUB_CLIENT_SECRET`      | GitHub OAuth client secret        |
 | `VITE_GITHUB_CLIENT_ID`     | GitHub OAuth client ID (client)   |
 | `MEILI_MASTER_KEY`          | Meilisearch admin key (seeding)   |
-| `VITE_QUACKBACK_WIDGET_KEY` | Feedback widget key (optional)    |
 | `PORT`                      | Web server port (default `3000`)  |
 
 Generate secrets with:
