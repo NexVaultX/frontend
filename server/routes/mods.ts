@@ -1,13 +1,38 @@
 import { Elysia, t } from "elysia";
 
+import {
+  MOD_CATEGORIES,
+  MOD_GAME_VERSIONS,
+  MOD_LOADERS,
+} from "../../src/lib/mods-data";
 import type { Mod } from "../../src/lib/mods-data";
 import { getSearchClient, MODS_INDEX } from "../lib/meilisearch";
 
 const DEFAULT_SORT = "downloads:desc";
 const SORTS = [DEFAULT_SORT, "updatedAt:desc", "name:asc"] as const;
 const PAGE_SIZE = 12;
+const MAX_PAGE = 1000;
 
+const CATEGORIES = new Set<string>(MOD_CATEGORIES);
+const GAME_VERSIONS = new Set<string>(MOD_GAME_VERSIONS);
+const LOADERS = new Set<string>(MOD_LOADERS);
+
+// Only values from the allowlists above ever reach the filter (see
+// hasUnknownFilter), so they cannot contain quotes that would alter the
+// Meilisearch filter expression.
 const quote = (value: string) => `"${value}"`;
+
+const isUnknown = (value: string | undefined, allowed: Set<string>) =>
+  value !== undefined && !allowed.has(value);
+
+const hasUnknownFilter = (params: {
+  category?: string;
+  gameVersion?: string;
+  loader?: string;
+}): boolean =>
+  isUnknown(params.category, CATEGORIES) ||
+  isUnknown(params.gameVersion, GAME_VERSIONS) ||
+  isUnknown(params.loader, LOADERS);
 
 const buildFilter = (params: {
   category?: string;
@@ -31,7 +56,11 @@ const buildFilter = (params: {
 
 export const modsRoute = new Elysia().get(
   "/api/mods/search",
-  async ({ query }) => {
+  async ({ query, status }) => {
+    if (hasUnknownFilter(query)) {
+      return status(422, "Unknown filter value");
+    }
+
     // SAFETY: SORTS is a readonly tuple of strings; widening to readonly
     // string[] is safe for the membership check below.
     const sort = (SORTS as readonly string[]).includes(query.sort ?? "")
@@ -62,12 +91,12 @@ export const modsRoute = new Elysia().get(
   },
   {
     query: t.Object({
-      q: t.Optional(t.String()),
+      q: t.Optional(t.String({ maxLength: 200 })),
       category: t.Optional(t.String()),
       gameVersion: t.Optional(t.String()),
       loader: t.Optional(t.String()),
       sort: t.Optional(t.String()),
-      page: t.Optional(t.Number()),
+      page: t.Optional(t.Integer({ minimum: 1, maximum: MAX_PAGE })),
     }),
   }
 );

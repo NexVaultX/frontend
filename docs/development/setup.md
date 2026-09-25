@@ -34,7 +34,7 @@ Required variables:
 | `MEILI_SEARCH_KEY`   | Meilisearch search key               |
 | `API_URL`            | API server base URL                  |
 | `API_PORT`           | API server port (default `3002`)     |
-| `WEBHOOK_SECRET`     | Webhook HMAC secret (16+)            |
+| `WEBHOOK_SECRET`     | Webhook HMAC secret (32+, required)  |
 | `VITE_API_URL`       | API base URL used by the browser     |
 
 Optional variables:
