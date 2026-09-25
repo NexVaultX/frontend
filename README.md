@@ -135,7 +135,7 @@ MEILI_MASTER_KEY=your-master-key      # Only needed when seeding
 MEILI_SEARCH_KEY=your-search-key
 API_URL=http://localhost:3002
 API_PORT=3002
-WEBHOOK_SECRET=your-webhook-secret    # Must be at least 16 characters
+WEBHOOK_SECRET=your-webhook-secret    # Required, at least 32 characters
 VITE_API_URL=http://localhost:3002
 NODE_ENV=development
 ```

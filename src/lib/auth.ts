@@ -11,6 +11,9 @@ import { ac, admin as adminRole, user as userRole } from "./permissions";
 
 const rpID = new URL(env.BETTER_AUTH_URL).hostname;
 
+const ONE_DAY_IN_SECONDS = 60 * 60 * 24;
+const SESSION_EXPIRES_IN_SECONDS = ONE_DAY_IN_SECONDS * 30;
+
 const socialProviders = {};
 
 if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) {
@@ -40,6 +43,16 @@ const trustedOrigins = [
 ];
 
 export const auth = betterAuth({
+  account: {
+    accountLinking: {
+      // Only auto-link a social login to an existing account whose email has
+      // been verified locally. Email verification is off, so this blocks
+      // pre-registration takeover (attacker signs up with a victim's email
+      // and a password, victim later signs in with Google/GitHub).
+      requireLocalEmailVerified: true,
+    },
+  },
+
   appName: "NexVaultX",
 
   baseURL: env.BETTER_AUTH_URL,
@@ -77,11 +90,15 @@ export const auth = betterAuth({
   secret: env.BETTER_AUTH_SECRET,
 
   session: {
-    expiresIn: 60 * 60 * 24 * 30,
+    expiresIn: SESSION_EXPIRES_IN_SECONDS,
 
-    freshAge: 0,
+    // Sensitive actions (e.g. deleting the account) require a session
+    // created within the last day.
+    freshAge: ONE_DAY_IN_SECONDS,
 
-    updateAge: 0,
+    // Extend the session expiry at most once per day instead of on every
+    // request.
+    updateAge: ONE_DAY_IN_SECONDS,
   },
 
   socialProviders,

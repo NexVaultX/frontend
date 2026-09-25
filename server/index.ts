@@ -16,6 +16,12 @@ const allowedOrigins = (
   .map((origin) => origin.trim());
 
 const app = new Elysia({ adapter: node() })
+  .onRequest(({ set }) => {
+    set.headers["content-security-policy"] =
+      "default-src 'none'; frame-ancestors 'none'";
+    set.headers["referrer-policy"] = "no-referrer";
+    set.headers["x-content-type-options"] = "nosniff";
+  })
   .use(cors({ origin: allowedOrigins }))
   .use(healthRoute)
   .use(modsRoute)

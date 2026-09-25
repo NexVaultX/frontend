@@ -5,10 +5,12 @@ services:
     image: postgres:18
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-nexvaultx}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nexvaultx}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
       POSTGRES_DB: ${POSTGRES_DB:-nexvaultx}
+    # Bound to loopback only so the database is never reachable from outside
+    # the host. The web service reaches it over the internal compose network.
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -21,9 +23,9 @@ services:
     image: getmeili/meilisearch:v1.35.1
     environment:
       MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:?MEILI_MASTER_KEY is required}
-      MEILI_ENV: ${MEILI_ENV:-development}
+      MEILI_ENV: ${MEILI_ENV:-production}
     ports:
-      - "${MEILI_PORT:-7700}:7700"
+      - "127.0.0.1:${MEILI_PORT:-7700}:7700"
     volumes:
       - meili_data:/meili_data
     healthcheck:
@@ -39,7 +41,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      DATABASE_URL: postgresql://${POSTGRES_USER:-nexvaultx}:${POSTGRES_PASSWORD:-nexvaultx}@db:5432/${POSTGRES_DB:-nexvaultx}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-nexvaultx}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:-nexvaultx}
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?BETTER_AUTH_SECRET is required}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:3001}
       MEILI_HOST: http://meilisearch:7700

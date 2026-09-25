@@ -26,11 +26,14 @@ pnpm dev:all
 | ----------------- | -------------------------------------------------- |
 | `API_URL`         | Base URL of the API server (server-to-server)      |
 | `API_PORT`        | Port the API server listens on (default `3002`)    |
-| `WEBHOOK_SECRET`  | HMAC secret for webhook signatures (16+ chars)     |
+| `WEBHOOK_SECRET`  | HMAC secret for webhook signatures (required, 32+) |
 | `VITE_API_URL`    | API base URL used by the browser (SSE client)      |
 | `CORS_ORIGIN`     | Comma-separated allowed origins (optional)         |
 | `MEILI_HOST`      | Meilisearch base URL                               |
-| `MEILI_SEARCH_KEY`| Meilisearch search key (falls back to master key)  |
+| `MEILI_SEARCH_KEY`| Meilisearch search key (required, never master)    |
+| `SSE_MAX_CONNECTIONS` | Max concurrent SSE streams (default `500`)     |
+| `SSE_MAX_CONNECTIONS_PER_IP` | Max SSE streams per client (default `5`) |
+| `TRUST_PROXY`     | Set `true` behind a proxy to key limits on `X-Forwarded-For` |
 
 The server loads `.env.local` via `server/env.ts` (imported first in every
 env-consuming module) and otherwise reads `process.env`, so it works in CI
@@ -48,7 +51,9 @@ Proxies the mods search to Meilisearch. Accepts the same query parameters
 the mods page sends (`q`, `category`, `gameVersion`, `loader`, `sort`) and
 returns the same shape as the previous direct Meilisearch call: `hits`,
 `estimatedTotalHits`, `facetDistribution`, and `query`. Sort values are
-whitelisted (`downloads:desc`, `updatedAt:desc`, `name:asc`).
+whitelisted (`downloads:desc`, `updatedAt:desc`, `name:asc`), and
+`category`, `gameVersion`, and `loader` must be one of the known values
+from `src/lib/mods-data.ts` (anything else returns `422`).
 
 ### `GET /api/events`
 
@@ -64,6 +69,11 @@ event: mod.created
 data: {"id":"mod-123","name":"My Mod"}
 ```
 
+Concurrent streams are capped globally (`SSE_MAX_CONNECTIONS`) and per
+client (`SSE_MAX_CONNECTIONS_PER_IP`); requests over the limit get `429`.
+Per-client limits only apply when `TRUST_PROXY=true`, because the Node
+adapter does not expose the socket address.
+
 The browser subscribes with `EventSource`:
 
 ```ts
@@ -73,19 +83,27 @@ source.addEventListener("mod.created", handleEvent);
 
 ### `POST /api/webhooks/mods`
 
-Receives mod events from external publishers. The request must include an
-`x-webhook-signature` header containing the HMAC-SHA256 digest of the raw
-body, signed with `WEBHOOK_SECRET`:
+Receives mod events from external publishers. The request must include:
+
+* `x-webhook-timestamp` — current Unix time in seconds
+* `x-webhook-signature` — hex HMAC-SHA256 of `${timestamp}.${rawBody}`,
+  signed with `WEBHOOK_SECRET`
 
 ```ts
 import { createHmac } from "node:crypto";
 
+const timestamp = String(Math.floor(Date.now() / 1000));
 const signature = createHmac("sha256", WEBHOOK_SECRET)
-  .update(rawBody)
+  .update(`${timestamp}.${rawBody}`)
   .digest("hex");
 ```
 
-The payload is validated with a Zod schema before broadcasting:
+Requests whose timestamp is more than 5 minutes off are rejected, so a
+captured request cannot be replayed later. The API server refuses to start
+when `WEBHOOK_SECRET` is missing, shorter than 32 characters, or still a
+placeholder value.
+
+The payload is validated with a Valibot schema before broadcasting:
 
 ```json
 {
@@ -98,7 +116,7 @@ Responses:
 
 * `200` — signature valid and payload accepted, event broadcast to SSE
 * `400` — invalid JSON or payload shape
-* `401` — invalid signature
+* `401` — invalid signature or stale timestamp
 
 Send a test event with:
 
