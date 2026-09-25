@@ -48,8 +48,10 @@ Optional variables:
 | `GITHUB_CLIENT_SECRET`      | GitHub OAuth client secret        |
 | `VITE_GITHUB_CLIENT_ID`     | GitHub OAuth client ID (client)   |
 | `MEILI_MASTER_KEY`          | Meilisearch admin key (seeding)   |
-| `VITE_QUACKBACK_WIDGET_KEY` | Feedback widget key (optional)    |
-| `PORT`                      | Web server port (default `3000`)  |
+| `MEILI_ADMIN_KEY`           | Meilisearch project write key     |
+| `STORAGE_*`                 | Object storage (file uploads)     |
+| `PORT`                      | Port the app listens on (3000)    |
+| `WEB_PORT`                  | Host port docker publishes (3000) |
 
 Generate secrets with:
 
