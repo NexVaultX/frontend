@@ -49,7 +49,7 @@ jobs:
       cancel-in-progress: true
 
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
 
     steps:
       - uses: actions/checkout@v4
@@ -68,15 +68,20 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           # The Claude GitHub App rejects the OIDC token of pull_request_target
           # runs, so use the workflow token instead. Pushes made with it don't
-          # fire pull_request, which is why Claude dispatches pr.yml itself.
+          # start CI, which is why the merge step below dispatches pr.yml.
           github_token: ${{ github.token }}
           claude_args: |
             --max-turns 80
-            --allowedTools "Bash(gh pr:*),Bash(gh run:*),Bash(gh workflow run pr.yml:*),Bash(gh workflow run docs.yml:*),Bash(git:*),Bash(sleep:*),Bash(pnpm check),Bash(pnpm fix),Bash(pnpm typecheck),Bash(pnpm test),Bash(pnpm test:*),Bash(pnpm lint:md),Read,Edit,Write,Glob,Grep"
+            --allowedTools "Bash(gh pr:*),Bash(gh run:*),Bash(git:*),Bash(pnpm install),Bash(pnpm check),Bash(pnpm fix),Bash(pnpm typecheck),Bash(pnpm test),Bash(pnpm test:*),Bash(pnpm lint:md),Read,Edit,Write,Glob,Grep"
           prompt: |
             You are the automated review and merge agent for ${{ github.repository }}.
-            Your job: get PR #${{ github.event.pull_request.number }} into a mergeable state
-            and squash-merge it into main, or hand it to a human with a clear explanation.
+            Your job: get PR #${{ github.event.pull_request.number }} into a mergeable state,
+            or hand it to a human with a clear explanation. You do not merge and you do not
+            wait for CI: once you finish, a later workflow step waits for the required checks
+            and squash-merges the PR unless it has the `needs-human` label.
+            Every run must end in exactly one of two ways: a review summary comment (ready to
+            merge) or an escalation (label + comment). Never end silently. If a command you
+            need is not allowed, ESCALATE and name the command.
             Follow the project's rules in AGENTS.md. Work through these steps in order.
 
             0. CHECK FOR AN EARLIER ESCALATION
@@ -88,6 +93,8 @@ jobs:
 
             1. RESOLVE CONFLICTS WITH MAIN
                Run `git fetch origin main && git merge origin/main`.
+               If `package.json` or `pnpm-lock.yaml` changed, run `pnpm install` afterwards
+               (for a conflicted `pnpm-lock.yaml`, take main's version first, then run it).
                Resolve conflicts yourself whenever both sides' intent can be kept without
                substantially rewriting either side: imports, lockfiles, formatting, generated
                files such as `src/routeTree.gen.ts`, renamed or moved code, and both sides
@@ -117,23 +124,11 @@ jobs:
             4. PUSH
                If you changed anything, commit with a clear Conventional Commits message and
                `git push`. Never force-push. Never push to main directly.
-               Your pushes do not start CI on their own, so after every push run
-               `gh workflow run pr.yml --ref ${{ github.event.pull_request.head.ref }}` and
-               `gh workflow run docs.yml --ref ${{ github.event.pull_request.head.ref }}`.
-               If the PR conflicts with main and you did not push anything, CI has not run
-               on it either; dispatch both workflows the same way before waiting for CI.
 
-            5. WAIT FOR CI
-               After a push, wait until the new head commit's checks have been registered
-               (`sleep 30` between tries), then run
-               `gh pr checks ${{ github.event.pull_request.number }} --required --watch`.
-               Ignore the check for this workflow itself (review-and-merge).
-               If CI fails, fix and retry (max 2 attempts total), otherwise ESCALATE.
-
-            6. MERGE
-               Skip this step if you escalated in this run or the PR still has `needs-human`.
-               Otherwise run `gh pr merge ${{ github.event.pull_request.number }} --squash --delete-branch`,
-               then post a short PR comment summarizing what you checked and anything you fixed.
+            5. FINISH
+               If you did not escalate, remove `needs-human` if the PR still has it, then post
+               one short PR comment summarizing what you checked and anything you fixed or
+               resolved, ending with "Merging once required checks pass."
 
             ESCALATE (do not merge) when any of these are true:
             - a conflict cannot be resolved without significant changes (see step 1)
@@ -161,22 +156,80 @@ jobs:
             To escalate: push any safe fixes you already made, run
             `gh pr edit ${{ github.event.pull_request.number }} --add-label needs-human`, post one
             comment explaining exactly what is wrong and what decision a human needs to make,
-            then stop without merging.
+            then stop.
 
-      # Merges made with GITHUB_TOKEN don't fire push events, so main.yml and
-      # docs.yml would never run for a bot merge. workflow_dispatch is exempt
-      # from that rule, so start them explicitly once the bot has merged. A
-      # human merge already fires push, and a second run would cancel it.
-      - name: Run post-merge workflows on main
-        if: ${{ !cancelled() }}
+      # Deterministic merge: wait for the required checks on the PR head and
+      # squash-merge, unless Claude escalated. Claude's pushes use the workflow
+      # token and don't start CI, and GitHub doesn't run pull_request workflows
+      # for conflicting PRs, so start pr.yml and docs.yml here if the required
+      # checks are missing on the head commit.
+      - name: Merge once required checks pass
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          # Must match the required status checks in main's branch protection.
+          REQUIRED_CHECKS: Quality checks,Docker build
         run: |
-          merged_by=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" --jq '.merged_by.login // ""')
-          if [ "$merged_by" != "github-actions[bot]" ]; then
-            echo "PR #$PR_NUMBER was not merged by this workflow (merged_by: '${merged_by:-none}'); nothing to run."
+          escalate() {
+            gh pr edit "$PR_NUMBER" --add-label needs-human
+            gh pr comment "$PR_NUMBER" --body "$1"
+            exit 0
+          }
+
+          state=$(gh pr view "$PR_NUMBER" --json state --jq .state)
+          if [ "$state" != "OPEN" ]; then
+            echo "PR #$PR_NUMBER is $state; nothing to merge."
             exit 0
           fi
-          gh workflow run main.yml --repo "$GITHUB_REPOSITORY" --ref main
-          gh workflow run docs.yml --repo "$GITHUB_REPOSITORY" --ref main
+          held=$(gh pr view "$PR_NUMBER" --json labels \
+            --jq '[.labels[].name | select(. == "needs-human" or . == "no autoreview")] | length')
+          if [ "$held" != "0" ]; then
+            echo "PR #$PR_NUMBER is labelled for a human; not merging."
+            exit 0
+          fi
+          sha=$(gh pr view "$PR_NUMBER" --json headRefOid --jq .headRefOid)
+
+          # Latest check run per required name on the head commit:
+          # "missing", "pending", "success" or the failing conclusion.
+          check_states() {
+            gh api "repos/$GITHUB_REPOSITORY/commits/$sha/check-runs?per_page=100" --jq '
+                (env.REQUIRED_CHECKS | split(",")) as $required
+                | [.check_runs[] | select(.name as $n | $required | index($n))] as $runs
+                | $required[]
+                | . as $name
+                | ([$runs[] | select(.name == $name)] | sort_by(.started_at) | last) as $run
+                | if $run == null then "\($name)\tmissing"
+                  elif $run.status != "completed" then "\($name)\tpending"
+                  else "\($name)\t\($run.conclusion)" end'
+          }
+
+          if check_states | grep -q $'\tmissing$'; then
+            echo "Required checks missing on $sha; dispatching CI on $HEAD_REF."
+            gh workflow run pr.yml --ref "$HEAD_REF"
+            gh workflow run docs.yml --ref "$HEAD_REF"
+          fi
+
+          deadline=$((SECONDS + 30 * 60))
+          while :; do
+            states=$(check_states)
+            echo "$states"
+            failed=$(awk -F'\t' '$2 != "success" && $2 != "pending" && $2 != "missing" {print $1}' <<<"$states")
+            if [ -n "$failed" ]; then
+              escalate "Required checks failed on $sha: $(paste -sd, <<<"$failed"). Not merging; push a fix and the review runs again. Details: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/pull/$PR_NUMBER/checks"
+            fi
+            if ! grep -qvP '\tsuccess$' <<<"$states"; then
+              break
+            fi
+            if [ "$SECONDS" -ge "$deadline" ]; then
+              escalate "Required checks did not finish within 30 minutes on $sha. Not merging."
+            fi
+            sleep 30
+          done
+
+          gh pr merge "$PR_NUMBER" --squash --delete-branch --match-head-commit "$sha"
+
+          # Merges made with GITHUB_TOKEN don't fire push events, so start the
+          # post-merge workflows on main explicitly; workflow_dispatch is exempt.
+          gh workflow run main.yml --ref main
+          gh workflow run docs.yml --ref main
