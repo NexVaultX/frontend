@@ -31,6 +31,7 @@ __unconfig*
 
 # Tests / coverage
 coverage
+.husky
 
 # Logs
 *.log
@@ -39,3 +40,5 @@ pnpm-debug.log*
 
 # Misc
 todos.json
+*.md
+LICENSE

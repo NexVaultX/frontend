@@ -1,5 +1,3 @@
-"use client";
-
 import { cn } from "cn";
 import type { InputHTMLAttributes } from "react";
 
@@ -16,6 +14,7 @@ const FormField = ({
   error,
   helperText,
   className,
+  name,
   ...inputProps
 }: FormFieldProps) => {
   const errorId = `${id}-error`;
@@ -32,10 +31,11 @@ const FormField = ({
 
       <input
         id={id}
+        name={name ?? id}
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy || undefined}
         className={cn(
-          "border-input bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 min-h-11 w-full rounded-lg border px-3 text-sm shadow-sm transition-colors outline-none focus-visible:ring-3",
+          "border-input bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 min-h-11 w-full rounded-lg border px-3 text-sm transition-colors outline-none focus-visible:ring-3",
           error &&
             "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20 dark:border-destructive/50",
           className

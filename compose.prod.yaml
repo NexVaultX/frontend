@@ -1,14 +1,14 @@
-# Production override for OpenVault Frontend.
+# Production override for the NexVaultX Frontend.
 # Builds the production image and runs the Nitro server.
 # Usage: docker compose -f compose.yaml -f compose.prod.yaml up -d --build
 
 services:
   web:
-    image: openvault-frontend:${TAG:-latest}
+    image: nexvaultx-frontend:${TAG:-latest}
     build:
       target: runtime
     ports:
-      - "${PORT:-3001}:3001"
+      - "${PORT:-1112}:3000"
     environment:
       NODE_ENV: production
     restart: unless-stopped

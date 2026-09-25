@@ -1,10 +1,10 @@
-"use client";
-
 import { IconDeviceDesktop, IconDeviceMobile } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 
 interface SessionItem {
@@ -19,6 +19,61 @@ interface SessionItem {
 interface SettingsSessionsProps {
   currentSessionToken?: string | null;
 }
+
+interface SessionsState {
+  error: string | null;
+  isLoading: boolean;
+  sessions: SessionItem[];
+}
+
+type SessionsAction =
+  | { type: "LOAD_START" }
+  | { type: "LOAD_SUCCESS"; sessions: SessionItem[] }
+  | { type: "LOAD_ERROR"; error: string }
+  | { type: "REVOKE_SUCCESS"; token: string }
+  | { type: "REVOKE_OTHERS_SUCCESS"; token: string }
+  | { type: "REVOKE_ERROR"; error: string };
+
+const sessionsReducer = (
+  state: SessionsState,
+  action: SessionsAction
+): SessionsState => {
+  switch (action.type) {
+    case "LOAD_START": {
+      return { ...state, error: null, isLoading: true };
+    }
+    case "LOAD_SUCCESS": {
+      return { error: null, isLoading: false, sessions: action.sessions };
+    }
+    case "LOAD_ERROR": {
+      return { ...state, error: action.error, isLoading: false };
+    }
+    case "REVOKE_SUCCESS": {
+      return {
+        ...state,
+        error: null,
+        sessions: state.sessions.filter(
+          (session) => session.token !== action.token
+        ),
+      };
+    }
+    case "REVOKE_OTHERS_SUCCESS": {
+      return {
+        ...state,
+        error: null,
+        sessions: state.sessions.filter(
+          (session) => session.token === action.token
+        ),
+      };
+    }
+    case "REVOKE_ERROR": {
+      return { ...state, error: action.error };
+    }
+    default: {
+      return state;
+    }
+  }
+};
 
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
   dateStyle: "medium",
@@ -47,8 +102,6 @@ const parseUserAgent = (userAgent: string) => {
     os = "Android";
   } else if (/iPhone|iPad/u.test(userAgent)) {
     os = "iOS";
-  } else if (/Linux/u.test(userAgent)) {
-    os = "Linux";
   }
 
   const isMobile = /Android|iPhone|iPad/u.test(userAgent);
@@ -60,47 +113,46 @@ const formatDate = (value: Date | string) =>
   dateFormatter.format(new Date(value));
 
 const SettingsSessions = ({ currentSessionToken }: SettingsSessionsProps) => {
-  const [sessions, setSessions] = useState<SessionItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [state, dispatch] = useReducer(sessionsReducer, {
+    error: null,
+    isLoading: true,
+    sessions: [],
+  });
   const [isRevokingOther, setIsRevokingOther] = useState(false);
 
-  useEffect(() => {
-    let cancelled = false;
+  // oxlint-disable-next-line react-doctor/react-compiler-no-manual-memoization -- React Compiler is not enabled in this project; useCallback keeps loadSessions stable so the effect does not re-run on every render
+  const loadSessions = useCallback(async () => {
+    dispatch({ type: "LOAD_START" });
 
-    const load = async () => {
-      const { data, error: loadError } = await authClient.listSessions();
+    const { data, error: loadError } = await authClient.listSessions();
 
-      if (cancelled) {
-        return;
-      }
+    if (loadError) {
+      dispatch({
+        error: loadError.message ?? "Could not load sessions.",
+        type: "LOAD_ERROR",
+      });
+      return;
+    }
 
-      setIsLoading(false);
-      if (loadError) {
-        setError(loadError.message ?? "Could not load sessions.");
-        return;
-      }
-
-      setSessions(data ?? []);
-    };
-
-    load();
-
-    return () => {
-      cancelled = true;
-    };
+    dispatch({ sessions: data ?? [], type: "LOAD_SUCCESS" });
   }, []);
+
+  useEffect(() => {
+    loadSessions();
+  }, [loadSessions]);
 
   const handleRevoke = async (token: string) => {
     const { error: revokeError } = await authClient.revokeSession({ token });
 
     if (revokeError) {
-      setError(revokeError.message ?? "Could not revoke session.");
+      dispatch({
+        error: revokeError.message ?? "Could not revoke session.",
+        type: "REVOKE_ERROR",
+      });
       return;
     }
 
-    setError(null);
-    setSessions((prev) => prev.filter((session) => session.token !== token));
+    dispatch({ token, type: "REVOKE_SUCCESS" });
   };
 
   const handleRevokeOthers = async () => {
@@ -109,30 +161,43 @@ const SettingsSessions = ({ currentSessionToken }: SettingsSessionsProps) => {
     setIsRevokingOther(false);
 
     if (revokeError) {
-      setError(revokeError.message ?? "Could not revoke other sessions.");
+      dispatch({
+        error: revokeError.message ?? "Could not revoke other sessions.",
+        type: "REVOKE_ERROR",
+      });
       return;
     }
 
-    setError(null);
-    setSessions((prev) =>
-      prev.filter((session) => session.token === currentSessionToken)
-    );
+    dispatch({
+      token: currentSessionToken ?? "",
+      type: "REVOKE_OTHERS_SUCCESS",
+    });
   };
+
+  const { error, isLoading, sessions } = state;
 
   let content: ReactNode;
 
   if (isLoading) {
     content = (
-      <div className="mt-4 grid gap-3">
-        <div className="bg-muted h-16 animate-pulse rounded-lg" />
-        <div className="bg-muted h-16 animate-pulse rounded-lg" />
+      <div aria-busy="true" className="mt-4 grid gap-3">
+        <Skeleton className="h-16" />
+        <Skeleton className="h-16" />
       </div>
     );
   } else if (sessions.length === 0) {
     content = (
-      <p className="text-muted-foreground mt-4 text-sm">
-        No active sessions found.
-      </p>
+      <div className="border-border bg-muted/40 mt-4 rounded-lg border p-6 text-center">
+        <div className="border-border bg-background text-muted-foreground mx-auto mb-3 flex size-11 items-center justify-center rounded-xl border">
+          <IconDeviceDesktop size={20} aria-hidden="true" />
+        </div>
+        <p className="text-foreground text-sm font-medium">
+          No active sessions
+        </p>
+        <p className="text-muted-foreground mt-1 text-sm">
+          Devices signed in to your account will appear here.
+        </p>
+      </div>
     );
   } else {
     content = (
@@ -162,7 +227,7 @@ const SettingsSessions = ({ currentSessionToken }: SettingsSessionsProps) => {
                     {browser} · {os}
                   </span>
                   {isCurrent ? (
-                    <span className="border-border bg-background text-muted-foreground rounded-full border px-2 py-0.5 text-[0.65rem] font-medium tracking-wide uppercase">
+                    <span className="border-border bg-background text-muted-foreground rounded-full border px-2 py-0.5 text-xs font-medium tracking-wide uppercase">
                       Current
                     </span>
                   ) : null}
@@ -178,7 +243,7 @@ const SettingsSessions = ({ currentSessionToken }: SettingsSessionsProps) => {
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="min-h-10 shrink-0"
+                  className="min-h-11 shrink-0"
                   onClick={() => handleRevoke(session.token)}
                 >
                   Revoke
@@ -214,11 +279,18 @@ const SettingsSessions = ({ currentSessionToken }: SettingsSessionsProps) => {
             type="button"
             variant="outline"
             size="sm"
-            className="min-h-10"
+            className="min-h-11"
             disabled={isRevokingOther}
             onClick={handleRevokeOthers}
           >
-            {isRevokingOther ? "Signing out…" : "Sign Out Other Sessions"}
+            {isRevokingOther ? (
+              <>
+                <Spinner className="mr-1" />
+                Signing out…
+              </>
+            ) : (
+              "Sign Out Other Sessions"
+            )}
           </Button>
         ) : null}
       </div>
@@ -226,9 +298,18 @@ const SettingsSessions = ({ currentSessionToken }: SettingsSessionsProps) => {
       {error ? (
         <div
           role="alert"
-          className="border-destructive/30 bg-destructive/10 text-destructive mt-4 rounded-lg border px-3 py-2.5 text-sm"
+          className="border-destructive/30 bg-destructive/10 text-destructive mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border px-3 py-2.5 text-sm"
         >
-          {error}
+          <span>{error}</span>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="min-h-11"
+            onClick={() => loadSessions()}
+          >
+            Try again
+          </Button>
         </div>
       ) : null}
 

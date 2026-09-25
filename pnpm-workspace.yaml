@@ -1,7 +1,14 @@
 packages: []
 
+overrides:
+  "@esbuild-kit/core-utils>esbuild": "^0.25.0"
+
 allowBuilds:
   esbuild: true
   lightningcss: true
   unrs-resolver: true
   msw: false
+
+minimumReleaseAgeExclude:
+  - "@tanstack/charts@0.18.0"
+  - "@tanstack/react-charts@0.18.0"
