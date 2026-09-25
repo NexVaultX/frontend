@@ -22,22 +22,24 @@ pnpm dev:all
 
 ## Environment variables
 
-| Variable          | Description                                        |
-| ----------------- | -------------------------------------------------- |
-| `API_URL`         | Base URL of the API server (server-to-server)      |
-| `API_PORT`        | Port the API server listens on (default `3002`)    |
-| `WEBHOOK_SECRET`  | HMAC secret for webhook signatures (required, 32+) |
-| `VITE_API_URL`    | API base URL used by the browser (SSE client)      |
-| `CORS_ORIGIN`     | Comma-separated allowed origins (optional)         |
-| `MEILI_HOST`      | Meilisearch base URL                               |
-| `MEILI_SEARCH_KEY`| Meilisearch search key (required, never master)    |
-| `SSE_MAX_CONNECTIONS` | Max concurrent SSE streams (default `500`)     |
-| `SSE_MAX_CONNECTIONS_PER_IP` | Max SSE streams per client (default `5`) |
-| `TRUST_PROXY`     | Set `true` behind a proxy to key limits on `X-Forwarded-For` |
+| Variable                     | Description                                 |
+| ---------------------------- | ------------------------------------------- |
+| `API_URL`                    | API server base URL (server-to-server)      |
+| `API_PORT`                   | API server port (default `3002`)            |
+| `WEBHOOK_SECRET`             | HMAC secret for webhooks (required, 32+)    |
+| `VITE_API_URL`               | API base URL used by the browser (SSE)      |
+| `CORS_ORIGIN`                | Comma-separated allowed origins (optional)  |
+| `MEILI_HOST`                 | Meilisearch base URL                        |
+| `MEILI_SEARCH_KEY`           | Meilisearch search key (required)           |
+| `SSE_MAX_CONNECTIONS`        | Max concurrent SSE streams (default `500`)  |
+| `SSE_MAX_CONNECTIONS_PER_IP` | Max SSE streams per client (default `5`)    |
+| `TRUST_PROXY`                | `true` to key SSE limits on proxy IP header |
 
 The server loads `.env.local` via `server/env.ts` (imported first in every
 env-consuming module) and otherwise reads `process.env`, so it works in CI
 without a local env file.
+
+The API server never uses `MEILI_MASTER_KEY` for public search.
 
 ## Endpoints
 
