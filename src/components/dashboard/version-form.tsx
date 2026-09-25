@@ -222,7 +222,7 @@ export const VersionForm = ({
             id="version-upload-progress"
             value={Math.round(progress * 100)}
             max={100}
-            className="accent-primary h-2 w-full"
+            className="bg-muted [&::-moz-progress-bar]:bg-primary [&::-webkit-progress-bar]:bg-muted [&::-webkit-progress-value]:bg-primary h-2 w-full overflow-hidden rounded-full"
           >
             {Math.round(progress * 100)}%
           </progress>

@@ -38,8 +38,36 @@ cache header, so a CDN can cache them indefinitely.
 | `STORAGE_FORCE_PATH_STYLE`  | `true` for Garage, `false` for R2        |
 | `STORAGE_PUBLIC_URL`        | Optional public download domain          |
 | `STORAGE_MAX_FILE_BYTES`    | Optional upload limit (default 100 MB)   |
+| `STORAGE_QUOTA_BYTES`       | Optional limit on total stored bytes     |
 | `GARAGE_RPC_SECRET`         | Garage node secret (local only)          |
 | `GARAGE_ADMIN_TOKEN`        | Garage admin API token (local only)      |
+
+## Storage quota
+
+Set `STORAGE_QUOTA_BYTES` to cap the total size of all uploaded files.
+For example, `9500000000` (9.5 GB) stays under R2's free 10 GB and leaves
+room for uploads in progress. Without it, storage is unlimited.
+
+Usage is the sum of `project_files.size` in Postgres, so it counts every
+file uploaded through the app:
+
+1. Before an upload starts, the server refuses it if the quota is full or
+   the declared size doesn't fit. The upload stream is also capped at the
+   space left.
+2. After the file is stored, the server checks the quota again while
+   holding a Postgres advisory lock and only then records the file. If
+   parallel uploads used the space in the meantime, the file is deleted
+   and the upload is refused.
+
+Refused uploads get `507 Insufficient Storage`. Deleting versions or
+projects frees space immediately.
+
+In-flight uploads can briefly store more than the quota in the bucket
+before the check removes them. Objects created outside the app (or left
+behind if a storage delete fails) are not counted.
+
+Admins see usage and the limit in the **Storage** tab of `/admin`. Above
+90% it shows a warning.
 
 ## Local setup with Garage
 

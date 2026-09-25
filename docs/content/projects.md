@@ -68,16 +68,17 @@ The route:
 4. Checks the `PK\x03\x04` zip signature, then streams the body to
    storage while hashing it.
 
-| Status | Meaning                                         |
-| ------ | ----------------------------------------------- |
-| `201`  | Stored; the body is the new file                |
-| `401`  | Not signed in                                   |
-| `403`  | Not the owner, unverified, or cross-origin      |
-| `404`  | Unknown project or version                      |
-| `409`  | The version already has a file with that name   |
-| `413`  | Larger than `STORAGE_MAX_FILE_BYTES`            |
-| `415`  | Not a `.jar` file                               |
-| `503`  | Storage is not configured or unreachable        |
+| Status | Meaning                                           |
+| ------ | ------------------------------------------------- |
+| `201`  | Stored; the body is the new file                  |
+| `401`  | Not signed in                                     |
+| `403`  | Not the owner, unverified, or cross-origin        |
+| `404`  | Unknown project or version                        |
+| `409`  | The version already has a file with that name     |
+| `413`  | Larger than `STORAGE_MAX_FILE_BYTES`              |
+| `415`  | Not a `.jar` file                                 |
+| `503`  | Storage is not configured or unreachable          |
+| `507`  | The storage quota (`STORAGE_QUOTA_BYTES`) is full |
 
 ## Download flow
 

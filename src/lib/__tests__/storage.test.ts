@@ -46,6 +46,7 @@ const config: StorageConfig = {
   forcePathStyle: true,
   maxFileBytes: 10,
   publicUrl: null,
+  quotaBytes: null,
   region: "auto",
   secretAccessKey: "secret",
 };
@@ -111,6 +112,28 @@ describe(uploadStream, () => {
     expect(abortMock).toHaveBeenCalledWith();
     const [[command]] = send.mock.calls;
     expect(command).toBeInstanceOf(DeleteObjectsCommand);
+  });
+});
+
+describe("uploadStream with a per-upload limit", () => {
+  it("stops at the lower of the file limit and maxBytes", async () => {
+    const { client } = fakeClient();
+
+    const upload = uploadStream(
+      {
+        body: bodyOf("x".repeat(6)),
+        contentType: "x",
+        filename: "a.jar",
+        key: "k",
+        maxBytes: 5,
+      },
+      config,
+      client
+    );
+
+    await expect(upload).rejects.toStrictEqual(
+      expect.objectContaining({ code: STORAGE_ERROR.fileTooLarge })
+    );
   });
 });
 
