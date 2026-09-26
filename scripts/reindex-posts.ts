@@ -16,6 +16,28 @@ import { posts } from "../src/db/schema.ts";
 import { toSearchDocument } from "../src/lib/posts-index.ts";
 import { POSTS_INDEX, POSTS_INDEX_SETTINGS } from "../src/lib/posts-search.ts";
 
+/**
+ * Waits for a task and insists that it actually succeeded.
+ *
+ * Meilisearch reports a failed task in the returned task rather than by
+ * throwing, so waiting alone is not enough: a rejected settings update or a
+ * refused document batch would still let this script print its success line and
+ * leave search quietly empty.
+ */
+const waitForSuccess = async (
+  client: Meilisearch,
+  taskUid: number,
+  label: string
+) => {
+  const task = await client.tasks.waitForTask(taskUid);
+
+  if (task.status !== "succeeded") {
+    throw new Error(
+      `Meilisearch ${label} ${task.status}: ${task.error?.message ?? "no reason given"}`
+    );
+  }
+};
+
 const reindex = async () => {
   const apiKey = env.MEILI_ADMIN_KEY?.trim();
 
@@ -30,15 +52,15 @@ const reindex = async () => {
   const settingsTask = await client
     .index(POSTS_INDEX)
     .updateSettings(POSTS_INDEX_SETTINGS);
-  await client.tasks.waitForTask(settingsTask.taskUid);
+  await waitForSuccess(client, settingsTask.taskUid, "settings update");
 
   const index = client.index(POSTS_INDEX);
   const clearTask = await index.deleteAllDocuments();
-  await client.tasks.waitForTask(clearTask.taskUid);
+  await waitForSuccess(client, clearTask.taskUid, "document clear");
 
   const rows = await db.select().from(posts);
   const task = await index.addDocuments(rows.map(toSearchDocument));
-  await client.tasks.waitForTask(task.taskUid);
+  await waitForSuccess(client, task.taskUid, "document indexing");
 
   console.log(
     `Indexed ${rows.length} posts (${rows.filter((post) => post.published).length} published).`

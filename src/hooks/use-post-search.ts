@@ -102,6 +102,25 @@ export const usePostSearch = ({
   });
   const hasMountedRef = useRef(false);
   const requestIdRef = useRef(0);
+  /**
+   * The trimmed query that the results on screen belong to, whether that
+   * request has landed or is still in flight. Edits that trim away to this same
+   * query are recognised and left alone, because nothing will be sent for them.
+   */
+  const sentQueryRef = useRef("");
+  /** Whether the request for `sentQueryRef` is still outstanding. */
+  const pendingRef = useRef(false);
+  /**
+   * The caller's fetch function, read through a ref so that `runSearch` keeps a
+   * stable identity. Both callers pass an inline arrow, so depending on
+   * `fetchResults` directly would rebuild `runSearch` on every render, re-run
+   * the search effect on every render, and dispatch forever.
+   */
+  const fetchResultsRef = useRef(fetchResults);
+
+  useEffect(() => {
+    fetchResultsRef.current = fetchResults;
+  }, [fetchResults]);
 
   const { error, hits, isSearching } = state;
   const trimmedQuery = debouncedQuery.trim();
@@ -141,39 +160,39 @@ export const usePostSearch = ({
   }, [availability, probe]);
 
   // oxlint-disable-next-line react-doctor/react-compiler-no-manual-memoization -- React Compiler is not enabled in this project; useCallback keeps the effect from re-running on every render
-  const runSearch = useCallback(
-    async (value: string) => {
-      const thisRequestId = requestIdRef.current;
+  const runSearch = useCallback(async (value: string) => {
+    const thisRequestId = requestIdRef.current;
 
-      try {
-        const data = await fetchResults(value);
+    try {
+      const data = await fetchResultsRef.current(value);
 
-        // A newer query has already been issued; this response is stale.
-        if (requestIdRef.current !== thisRequestId) {
-          return;
-        }
-
-        if (!data.available) {
-          setIsDeactivated(true);
-          dispatch({ type: "UNAVAILABLE" });
-          return;
-        }
-
-        dispatch({ hits: data.hits, type: "SUCCESS" });
-      } catch (searchError) {
-        if (requestIdRef.current === thisRequestId) {
-          dispatch({
-            error:
-              searchError instanceof Error
-                ? searchError.message
-                : "Could not search posts.",
-            type: "ERROR",
-          });
-        }
+      // A newer query has already been issued; this response is stale.
+      if (requestIdRef.current !== thisRequestId) {
+        return;
       }
-    },
-    [fetchResults]
-  );
+
+      pendingRef.current = false;
+
+      if (!data.available) {
+        setIsDeactivated(true);
+        dispatch({ type: "UNAVAILABLE" });
+        return;
+      }
+
+      dispatch({ hits: data.hits, type: "SUCCESS" });
+    } catch (searchError) {
+      if (requestIdRef.current === thisRequestId) {
+        pendingRef.current = false;
+        dispatch({
+          error:
+            searchError instanceof Error
+              ? searchError.message
+              : "Could not search posts.",
+          type: "ERROR",
+        });
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (!isAvailable) {
@@ -187,24 +206,61 @@ export const usePostSearch = ({
       return;
     }
 
+    // Retiring the previous request belongs here rather than in the keystroke
+    // handler: a keystroke does not yet promise a request, and abandoning a
+    // search on that promise would drop the results for a query the reader may
+    // still be on. From here a replacement is genuinely on its way.
+    requestIdRef.current += 1;
+    sentQueryRef.current = trimmedQuery;
+
     if (trimmedQuery.length === 0) {
+      pendingRef.current = false;
       return;
     }
+
+    pendingRef.current = true;
 
     // oxlint-disable-next-line react/set-state-in-effect -- This effect synchronizes with Meilisearch, an external system, and every setState inside runSearch happens after its await, so it cannot cascade a render.
     runSearch(trimmedQuery);
   }, [isAvailable, runSearch, trimmedQuery]);
 
   const onQueryChange = (value: string) => {
-    // Bumping the id abandons any in-flight search, so a late response cannot
-    // resurrect results for a field the reader has since cleared.
-    requestIdRef.current += 1;
+    const trimmed = value.trim();
+
     setQuery(value);
+
+    // Whitespace-only edits trim away to the query already on screen, and an
+    // edit that returns to it before the debounce elapses settles there too.
+    // The debounced value does not move either way, so no request is issued
+    // and this effect does not run: nothing raised here would be left waiting.
+    if (trimmed === sentQueryRef.current) {
+      // A search for exactly this query is still in flight and was never
+      // abandoned, so leave it to land.
+      if (pendingRef.current) {
+        return;
+      }
+
+      // It already landed, so put its results back rather than leaving the
+      // empty state that an intermediate keystroke replaced them with.
+      if (isSearching) {
+        dispatch({ hits: hits ?? [], type: "SUCCESS" });
+      }
+
+      return;
+    }
+
+    // Clearing is the one edit that has to retire a search immediately: waiting
+    // out the debounce would let a late response repopulate a field the reader
+    // has just emptied.
+    if (trimmed.length === 0) {
+      requestIdRef.current += 1;
+      pendingRef.current = false;
+    }
 
     // The busy state is raised here, at the keystroke that caused it, rather
     // than inside the effect that issues the request: the reader should see
     // that a search is under way immediately, not after the debounce.
-    dispatch({ type: value.trim().length === 0 ? "CLEARED" : "START" });
+    dispatch({ type: trimmed.length === 0 ? "CLEARED" : "START" });
   };
 
   return {

@@ -85,24 +85,32 @@ export const projectsRoute = new Elysia().get(
       return status(503, { available: false, error: "Search unavailable" });
     }
 
-    const result = await client
-      .index(PROJECTS_INDEX)
-      .search<ProjectDocument>(query.q ?? "", {
-        facets: ["category", "gameVersions", "loaders"],
-        filter: buildFilter({ ...query, type: query.type }),
-        limit: PAGE_SIZE,
-        offset,
-        sort: [sort],
-      });
+    try {
+      const result = await client
+        .index(PROJECTS_INDEX)
+        .search<ProjectDocument>(query.q ?? "", {
+          facets: ["category", "gameVersions", "loaders"],
+          filter: buildFilter({ ...query, type: query.type }),
+          limit: PAGE_SIZE,
+          offset,
+          sort: [sort],
+        });
 
-    return {
-      estimatedTotalHits: result.estimatedTotalHits,
-      facetDistribution: result.facetDistribution,
-      hits: result.hits,
-      page,
-      pageSize: PAGE_SIZE,
-      query: result.query,
-    };
+      return {
+        estimatedTotalHits: result.estimatedTotalHits,
+        facetDistribution: result.facetDistribution,
+        hits: result.hits,
+        page,
+        pageSize: PAGE_SIZE,
+        query: result.query,
+      };
+    } catch {
+      // `/health` is served without authentication, so it can pass while the key
+      // is rejected or the index does not exist. Both are the same thing to the
+      // caller — search cannot answer — so report the same unavailable response
+      // instead of letting the request fail with a 500.
+      return status(503, { available: false, error: "Search unavailable" });
+    }
   },
   {
     query: t.Object({

@@ -227,10 +227,14 @@ export const useAdminPosts = (): UseAdminPostsResult => {
   });
 
   const onCreated = (post: Post) => {
+    // Bumped like every other mutation, so a refresh already in flight
+    // recognises that the list it is fetching has been superseded.
+    mutationCountRef.current += 1;
     dispatch({ post, type: "CREATE_SUCCESS" });
   };
 
   const onUpdated = (post: Post) => {
+    mutationCountRef.current += 1;
     dispatch({ post, type: "UPDATE_SUCCESS" });
   };
 

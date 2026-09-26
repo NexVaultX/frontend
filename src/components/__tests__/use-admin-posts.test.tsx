@@ -49,6 +49,13 @@ const summary = (id: string, title: string): PostSummary => ({
   updatedAt: "2026-01-15T10:30:00.000Z",
 });
 
+/** A saved post, as the create and update callbacks receive it. */
+const saved = (id: string, title: string): Post => ({
+  ...summary(id, title),
+  authorId: "author-1",
+  content: `Body of ${title}.`,
+});
+
 /**
  * Flushes pending microtasks and timers.
  *
@@ -68,6 +75,21 @@ const setVisibility = (state: "hidden" | "visible") => {
   });
   act(() => {
     document.dispatchEvent(new Event("visibilitychange"));
+  });
+};
+
+/**
+ * Waits out the search debounce in real time, so a case can assert on the
+ * settled state rather than on the instant the keystroke was handled.
+ */
+const waitOutDebounce = async () => {
+  // oxlint-disable-next-line promise/avoid-new -- Deliberate real-time delay; the pacer debouncer's timers do not settle under advanceTimersByTimeAsync.
+  const elapsed = new Promise((resolve) => {
+    setTimeout(resolve, 500);
+  });
+
+  await act(async () => {
+    await elapsed;
   });
 };
 
@@ -198,6 +220,60 @@ describe(useAdminPosts, () => {
     // The delete stands; the late refresh is discarded.
     expect(result.current.posts).toHaveLength(0);
   });
+
+  it("does not let a stale refresh undo a create", async () => {
+    const { result } = renderHook(() => useAdminPosts());
+    await settle();
+
+    // A refresh that starts before the create finishes resolves with a list
+    // that does not contain the new post, which would make it disappear.
+    // oxlint-disable-next-line promise/avoid-new -- The point of this case is a refresh that is still in flight, so the test has to decide when it settles.
+    const inFlightRefresh = new Promise<PostSummary[]>((resolve) => {
+      heldRefresh.resolve = resolve;
+    });
+    listPostsMock.mockReturnValueOnce(inFlightRefresh);
+
+    await settle(POLL_INTERVAL_MS);
+    expect(listPostsMock).toHaveBeenCalledTimes(2);
+
+    act(() => {
+      result.current.onCreated(saved("b", "Beta"));
+    });
+
+    heldRefresh.resolve([summary("a", "Alpha")]);
+    await settle();
+
+    // The new post stands; the late refresh is discarded.
+    expect(result.current.posts).toHaveLength(2);
+    expect(result.current.posts[0]?.title).toBe("Beta");
+  });
+
+  it("does not let a stale refresh undo an update", async () => {
+    const { result } = renderHook(() => useAdminPosts());
+    await settle();
+
+    // A refresh that starts before the edit finishes resolves with the
+    // pre-edit row, which would put the old title back on screen.
+    // oxlint-disable-next-line promise/avoid-new -- The point of this case is a refresh that is still in flight, so the test has to decide when it settles.
+    const inFlightRefresh = new Promise<PostSummary[]>((resolve) => {
+      heldRefresh.resolve = resolve;
+    });
+    listPostsMock.mockReturnValueOnce(inFlightRefresh);
+
+    await settle(POLL_INTERVAL_MS);
+    expect(listPostsMock).toHaveBeenCalledTimes(2);
+
+    act(() => {
+      result.current.onUpdated(saved("a", "Alpha renamed"));
+    });
+
+    heldRefresh.resolve([summary("a", "Alpha")]);
+    await settle();
+
+    // The edit stands; the late refresh is discarded.
+    expect(result.current.posts).toHaveLength(1);
+    expect(result.current.posts[0]?.title).toBe("Alpha renamed");
+  });
 });
 
 /**
@@ -284,5 +360,81 @@ describe("useAdminPosts search", () => {
     await waitFor(() => {
       expect(result.current.posts[0]?.title).toBe("Alpha");
     });
+  });
+
+  it("does not re-search or stay busy when a trailing space is typed", async () => {
+    searchPostsAdminMock.mockResolvedValue({
+      available: true,
+      estimatedTotalHits: 1,
+      hits: [draftHit],
+      query: "draft",
+    });
+
+    const { result } = renderHook(() => useAdminPosts());
+    await waitFor(() => {
+      expect(result.current.searchAvailable).toBeTruthy();
+    });
+
+    act(() => {
+      result.current.onQueryChange("draft");
+    });
+    await waitFor(() => {
+      expect(searchPostsAdminMock).toHaveBeenCalledWith({
+        data: { query: "draft" },
+      });
+    });
+    await waitFor(() => {
+      expect(result.current.posts[0]?.title).toBe("Draft post");
+    });
+
+    // The trimmed query is unchanged, so the debounced value never moves and
+    // no request is issued. Abandoning the settled search or raising the busy
+    // state here would leave the field spinning with nothing to resolve it.
+    act(() => {
+      result.current.onQueryChange("draft ");
+    });
+    await waitOutDebounce();
+
+    expect(result.current.isSearching).toBeFalsy();
+    expect(searchPostsAdminMock).toHaveBeenCalledOnce();
+    expect(result.current.posts[0]?.title).toBe("Draft post");
+  });
+
+  it("does not stay busy when an edit returns to the previous query", async () => {
+    searchPostsAdminMock.mockResolvedValue({
+      available: true,
+      estimatedTotalHits: 1,
+      hits: [draftHit],
+      query: "draft",
+    });
+
+    const { result } = renderHook(() => useAdminPosts());
+    await waitFor(() => {
+      expect(result.current.searchAvailable).toBeTruthy();
+    });
+
+    act(() => {
+      result.current.onQueryChange("draft");
+    });
+    await waitFor(() => {
+      expect(searchPostsAdminMock).toHaveBeenCalledOnce();
+    });
+    await waitFor(() => {
+      expect(result.current.posts[0]?.title).toBe("Draft post");
+    });
+
+    // Typed and removed inside a single debounce window, so the debounced value
+    // settles back on the query already searched for and issues no request.
+    act(() => {
+      result.current.onQueryChange("draftx");
+    });
+    act(() => {
+      result.current.onQueryChange("draft");
+    });
+    await waitOutDebounce();
+
+    expect(result.current.isSearching).toBeFalsy();
+    expect(searchPostsAdminMock).toHaveBeenCalledOnce();
+    expect(result.current.posts[0]?.title).toBe("Draft post");
   });
 });

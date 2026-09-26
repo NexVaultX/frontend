@@ -23,20 +23,28 @@ export const postsRoute = new Elysia().get(
       return status(503, { available: false, error: "Search unavailable" });
     }
 
-    const result = await client
-      .index(POSTS_INDEX)
-      .search<PostSearchDocument>(query.q ?? "", {
-        filter: ["published = true"],
-        limit: 50,
-        sort: ["createdAtTs:desc"],
-      });
+    try {
+      const result = await client
+        .index(POSTS_INDEX)
+        .search<PostSearchDocument>(query.q ?? "", {
+          filter: ["published = true"],
+          limit: 50,
+          sort: ["createdAtTs:desc"],
+        });
 
-    return {
-      available: true,
-      estimatedTotalHits: result.estimatedTotalHits,
-      hits: result.hits,
-      query: result.query,
-    };
+      return {
+        available: true,
+        estimatedTotalHits: result.estimatedTotalHits,
+        hits: result.hits,
+        query: result.query,
+      };
+    } catch {
+      // `/health` is served without authentication, so it can pass while the key
+      // is rejected or the index does not exist. Both are the same thing to the
+      // reader — search cannot answer — so report the same unavailable response
+      // instead of letting the request fail with a 500.
+      return status(503, { available: false, error: "Search unavailable" });
+    }
   },
   {
     query: t.Object({
