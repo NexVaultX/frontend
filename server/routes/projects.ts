@@ -7,7 +7,11 @@ import {
   isProjectType,
 } from "../../src/lib/projects";
 import type { ProjectDocument, ProjectType } from "../../src/lib/projects";
-import { getSearchClient, PROJECTS_INDEX } from "../lib/meilisearch";
+import {
+  getSearchClient,
+  isSearchAvailable,
+  PROJECTS_INDEX,
+} from "../lib/meilisearch";
 
 const DEFAULT_SORT = "downloads:desc";
 const SORTS = [DEFAULT_SORT, "updatedAt:desc", "name:asc"] as const;
@@ -73,7 +77,15 @@ export const projectsRoute = new Elysia().get(
     const page = Math.max(1, query.page ?? 1);
     const offset = (page - 1) * PAGE_SIZE;
 
-    const result = await getSearchClient()
+    const client = getSearchClient();
+
+    // Search is optional infrastructure. Reporting it unavailable lets the
+    // client hide its search UI instead of showing a broken results list.
+    if (client === null || !(await isSearchAvailable())) {
+      return status(503, { available: false, error: "Search unavailable" });
+    }
+
+    const result = await client
       .index(PROJECTS_INDEX)
       .search<ProjectDocument>(query.q ?? "", {
         facets: ["category", "gameVersions", "loaders"],
