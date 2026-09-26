@@ -39,7 +39,11 @@ describe(pixelRevealFrame, () => {
   });
 
   it("reveals only some pixels halfway through", () => {
-    const frame = pixelRevealFrame(grid, 700, PIXEL_SWAP_PRESET);
+    const frame = pixelRevealFrame(
+      grid,
+      PIXEL_SWAP_PRESET.duration / 2,
+      PIXEL_SWAP_PRESET
+    );
     const layers = layerCount(frame.maskSize);
 
     expect(layers).toBeGreaterThan(0);
@@ -47,7 +51,11 @@ describe(pixelRevealFrame, () => {
   });
 
   it("shows every pixel fully grown and opaque at the end", () => {
-    const frame = pixelRevealFrame(grid, 1400, PIXEL_SWAP_PRESET);
+    const frame = pixelRevealFrame(
+      grid,
+      PIXEL_SWAP_PRESET.duration,
+      PIXEL_SWAP_PRESET
+    );
 
     expect(layerCount(frame.maskSize)).toBe(grid.cells.length);
     expect(

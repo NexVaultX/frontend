@@ -19,11 +19,14 @@ interface PixelRevealOptions {
   pixelSize: number;
 }
 
-/** PixelSwap demo preset: 64px pixels, random order, 1.4s with fade. */
+/**
+ * PixelSwap demo preset (64px pixels, random order, fade), sped up from its
+ * 1.4s / 450ms timing, which felt sluggish for a theme switch.
+ */
 export const PIXEL_SWAP_PRESET: PixelRevealOptions = {
-  duration: 1400,
+  duration: 600,
   fade: true,
-  pixelDuration: 450,
+  pixelDuration: 250,
   pixelScale: 0.35,
   pixelSize: 64,
 };

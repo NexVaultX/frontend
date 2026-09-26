@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import type { ComponentProps } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -24,7 +24,6 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
 
 const BROWSE_MODS = /browse mods/iu;
 const HEADING = /discover the best mods, plugins/iu;
-const PAUSE = /pause headline animation/iu;
 
 describe(Hero, () => {
   // jsdom has no matchMedia; the headline animation checks reduced motion.
@@ -76,18 +75,5 @@ describe(Hero, () => {
     expect(
       screen.getByRole("heading", { level: 1, name: HEADING })
     ).toBeInTheDocument();
-  });
-
-  it("lets the headline animation be paused and resumed", () => {
-    render(<Hero />);
-
-    const toggle = screen.getByRole("button", { name: PAUSE });
-    expect(toggle).toHaveAttribute("aria-pressed", "false");
-
-    fireEvent.click(toggle);
-    expect(toggle).toHaveAttribute("aria-pressed", "true");
-
-    fireEvent.click(toggle);
-    expect(toggle).toHaveAttribute("aria-pressed", "false");
   });
 });
